@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0bceb855a889d11943cec21f4c806bb6",
+    "revision": "457ef6f70dd488598629ba959ca60ad4",
     "url": "/Social-linked-beer/index.html"
   },
   {
-    "revision": "620c3dd3626d88280068",
+    "revision": "2780467efdf673bc678f",
     "url": "/Social-linked-beer/static/css/main.fc5441f1.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Social-linked-beer/static/js/2.d4340b1e.chunk.js"
   },
   {
-    "revision": "620c3dd3626d88280068",
-    "url": "/Social-linked-beer/static/js/main.e66d1244.chunk.js"
+    "revision": "2780467efdf673bc678f",
+    "url": "/Social-linked-beer/static/js/main.5c657b4a.chunk.js"
   },
   {
     "revision": "7a462a8689be36d1daba",
