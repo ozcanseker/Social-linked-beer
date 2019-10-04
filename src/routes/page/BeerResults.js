@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/BeerResults.scss'
+import '../css/BeerResults.scss';
 import {Link} from "react-router-dom";
 
 class BeerResults extends React.Component{

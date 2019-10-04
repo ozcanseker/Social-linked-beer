@@ -5,32 +5,43 @@ import { buildSolidCommunicator } from './SolidCommunicatorBuilder'
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
-const $rdf = require('rdflib');
+const rdfLib = require('rdflib');
 
-const SOLID = $rdf.Namespace( "http://www.w3.org/ns/solid/terms#");
-const PIM = $rdf.Namespace("http://www.w3.org/ns/pim/space#");
-const VCARD = $rdf.Namespace("http://www.w3.org/2006/vcard/ns#");
-const TERMS = $rdf.Namespace('http://purl.org/dc/terms/');
-const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-const SOLIDLINKEDBEER = $rdf.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const FOAF = $rdf.Namespace('http://xmlns.com/foaf/0.1/');
+const SOLID = rdfLib.Namespace( "http://www.w3.org/ns/solid/terms#");
+const PIM = rdfLib.Namespace("http://www.w3.org/ns/pim/space#");
+const VCARD = rdfLib.Namespace("http://www.w3.org/2006/vcard/ns#");
+const TERMS = rdfLib.Namespace('http://purl.org/dc/terms/');
+const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
+const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
 
 class SolidCommunicator {
-    constructor(user){
-        this.user = user;
-        user.subscribe(this);
+    constructor(user, values){
+      
+      //user
+      this.user = user;
+      user.subscribe(this);
     }
 
     static async build(user){
-      let values = buildSolidCommunicator(user);
+      let values = await buildSolidCommunicator(user);
+      
+      console.log(values);
+      user.setName(values.user.name);
+      user.setImageUrl(values.user.imageURL);
+      user.addFriends(values.user.friends);
+      user.setBeerPoints(values.user.points);
+      user.setBeginDate(new Date(values.user.startdate));
       
       //make new solidCommunicator
-      let solidCommunicator = new SolidCommunicator(user);
+      let solidCommunicator = new SolidCommunicator(user, values);
 
-      return {user: user, solidCommunicator: solidCommunicator};
+      return solidCommunicator;
     }  
 
-   
+    update(){
+      console.log("update");
+    }
 }
 
 async function appendSolidResource(url, body){
@@ -45,6 +56,40 @@ async function appendSolidResource(url, body){
     // let body = `INSERT DATA { <${this.state.webId+"#comment"}> <${SOLIDLINKEDBEER('points6').value}> <${8}> }`;
     // let appDataFile;
     // appendSolidResource(appDataFile, {body})
+}
+
+async function getUserFile(url, callBack){
+  let userttt = await fileClient.readFile(url);
+  let graph = rdfLib.graph();
+
+  try{
+    rdfLib.parse(userttt, graph, url, "text/turtle");
+
+    let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
+
+    if(query){
+      let profile = rdfLib.sym(url);
+      let nameFN =  graph.any(profile,VCARD('fn'));
+      let imageURL =  graph.any(profile,VCARD('hasPhoto')); 
+
+      nameFN = nameFN ? nameFN.value : undefined;
+      imageURL = imageURL ? imageURL.value : undefined;
+      
+      let result = {
+        userTTl: userttt,
+        url : url,
+        name: nameFN,
+        imageUrl : imageURL
+      }
+
+      callBack(result, false);
+    }else{
+      callBack(undefined, "not a profile card");
+    }
+
+  }catch(err){
+    callBack(undefined, "Not a linked data file");
+  }    
 }
 
 export default SolidCommunicator;

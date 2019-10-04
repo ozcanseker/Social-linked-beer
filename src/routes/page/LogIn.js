@@ -19,6 +19,7 @@ class LogIn extends React.Component{
     }
 
     onButtonClick = () => {
+        console.log(this.props);
         let popupUri = './popup.html';
         solidAuth.popupLogin({ popupUri }).then(() => {
             solidAuth.currentSession().then( session => {

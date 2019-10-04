@@ -69,6 +69,7 @@ function makeRandomString(length) {
  * @param {string} webId 
  */
 async function makeAppFolderStructure(appFolderUrl, webId){
+  //TODO make all async
   let body;
     
   //top folder

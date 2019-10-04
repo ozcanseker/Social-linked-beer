@@ -1,10 +1,12 @@
 import React from 'react';
 import '../css/Profile.scss'
-import profilePic from '../assets/profilePic.png'
+import profilePic from '../../assets/profilePic.png'
 
 class Profile extends React.Component{
     render(){
         let user = this.props.user;
+        let imgUrl = user.getImageUrl();
+        console.log(user);
 
         return(
             <section className = "profileScreen">
@@ -12,20 +14,20 @@ class Profile extends React.Component{
                 <div className="row">
                     <div className="leftColum">
                         <h1>
-                            {user.name}
+                            {user.getName()}
                         </h1>
-                        <img src = {user.imageUrl ? user.imageUrl : profilePic} alt = ""/>
+                        <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
                         <p>
-                            check-ins : {user.beerPoints}
+                            check-ins : {0}
                         </p>
                         <p>
-                            reviews : 2
+                            reviews : 0
                         </p>
                         <p>
-                            Begin date : {user.startDate.toString()}
+                            Begin date : {dateToString(user.getBeginDate())}
                         </p>
                         <p>
-                            beerbonus points : 15
+                            beerbonus points : {user.getBeerPoints()}
                         </p>
                     </div>
                     <div className="column">
@@ -37,6 +39,14 @@ class Profile extends React.Component{
             </section>
         )
     }
+}
+
+function dateToString(date){
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0');
+    var yyyy = date.getFullYear();
+
+    return dd + '/' + mm + '/' + yyyy;
 }
 
 export default Profile;

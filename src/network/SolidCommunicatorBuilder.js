@@ -15,6 +15,7 @@ const PIM = rdfLib.Namespace("http://www.w3.org/ns/pim/space#");
 
 
 export async function buildSolidCommunicator(user){
+  //TODO do some thing parallel
     let returnObject = {};
 
     //make a named node of the session webid of the user
@@ -37,10 +38,23 @@ export async function buildSolidCommunicator(user){
     //string
     let applicationLocation = await getApplicationLocation(ppiObject.ppi , ppiObject.store, storagePublic, webIdNN.value);
 
-    //  let friends = await getFriends(applicationLocation);
-    //  let appdata = await appData(applicationLocation);
+    returnObject.user = getUserDetails(webIdNN, storeProfileCard);
+    let appData = await getAppData(applicationLocation);
+
+    returnObject.user = {...returnObject.user , ...appData};
+    returnObject.user.friends = await getFriends(applicationLocation);
 
     return returnObject;
+}
+
+function getUserDetails(profile, storeProfileCard){
+  let nameFN =  storeProfileCard.any(profile,VCARD('fn'));
+  let imageURL =  storeProfileCard.any(profile,VCARD('hasPhoto')); 
+
+  nameFN = nameFN ? nameFN.value : undefined;
+  imageURL = imageURL ? imageURL.value : undefined;
+
+  return {name: nameFN, imageURL: imageURL};
 }
 
 async function getUserCard(webIdUrl){
@@ -78,99 +92,65 @@ async function getApplicationLocation(publicProfileIndex, storePublicProfileInde
     }
 }
 
+async function getAppData(url){
+  //TODO one place to save all urls
+  let appdataLocation = url + 'beerdrinker/' +'appdata.ttl';
 
+  let appdatattl = await fileClient.readFile(appdataLocation);
+  let graph = rdfLib.graph();
+  rdfLib.parse(appdatattl, graph, appdataLocation, "text/turtle");
 
+  let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
 
+  let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
+  let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
+  
+  return {startdate: startdate.value, points: points.value}
+}
 
+ async function getFriends(applicationLocation){
+  let friendsLocation = applicationLocation + 'beerdrinker/' +  "friends.ttl";
+  let ttlFriends = await fileClient.readFile(friendsLocation);
+  let group = rdfLib.sym(friendsLocation + "#Friends");
 
+  let friends = [];
 
+  let graph = rdfLib.graph();
+  rdfLib.parse(ttlFriends, graph, friendsLocation, "text/turtle");
 
+  let query = graph.each(group, VCARD('hasMember'), undefined); 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async function getUserFile(url, callBack){
-    let userttt = await fileClient.readFile(url);
-    let graph = rdfLib.graph();
-
-    try{
-      rdfLib.parse(userttt, graph, url, "text/turtle");
-
-      let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
-
-      if(query){
-        let profile = rdfLib.sym(url);
-        let nameFN =  graph.any(profile,VCARD('fn'));
-        let imageURL =  graph.any(profile,VCARD('hasPhoto')); 
-
-        nameFN = nameFN ? nameFN.value : undefined;
-        imageURL = imageURL ? imageURL.value : undefined;
-        
-        let result = {
-          userTTl: userttt,
-          url : url,
-          name: nameFN,
-          imageUrl : imageURL
-        }
-
-        callBack(result, false);
-      }else{
-        callBack(undefined, "not a profile card");
-      }
-
-    }catch(err){
-      callBack(undefined, "Not a linked data file");
-    }    
+  for (let index = 0; index < query.length; index++) {
+    let friend = await this.fetchFriend(query[index]);
+    friends.push(friend);
   }
 
-   async function  appData(url){
-    let appdataLocation = url + 'appdata.ttl';
+  return friends;
+}
 
-    let appdatattl = await fileClient.readFile(appdataLocation);
-    let graph = rdfLib.graph();
-    rdfLib.parse(appdatattl, graph, appdataLocation, "text/turtle");
 
-    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
 
-    let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
-    let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
-    
-    return {startdate: startdate.value, points: points.value}
-  }
 
-   async function getFriends(applicationLocation){
-    let friendsLocation = applicationLocation + "friends.ttl";
-    let ttlFriends = await fileClient.readFile(friendsLocation);
-    let group = rdfLib.sym(friendsLocation + "#Friends");
 
-    let friends = [];
 
-    let graph = rdfLib.graph();
-    rdfLib.parse(ttlFriends, graph, friendsLocation, "text/turtle");
 
-    let query = graph.each(group, VCARD('hasMember'), undefined); 
 
-    for (let index = 0; index < query.length; index++) {
-      let friend = await this.fetchFriend(query[index]);
-      friends.push(friend);
-      console.log(friend);
-    }
 
-    return friends;
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //   async function fetchFriend(friendNamedNode){
 //     let friendttl = await fileClient.readFile(friendNamedNode.value);

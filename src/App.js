@@ -3,23 +3,10 @@
  */
 import React from 'react';
 import solidAuth from 'solid-auth-client'
-import {Switch, Route, Link, withRouter, Redirect} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import SolidCommunicator from './network/SolidCommunicator'
 
-/**
- * Imported Pages
- */
-import Home from './page/Home'
-import LogIn from './page/LogIn'
-import Groups from './page/Groups';
-import Friends from './page/Friends';
-import FriendsPage from './page/FriendPage';
-import CheckIns from './page/CheckIns';
-import BeerResults from './page/BeerResults';
-import Profile from './page/Profile';
-import UserPage from './page/User';
-import Inbox from './page/Inbox';
-
+import AppRoutes from './routes/AppRoutes'
 
 /**
  * Components
@@ -32,7 +19,6 @@ import NavBar from './component/NavBar';
 import './css/App.scss';
 import Knipsel from './assets/Knipsel.png'
 import Logo from './assets/logo.png'
-import BeerDetailScreen from './page/BeerDetailScreen';
 import User from './model/User';
 
 class App extends React.Component{
@@ -48,6 +34,12 @@ class App extends React.Component{
 
   componentDidMount(){
     this.checkLoggedIn();
+  }
+
+  update = () => {
+    this.setState({
+      update : true
+    })
   }
 
   clearSearchQuery = () => {
@@ -149,19 +141,13 @@ class App extends React.Component{
         </header>
 
         {navBar}
-          <Switch>
-              <Route exact path="/" component={Home} isLoggedIn = {this.state.loggedIn}/>
-              <PrivateRoute path="/user" component={UserPage} isLoggedIn = {this.state.loggedIn}/> 
-              <PrivateRoute path="/beer/:id" component={BeerDetailScreen} isLoggedIn = {this.state.loggedIn}/> 
-              <PrivateRoute path="/friend/:id" component={FriendsPage} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject}/>                       
-              <PrivateRoute exact path="/friend" component={Friends} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject} solidCommunicator = {this.state.solidCommunicator}/>
-              <PrivateRoute path="/beerresults" component={BeerResults} isLoggedIn = {this.state.loggedIn} onLinkClick = {this.clearSearchQuery}/>
-              <PrivateRoute path="/groups" component={Groups} isLoggedIn = {this.state.loggedIn}/>
-              <PrivateRoute path='/profile' component={Profile} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject}/>
-              <PrivateRoute path='/checkIns' component={CheckIns} isLoggedIn = {this.state.loggedIn}/>
-              <PrivateRoute path='/inbox' component={Inbox} isLoggedIn = {this.state.loggedIn}/>
-              <PrivateRouteLogIn path="/login" component={LogIn} isLoggedIn = {this.state.loggedIn} onLoggedIn = {this.onLoggedIn}/>
-          </Switch>
+        <AppRoutes 
+          loggedIn = {this.state.loggedIn}
+          userObject = {this.state.userObject}
+          solidCommunicator = {this.state.solidCommunicator}
+          clearSearchQuery = {this.clearSearchQuery}
+          onLoggedIn = {this.onLoggedIn}
+        />
           <footer>
             <span>
               This application is powered by
@@ -174,21 +160,5 @@ class App extends React.Component{
     );
   }
 }
-
-const PrivateRoute = ({ component: Component, isLoggedIn ,...rest }) => (
-  <Route {...rest} render={(props) => (
-    isLoggedIn
-    ?   <Component {...props} {...rest}/>
-    : <Redirect to='/' />
-  )} />
-)
-
-const PrivateRouteLogIn = ({ component: Component, isLoggedIn, onLoggedIn ,...rest }) => (
-  <Route {...rest} render={(props) => (
-    !isLoggedIn
-      ? <Component onLoggedIn = {onLoggedIn} {...props} />
-      : <Redirect to='/profile' />
-  )} />
-)
 
 export default withRouter(App);
