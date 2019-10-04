@@ -1,13 +1,6 @@
 class User {
-    constructor(uri, name, imageUrl, friends, startDate, beerPoints){
-        this.uri = uri
-        this.name = name;
-        this.imageUrl = imageUrl;
-
-        this.startDate = startDate;
-        this.beerPoints = beerPoints;
-
-        this.friends = friends;
+    constructor(uri){
+        this._uri = uri
 
         //mvc
         this.subscribers = [];
@@ -15,6 +8,10 @@ class User {
 
     subscribe(subscriber){
         this.subscribers.push(subscriber);
+    }
+
+    getWebId(){
+        return this._uri;
     }
 
     getFriends(){

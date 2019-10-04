@@ -17,7 +17,9 @@ import FriendsPage from './page/FriendPage';
 import CheckIns from './page/CheckIns';
 import BeerResults from './page/BeerResults';
 import Profile from './page/Profile';
-import User from './page/User';
+import UserPage from './page/User';
+import Inbox from './page/Inbox';
+
 
 /**
  * Components
@@ -31,6 +33,7 @@ import './css/App.scss';
 import Knipsel from './assets/Knipsel.png'
 import Logo from './assets/logo.png'
 import BeerDetailScreen from './page/BeerDetailScreen';
+import User from './model/User';
 
 class App extends React.Component{
   constructor(props){
@@ -57,10 +60,11 @@ class App extends React.Component{
     solidAuth.currentSession().then( session => {
       if(session){
 
-        SolidCommunicator.build().then(obj => {
+        //make new user
+        let user = new User(session.webId);
+        user.subscribe(this);
 
-          obj.user.subscribe(this);
-
+        SolidCommunicator.build(user).then(obj => {
           this.setState({
             userObject : obj.user,
             solidCommunicator : obj.solidCommunicator, 
@@ -147,7 +151,7 @@ class App extends React.Component{
         {navBar}
           <Switch>
               <Route exact path="/" component={Home} isLoggedIn = {this.state.loggedIn}/>
-              <PrivateRoute path="/user" component={User} isLoggedIn = {this.state.loggedIn}/> 
+              <PrivateRoute path="/user" component={UserPage} isLoggedIn = {this.state.loggedIn}/> 
               <PrivateRoute path="/beer/:id" component={BeerDetailScreen} isLoggedIn = {this.state.loggedIn}/> 
               <PrivateRoute path="/friend/:id" component={FriendsPage} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject}/>                       
               <PrivateRoute exact path="/friend" component={Friends} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject} solidCommunicator = {this.state.solidCommunicator}/>
@@ -155,6 +159,7 @@ class App extends React.Component{
               <PrivateRoute path="/groups" component={Groups} isLoggedIn = {this.state.loggedIn}/>
               <PrivateRoute path='/profile' component={Profile} isLoggedIn = {this.state.loggedIn} user = {this.state.userObject}/>
               <PrivateRoute path='/checkIns' component={CheckIns} isLoggedIn = {this.state.loggedIn}/>
+              <PrivateRoute path='/inbox' component={Inbox} isLoggedIn = {this.state.loggedIn}/>
               <PrivateRouteLogIn path="/login" component={LogIn} isLoggedIn = {this.state.loggedIn} onLoggedIn = {this.onLoggedIn}/>
           </Switch>
           <footer>
