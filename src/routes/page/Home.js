@@ -3,7 +3,6 @@ import Knipsel from '../../assets/Knipsel.png'
 import '../css/Home.scss'
 
 class Home extends React.Component{
-
     render(){
         return(
             <section className = "home">

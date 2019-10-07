@@ -17,7 +17,16 @@ export async function buildFolders(publicProfileIndex, storePublicProfileIndex, 
   let applocation = await createAppNodeForPublicTypeIndex(storePublicProfileIndex, publicProfileIndex, storagePublic, app);
   await makeAppFolderStructure(applocation, webId);
 
+  //sleep zodat de server de requests kan verwerken
+  await sleep(2000);
+
   return applocation;
+}
+
+function sleep(ms){
+  return new Promise(resolve=>{
+    setTimeout(resolve,ms)
+  })
 }
 
 export async function checkFolderIntegrity(){

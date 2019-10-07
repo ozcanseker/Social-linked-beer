@@ -7,6 +7,7 @@ class User {
         this._beginDate = undefined;
         this._beerPoints = 0;
         this._friends = [];
+        this._applicationLocation = undefined;
 
         //mvc
         this._subscribers = [];
@@ -49,6 +50,11 @@ class User {
         this.upDateSubScribers();
     }
 
+    setApplicationLocation(applicationLocation){
+        this._applicationLocation = applicationLocation;
+        this.upDateSubScribers();
+    }
+
     getWebId(){
         return this._uri;
     }
@@ -62,7 +68,6 @@ class User {
     }
 
     getBeginDate(){
-        console.log(this.beginDate);
         return  new Date(this._beginDate.getTime());
     }
 
@@ -76,6 +81,10 @@ class User {
 
     getBeerPoints(){
         return this._beerPoints;
+    }
+
+    getApplicationLocation(){
+        return this._applicationLocation;
     }
 
 }

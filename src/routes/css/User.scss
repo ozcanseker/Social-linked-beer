@@ -1,0 +1,33 @@
+.userPageNew {
+    flex: auto;
+    text-align: center;
+    margin: 0% 2%;
+}
+
+.userPageHead > h1{
+    margin : 1%;
+}
+
+.userPageHead > img{
+    object-fit: cover;
+    height : 100px;
+    width : 100px;
+    margin-bottom: 2%;
+}
+
+.userButtonDiv {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 2%;
+}
+
+.userInfo {
+    border: 1px solid black;
+}
+
+.userButtonDiv > button {
+    float: right;
+}
+
+
+

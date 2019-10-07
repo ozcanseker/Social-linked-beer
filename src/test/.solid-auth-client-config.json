@@ -1,7 +1,0 @@
-{
-    "idp"      : "https://solid.community",
-    "username" : "adfasdfafsd",                  
-    "password" : "sdfafd@#",  
-    "base"     : "https://adfasdfafsd.solid.community",
-    "test"     : "/public/beercounter.ttl"
-}

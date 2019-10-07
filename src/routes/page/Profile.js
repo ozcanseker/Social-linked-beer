@@ -6,7 +6,6 @@ class Profile extends React.Component{
     render(){
         let user = this.props.user;
         let imgUrl = user.getImageUrl();
-        console.log(user);
 
         return(
             <section className = "profileScreen">
@@ -16,7 +15,8 @@ class Profile extends React.Component{
                         <h1>
                             {user.getName()}
                         </h1>
-                        <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
+                            {/*TODO make image load faster*/}
+                            <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
                         <p>
                             check-ins : {0}
                         </p>

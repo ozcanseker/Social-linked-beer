@@ -6,7 +6,6 @@ import solidAuth from 'solid-auth-client'
 class LogIn extends React.Component{
     constructor(props){
         super(props);
-        console.log(props);
         this.state = {
             loginAsBrewer : false
         }
@@ -19,11 +18,9 @@ class LogIn extends React.Component{
     }
 
     onButtonClick = () => {
-        console.log(this.props);
         let popupUri = './popup.html';
         solidAuth.popupLogin({ popupUri }).then(() => {
             solidAuth.currentSession().then( session => {
-                console.log(session);
                 this.props.onLoggedIn();
                 this.props.history.push(`/profile`)
             })

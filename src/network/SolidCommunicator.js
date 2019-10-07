@@ -1,7 +1,7 @@
 import User from '../model/User'
 import Friend from '../model/Friend'
-import { buildFolders, checkFolderIntegrity } from './PodFolderBuilder'
 import { buildSolidCommunicator } from './SolidCommunicatorBuilder'
+import { file } from '@babel/types';
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
@@ -14,10 +14,10 @@ const TERMS = rdfLib.Namespace('http://purl.org/dc/terms/');
 const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
 const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
+const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
 
 class SolidCommunicator {
     constructor(user, values){
-      
       //user
       this.user = user;
       user.subscribe(this);
@@ -26,22 +26,165 @@ class SolidCommunicator {
     static async build(user){
       let values = await buildSolidCommunicator(user);
       
-      console.log(values);
       user.setName(values.user.name);
       user.setImageUrl(values.user.imageURL);
       user.addFriends(values.user.friends);
       user.setBeerPoints(values.user.points);
       user.setBeginDate(new Date(values.user.startdate));
-      
+      user.setApplicationLocation(values.user.applicationLocation + "beerdrinker/");
+
       //make new solidCommunicator
       let solidCommunicator = new SolidCommunicator(user, values);
 
       return solidCommunicator;
     }  
 
+    async getUserFile(url, callBack){
+      let inbox;
+
+      //get url resource
+      let userttt = await fileClient.readFile(url);
+      let graph = rdfLib.graph();
+
+      try{
+        //parse to check if it is ttl
+        rdfLib.parse(userttt, graph, url, "text/turtle");
+    
+        //check if it is a profile card
+        let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
+    
+        if(query){
+          let profile = rdfLib.sym(url);
+          
+          //check if user has ppi
+          const publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
+
+          if(publicProfileIndex){
+            let ppiTTL = await fileClient.readFile(publicProfileIndex.value);
+            let ppigraph = rdfLib.graph();
+            rdfLib.parse(ppiTTL, ppigraph, publicProfileIndex.value, "text/turtle");
+ 
+            let app = rdfLib.sym(publicProfileIndex.value + "#SocialLinkedBeer");
+            let appQuery = ppigraph.any(app, SOLID("instance"));
+
+            //get name and Image            
+            let nameFN =  graph.any(profile,VCARD('fn'));
+            let imageURL =  graph.any(profile,VCARD('hasPhoto')); 
+
+            if(!appQuery){
+              inbox = graph.any(profile, LDP('inbox'));
+            }
+      
+            let result = {
+              url : url,
+              name: nameFN ? nameFN.value : undefined,
+              imageUrl :  imageURL ? imageURL.value : undefined,
+              appLocation : appQuery ? appQuery.value : undefined,
+              inbox : inbox ? inbox.value : undefined
+            }
+      
+            callBack(result, false); 
+          }else{
+            callBack(undefined, "no ppi");
+          }
+        }else{
+          callBack(undefined, "not a profile card");
+        }
+    
+      }catch(err){
+        callBack(undefined, "Not a linked data file");
+      }    
+    }
+
+    async inviteUserToSolib(urlInvitee, inbox){
+      let graph = rdfLib.graph();
+      let blankNode = rdfLib.blankNode();
+      
+      let fileName =  "Social_Linked_Beer_invation_" + (this.user.getName ? "from_" + this.user.getName() : "")
+      let invitation = (this.user.getName() ? this.user.getName() : this.user.getWebId()) + " invites you to drink a beer with him on https://ozcanseker.github.io/Social-linked-beer/ .";
+      
+      let postLocation = inbox + fileName + ".ttl";
+
+      graph.add(blankNode, RDF('type'), SOLIDLINKEDBEER('Invitation'));
+      graph.add(blankNode, SOLIDLINKEDBEER('invitationTo'), rdfLib.sym('https://ozcanseker.github.io/Social-linked-beer/'));
+      graph.add(blankNode, SOLIDLINKEDBEER('from'), rdfLib.sym(this.user.getWebId()));
+      graph.add(blankNode, SOLIDLINKEDBEER('to'), rdfLib.sym(urlInvitee));
+      graph.add(blankNode, SOLIDLINKEDBEER('description'), invitation);
+
+      let invitationTTL = await rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
+
+      await postSolidFile(inbox, fileName, invitationTTL);
+    }
+
+    async sendFriendshipRequest(urlInvitee, appLocation){
+      let graph = rdfLib.graph();
+      let blankNode = rdfLib.blankNode();
+
+      let fileNameName =  this.user.getWebId().replace("https://", "").replace(/\/.*/, "");
+      
+      let fileName =  "Social_Linked_Beer_invation_from_" + fileNameName;
+      let invitation = (this.user.getName() ? this.user.getName() : this.user.getWebId()) + " invites you to share your stories with him.";
+      
+      let postLocation = appLocation + fileName + ".ttl";
+
+      graph.add(blankNode, RDF('type'), SOLIDLINKEDBEER('FriendshipRequest'));
+      graph.add(blankNode, SOLIDLINKEDBEER('from'), rdfLib.sym(this.user.getWebId()));
+      graph.add(blankNode, SOLIDLINKEDBEER('to'), rdfLib.sym(urlInvitee));
+      graph.add(blankNode, SOLIDLINKEDBEER('description'), invitation);
+
+      let invitationTTL = await rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
+      let location = appLocation + "beerdrinker/inbox";
+      await postSolidFile(location, fileName, invitationTTL);
+    }
+
+    async getInboxContents(){
+      let inbox = this.user.getApplicationLocation() + "inbox/"
+      let res = await fileClient.readFolder(inbox);
+      let files = [];
+      
+      for (let index = 0; index < res.files.length; index++) {
+        let file = await this.fetchFile(res.files[index].url);
+        files.push(file);
+      }   
+      
+      return files;
+    }
+
     update(){
       console.log("update");
     }
+
+    async fetchFile(url){
+      let graph = rdfLib.graph();
+      
+      let file = await fileClient.readFile(url);
+      let appStoreTTL = await rdfLib.serialize(undefined, this.appStore, 'text/turtle');
+      
+    }
+}
+
+
+
+async function postSolidFile(folder, filename , body){
+  authClient.fetch(folder, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/turtle',
+      'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+      'SLUG' : filename
+    },
+    body : body
+});
+}
+
+async function putSolidFile(url, body){
+  authClient.fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'text/turtle'      
+      },
+      body: body
+});
 }
 
 async function appendSolidResource(url, body){
@@ -56,40 +199,6 @@ async function appendSolidResource(url, body){
     // let body = `INSERT DATA { <${this.state.webId+"#comment"}> <${SOLIDLINKEDBEER('points6').value}> <${8}> }`;
     // let appDataFile;
     // appendSolidResource(appDataFile, {body})
-}
-
-async function getUserFile(url, callBack){
-  let userttt = await fileClient.readFile(url);
-  let graph = rdfLib.graph();
-
-  try{
-    rdfLib.parse(userttt, graph, url, "text/turtle");
-
-    let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
-
-    if(query){
-      let profile = rdfLib.sym(url);
-      let nameFN =  graph.any(profile,VCARD('fn'));
-      let imageURL =  graph.any(profile,VCARD('hasPhoto')); 
-
-      nameFN = nameFN ? nameFN.value : undefined;
-      imageURL = imageURL ? imageURL.value : undefined;
-      
-      let result = {
-        userTTl: userttt,
-        url : url,
-        name: nameFN,
-        imageUrl : imageURL
-      }
-
-      callBack(result, false);
-    }else{
-      callBack(undefined, "not a profile card");
-    }
-
-  }catch(err){
-    callBack(undefined, "Not a linked data file");
-  }    
 }
 
 export default SolidCommunicator;
@@ -159,7 +268,6 @@ export default SolidCommunicator;
 //         }
 
 //         let appStoreTTL = await $rdf.serialize(undefined, this.appStore, 'text/turtle');
-//         console.log(this.applocation);
 //         await fileClient.updateFile(this.applocation, appStoreTTL);
 
 //         if(this.queryList.length > 0){

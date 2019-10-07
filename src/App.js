@@ -56,14 +56,13 @@ class App extends React.Component{
         let user = new User(session.webId);
         user.subscribe(this);
 
-        SolidCommunicator.build(user).then(obj => {
+        SolidCommunicator.build(user).then(solidCommunicator => {
           this.setState({
-            userObject : obj.user,
-            solidCommunicator : obj.solidCommunicator, 
+            userObject : user,
+            solidCommunicator : solidCommunicator, 
             loggedIn: true,
           })
         });
-
         this.props.history.push(`/profile`)
       }
     })
@@ -76,7 +75,7 @@ class App extends React.Component{
       loggedIn : false,
       userObject : undefined
     });
-  }
+  } 
 
   onLoggedIn = () => {
     this.checkLoggedIn();
@@ -116,6 +115,7 @@ class App extends React.Component{
           <Link to = "/checkIns">Check ins</Link>
           <Link to = "/friend">Friends</Link>
           <Link to = "/groups">Groups</Link>
+          <Link to = "/inbox">Inbox</Link>
           <Link to = "/" onClick = {this.onClickLogOut}>Log out</Link>
         </NavBar>
       )

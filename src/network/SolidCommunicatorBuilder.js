@@ -43,6 +43,7 @@ export async function buildSolidCommunicator(user){
 
     returnObject.user = {...returnObject.user , ...appData};
     returnObject.user.friends = await getFriends(applicationLocation);
+    returnObject.user.applicationLocation = applicationLocation;
 
     return returnObject;
 }
@@ -88,13 +89,13 @@ async function getApplicationLocation(publicProfileIndex, storePublicProfileInde
       checkFolderIntegrity();
       return appQuery.value;
     }else{
-        let applocation = await buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId);
+        return await buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId);
     }
 }
 
 async function getAppData(url){
   //TODO one place to save all urls
-  let appdataLocation = url + 'beerdrinker/' +'appdata.ttl';
+  let appdataLocation = url + 'beerdrinker/appdata.ttl';
 
   let appdatattl = await fileClient.readFile(appdataLocation);
   let graph = rdfLib.graph();
@@ -109,7 +110,7 @@ async function getAppData(url){
 }
 
  async function getFriends(applicationLocation){
-  let friendsLocation = applicationLocation + 'beerdrinker/' +  "friends.ttl";
+  let friendsLocation = applicationLocation + 'beerdrinker/friends.ttl';
   let ttlFriends = await fileClient.readFile(friendsLocation);
   let group = rdfLib.sym(friendsLocation + "#Friends");
 

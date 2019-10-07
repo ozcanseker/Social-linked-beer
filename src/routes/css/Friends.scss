@@ -1,0 +1,18 @@
+.friends {
+    flex: auto;
+    text-align: center;
+}
+
+.searchFriends {
+    border: 1px solid black;
+    padding: 2%;
+}
+
+.searchFriends > button{
+    padding: 1%;
+}
+
+.searchFriends > input {
+    width: 40%;
+    padding: 1%;
+}

@@ -3,7 +3,7 @@ import React from 'react';
 
 class FriendPage extends React.Component{
     constructor(props){
-        super(props);
+        super(props); 
     }
 
     render(){
