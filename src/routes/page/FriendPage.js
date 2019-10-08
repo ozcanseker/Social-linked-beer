@@ -1,5 +1,6 @@
 import React from 'react';
-
+import '../css/Profile.scss'
+import profilePic from '../../assets/profilePic.png'
 
 class FriendPage extends React.Component{
     constructor(props){
@@ -7,14 +8,37 @@ class FriendPage extends React.Component{
     }
 
     render(){
-        let friend = this.props.user.getFriendFromIndex(this.props.match.params.id);
+        let user = this.props.user.getFriendFromIndex(this.props.match.params.id);
+        let imgUrl = user.getImageUrl();
 
-        return (
-            <h1>
-                {friend.name}
-            </h1>
-        );
+        return(
+            <section className = "profileScreen">
+                
+                <div className="row">
+                    <div className="leftColum">
+                        <h1>
+                            {user.getName()}
+                        </h1>
+                            {/*TODO make image load faster*/}
+                            <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
+                    </div>
+                    <div className="column">
+                        <h1>
+                            Recent activities
+                        </h1>
+                    </div>
+                </div>
+            </section>
+        )
     }
+} 
+
+function dateToString(date){
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0');
+    var yyyy = date.getFullYear();
+
+    return dd + '/' + mm + '/' + yyyy;
 }
 
 export default FriendPage;

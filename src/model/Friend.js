@@ -1,9 +1,17 @@
 class Friend {
-    constructor(uri, name, pictureurl){
-        this.name = name;
+    constructor(uri, name, pictureurl, applicationFolder){
+        this._name = name;
         this.uri = uri;
-        this.pictureurl = pictureurl;
-        //this.applicationFolder;
+        this._imageUrl = pictureurl;
+        this.applicationFolder = applicationFolder;
+    } 
+
+    getImageUrl(){
+        return this._imageUrl;
+    }
+
+    getName(){
+        return this._name;
     }
 }
 

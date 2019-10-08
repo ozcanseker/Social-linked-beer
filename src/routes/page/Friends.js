@@ -19,25 +19,22 @@ class Friends extends React.Component{
         })        
     }
 
-    onButtonClick = () => {
+    onButtonClick = async () => {
         if(this.props.user.getWebId() === this.state.inputText){
             this.props.history.push("/profile");
         }else{
-            this.props.solidCommunicator.getUserFile(this.state.inputText, (res, error) => {
-
-                if(error){
-                    this.setState({   
-                        error : error
-                    })
-                }else{
+            try{
+                let result = await this.props.solidCommunicator.getUserFile(this.state.inputText);
+                
                     this.props.history.push({
                         pathname:"/user",
                         state:{
-                            result: res
+                            result: result
                         }
                     });
-                }
-            })
+            }catch(e){
+                this.setState({error : e.message})
+            }
         }
     }
 
@@ -45,33 +42,39 @@ class Friends extends React.Component{
         let friends = this.props.user.getFriends();
         
         let friendsElements = friends.map((friend, index) => {
-            return <li>
-                <Link key = {friend.uri} to= {`/friend/${index}`}>
+            return <li key = {friend.uri}>
+                <Link  to= {`/friend/${index}`}>
                     <p>
-                        name : {friend.name}
+                        {friend.getName()}
                     </p>
                 </Link>
             </li> 
         });
 
-        return(
-            <div className = "friends">
-                <h1>
-                    Friends
-                </h1>
-                <br/>
 
+        return(
+            <section className = "friends">
                 <div className = "searchFriends">
+                    <h3>
+                        Make new friends
+                    </h3>
+                    <br/>
                     <input type = "text" placeholder ="profilecard link" value = {this.state.inputText} onChange = {this.onChange}></input>
                     <button onClick = {this.onButtonClick}>Search on the web</button>
                     <p style = {{color: "red"}}>{this.state.error}</p>
                 </div>
 
-                <ul className = "friendSection">
-                    {friendsElements}
-                </ul>
+                <div className = "friendSection">
+                    <h3>
+                        Friends
+                    </h3>
+                    <ul >
+                        {friendsElements}
+                    </ul>
+                </div>
 
-            </div>
+
+            </section>
         )
     }
 }

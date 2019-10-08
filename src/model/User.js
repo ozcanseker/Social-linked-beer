@@ -28,7 +28,7 @@ class User {
     }
 
     addFriends(newFriends){
-        this._friends.concat(newFriends)
+        this._friends = this._friends.concat(newFriends)
         this.upDateSubScribers();
     }
 

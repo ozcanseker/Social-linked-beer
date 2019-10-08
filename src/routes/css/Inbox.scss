@@ -1,4 +1,26 @@
 .inbox {
     flex: auto;
     text-align: center;
+    margin : 2%;
+}
+
+.inbox > h1 {
+    margin : 2%;
+}
+
+.inbox ul {
+    list-style-type: none;
+}
+
+.inbox li {
+    border : black solid 1px;
+    margin-bottom: 2%;
+}
+
+.inbox .buttonDiv{
+    border: black solid 1px;
+}
+
+.inbox .buttonDiv>button{
+    width : 50%;
 }
