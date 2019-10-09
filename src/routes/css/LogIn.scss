@@ -1,28 +1,51 @@
-#logInBrewer {
+.logInScreen{
+  color: white; 
+  background-size: cover;
+  background-position: center;
+  height: 100%; 
+  text-align: center;
+}
+
+.logInBrewer {
     background-image: url('../../assets/beerpouring.gif') ;
-    background-size: cover;
-    background-position: center;
-    color: white;
-    height: 100%; 
     -webkit-transition: background-image 0.8s ease-in-out;
     transition: background-image 0.8s ease-in-out;
 }
 
-#logInBeerDrinker {
+.logInBeerDrinker {
   background-image: url('../../assets/beer.gif') ;
-  background-size: cover;
-  background-position: center;
-  color: white;
-  height: 100%; 
   -webkit-transition: background-image 0.2s ease-in-out;
   transition: background-image 0.2s ease-in-out;
+}
+
+.loginField{
+  background: rgba(35, 35, 35, 0.7);
+  width : 40%;
+  margin: auto;
+  margin-top: 10%;
+  border: 1px solid white;
+}
+
+.loginField h1{
+  margin: 5% 0%;
+}
+
+.loginField .switch{
+  margin-bottom: 5%;
+}
+
+.loginField button{
+  margin : 0% 5% 5%;
+  width: 10%;
+  min-width: 60px;
+  height : 1.6rem;
 }
  
 /* The switch - the box around the slider */
 .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
+    width: 150px;
     height: 34px;
   }
   
@@ -67,9 +90,9 @@
   }
   
   input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(116px);
+    -ms-transform: translateX(116px);
+    transform: translateX(116px);
   }
   
   /* Rounded sliders */

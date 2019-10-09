@@ -3,50 +3,61 @@ import '../css/LogIn.scss'
 
 import solidAuth from 'solid-auth-client'
 
-class LogIn extends React.Component{
-    constructor(props){
+class LogIn extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
-            loginAsBrewer : false
+            loginAsBrewer: false
         }
     }
 
-    onChangeCheckBox = () =>{
+    onChangeCheckBox = () => {
         this.setState({
-            loginAsBrewer : !this.state.loginAsBrewer
+            loginAsBrewer: !this.state.loginAsBrewer
         })
     }
 
     onButtonClick = () => {
         let popupUri = './popup.html';
         solidAuth.popupLogin({ popupUri }).then(() => {
-            solidAuth.currentSession().then( session => {
+            solidAuth.currentSession().then(session => {
                 this.props.onLoggedIn();
                 this.props.history.push(`/profile`)
             })
         })
     }
 
-    render(){
+    onRegisterClick = () => {
+        window.location.assign('https://inrupt.net/');
+    }
+
+    render() {
         let typeLogIn;
-        
-        if(this.state.loginAsBrewer){
-            typeLogIn = <p>Brewer</p>
-        }else{
-            typeLogIn = <p>Beer Drinker</p>
+
+        if (this.state.loginAsBrewer) {
+            typeLogIn = <h1>Brewer</h1>
+        } else {
+            typeLogIn = <h1>Beer Drinker</h1>
         }
 
+        let activeClass = this.state.loginAsBrewer ? "logInBrewer" : "logInBeerDrinker";
 
-        return(
-            <section id = {this.state.loginAsBrewer ? "logInBrewer" : "logInBeerDrinker"}>
-                <label className="switch">
-                    <input type="checkbox" onChange= {this.onChangeCheckBox}/>
-                    <span className="slider"></span>
-                </label>
+        return (
+            <section className={["logInScreen ", activeClass].join(' ')}>
+                <div className="loginField">
+                    {typeLogIn}
+                    <label className="switch">
+                        <input type="checkbox" onChange={this.onChangeCheckBox} />
+                        <span className="slider"></span>
+                    </label>
 
-                {typeLogIn}
-                <button onClick = {this.onButtonClick}>Log in</button>
-                <p><a href= "https://inrupt.net">register</a></p>
+                    <br />
+                    <div>
+                        <button onClick = {this.onRegisterClick}>Register</button>
+                        <button onClick = {this.onButtonClick}>Log in</button>
+                    </div>
+
+                </div>
             </section>
         )
     }
