@@ -1,0 +1,35 @@
+.rendering {
+    flex: auto;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}
+
+#fetchinAnimation {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+    animation-name: example;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+  }
+
+  @-webkit-keyframes example {
+    0%   {background-color:black; left:40%; top:20px;}
+    25%  {background-color:rgb(70, 67, 67); left:60%; top:20px;}
+    50%  {background-color:black; left:60%; top:120px;}
+    75%  {background-color:rgb(70, 67, 67); left:40%; top:120px;}
+    100% {background-color:rgb(70, 67, 67); left:40%; top:20px;}
+  }
+  
+  /* Standard syntax */
+  @keyframes example {
+    0%   {background-color:black; left:40%; top:20px;}
+    25%  {background-color:rgb(70, 67, 67); left:60%; top:20px;}
+    50%  {background-color:black; left:60%; top:120px;}
+    75%  {background-color:rgb(70, 67, 67); left:40%; top:120px;}
+    100% {background-color:rgb(70, 67, 67); left:40%; top:20px;}
+  }

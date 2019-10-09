@@ -21,6 +21,7 @@ class User extends React.Component{
     }
 
     sendFriendShipRequest = async () => {
+        //TODO check if friendship request is already set
         let result = this.props.location.state.result;
         await this.props.solidCommunicator.sendFriendshipRequest(result.url, result.appLocation);
 

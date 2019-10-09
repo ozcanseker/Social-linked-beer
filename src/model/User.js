@@ -32,6 +32,11 @@ class User {
         this.upDateSubScribers();
     }
 
+    addFriend(newFriend){
+        this._friends.push(newFriend);
+        this.upDateSubScribers();
+    }
+
     setName(name){
         this._name = name;
     }

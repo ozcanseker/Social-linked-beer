@@ -33,8 +33,6 @@ class Inbox extends React.Component{
     }
 
     render(){
-        console.log(this.state.messages);
-
         let items = this.state.messages.map((message, index)=> {
             let buttonDiv;
             

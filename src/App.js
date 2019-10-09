@@ -3,15 +3,22 @@
  */
 import React from 'react';
 import solidAuth from 'solid-auth-client'
-import {Link, withRouter} from "react-router-dom";
-import SolidCommunicator from './network/SolidCommunicator'
+import { Link, withRouter } from "react-router-dom";
+import SolidCommunicator from './solid/SolidCommunicator'
 
-import AppRoutes from './routes/AppRoutes'
 
 /**
  * Components
  */
 import NavBar from './component/NavBar';
+import AppRoutes from './routes/AppRoutes'
+import AclErrorPage from './routes/extrapage/AclErrorPage'
+import FetchingPage from './routes/extrapage/FetchingPage'
+
+/**
+ * Errors
+ */
+import AccessError from './error/AccessError'
 
 /**
  * Assests
@@ -21,61 +28,83 @@ import Knipsel from './assets/Knipsel.png'
 import Logo from './assets/logo.png'
 import User from './model/User';
 
-class App extends React.Component{
-  constructor(props){
+class App extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
-      loggedIn : false,
-      searchQuery : '',
+      loggedIn: false,
+      searchQuery: '',
       userObject: undefined,
-      solidCommunicator : undefined
+      solidCommunicator: undefined,
+      accessError: false,
+      fetchingFiles: false
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.checkLoggedIn();
   }
 
   update = () => {
     this.setState({
-      update : true
+      update: true
     })
   }
 
   clearSearchQuery = () => {
-      this.setState({
-        searchQuery : ''
-      },)
-  }
-
-  checkLoggedIn = () => {
-    solidAuth.currentSession().then( session => {
-      if(session){
-
-        //make new user
-        let user = new User(session.webId);
-        user.subscribe(this);
-
-        SolidCommunicator.build(user).then(solidCommunicator => {
-          this.setState({
-            userObject : user,
-            solidCommunicator : solidCommunicator, 
-            loggedIn: true,
-          })
-        });
-        this.props.history.push(`/profile`)
-      }
+    this.setState({
+      searchQuery: ''
     })
   }
+
+  checkLoggedIn = async () => {
+    let session = await solidAuth.currentSession();
+    //TODO error handling
+
+    if (session) {
+      this.setState({
+        fetchingFiles: true
+      });
+
+      //make new user
+      let user = new User(session.webId);
+      user.subscribe(this);
+
+      try {
+        let solidCommunicator = await SolidCommunicator.build(user);
+
+        this.setState({
+          userObject: user,
+          solidCommunicator: solidCommunicator,
+          loggedIn: true,
+          fetchingFiles: false
+        })
+
+        this.props.history.push(`/`)
+
+      } catch (e) {
+        if (e instanceof AccessError) {
+          this.setState({
+            accessError: true,
+            fetchingFiles: false
+          })
+        } else {
+          throw e; // let others bubble up
+        }
+      }
+    }
+  }
+
 
   onClickLogOut = () => {
     solidAuth.logout();
 
     this.setState({
-      loggedIn : false,
-      userObject : undefined
+      loggedIn: false,
+      userObject: undefined,
+      accessError : false
     });
-  } 
+  }
 
   onLoggedIn = () => {
     this.checkLoggedIn();
@@ -85,77 +114,96 @@ class App extends React.Component{
     let location = this.props.location.pathname;
 
     this.setState({
-      searchQuery : text
+      searchQuery: text
     })
 
-    if(text){
-      if(location !== "/beerresults"){
+    if (text) {
+      if (location !== "/beerresults") {
         this.props.history.push("/beerresults");
       }
 
       /**
        * Vindt hier de bier
        */
-    }else{
+    } else {
       this.props.history.goBack();
     }
   }
 
 
-  render(){
+  render() {
     let navBar;
+    let app;
 
-    if(this.state.loggedIn){
+    if(this.state.fetchingFiles){
       navBar = (
-         <NavBar onSearchBarButtonClick = {this.onSearchBarButtonClick} 
-                 onBeerSearch = {this.onBeerSearch} 
-                 loggedIn = {this.state.loggedIn} 
-                 searchQuery = {this.state.searchQuery}>
-          <Link to = "/profile">Profile</Link>
-          <Link to = "/checkIns">Check ins</Link>
-          <Link to = "/friend">Friends</Link>
-          <Link to = "/groups">Groups</Link>
-          <Link to = "/inbox">Inbox</Link>
-          <Link to = "/" onClick = {this.onClickLogOut}>Log out</Link>
+        <NavBar onSearchBarButtonClick={this.onSearchBarButtonClick}>
+          <Link to="/" onClick={this.onClickLogOut}></Link>
+        </NavBar>)
+    }else if(this.state.accessError){
+      navBar = (
+        <NavBar onSearchBarButtonClick={this.onSearchBarButtonClick}>
+          <Link to="/" onClick={this.onClickLogOut}>Log out</Link>
+        </NavBar>)
+    } else if (this.state.loggedIn) {
+      navBar = (
+        <NavBar onSearchBarButtonClick={this.onSearchBarButtonClick}
+          onBeerSearch={this.onBeerSearch}
+          loggedIn={this.state.loggedIn}
+          searchQuery={this.state.searchQuery}>
+          <Link to="/profile">Profile</Link>
+          <Link to="/checkIns">Check ins</Link>
+          <Link to="/friend">Friends</Link>
+          <Link to="/groups">Groups</Link>
+          <Link to="/inbox">Inbox</Link>
+          <Link to="/" onClick={this.onClickLogOut}>Log out</Link>
         </NavBar>
       )
-    }else{
+    } else {
       navBar = (
-         <NavBar onBeerSearch = {this.onBeerSearch} loggedIn = {this.state.loggedIn}>
-          <Link to = "/LogIn">Log in</Link>
+        <NavBar onBeerSearch={this.onBeerSearch} loggedIn={this.state.loggedIn}>
+          <Link to="/LogIn">Log in</Link>
         </NavBar>
       )
     }
 
+    if(this.state.fetchingFiles){
+      app = (<FetchingPage/>);
+    }else if (this.state.accessError) {
+      app = (<AclErrorPage/>);  
+    } else {
+      app = (<AppRoutes
+        loggedIn={this.state.loggedIn}
+        userObject={this.state.userObject}
+        solidCommunicator={this.state.solidCommunicator}
+        clearSearchQuery={this.clearSearchQuery}
+        onLoggedIn={this.onLoggedIn}
+      />)
+    }
+
     return (
-      <div id = "AppRoot">
+      <div id="AppRoot">
         <header>
-          <Link to = "/">
+          <Link to="/">
             <div>
-              <img src= {Logo} alt = ""/>
+              <img src={Logo} alt="" />
               <h1>
-              Linked social beer
+                Linked social beer
               </h1>
-           </div>
+            </div>
           </Link>
         </header>
 
         {navBar}
-        <AppRoutes 
-          loggedIn = {this.state.loggedIn}
-          userObject = {this.state.userObject}
-          solidCommunicator = {this.state.solidCommunicator}
-          clearSearchQuery = {this.clearSearchQuery}
-          onLoggedIn = {this.onLoggedIn}
-        />
-          <footer>
-            <span>
-              This application is powered by
+        {app}
+        <footer>
+          <span>
+            This application is powered by
             </span>
-              <a href="https://solid.inrupt.com">
-              <img alt = "Solid inrupt" src={Knipsel} /> 
-            </a>
-          </footer>
+          <a href="https://solid.inrupt.com">
+            <img alt="Solid inrupt" src={Knipsel} />
+          </a>
+        </footer>
       </div>
     );
   }

@@ -8,7 +8,7 @@ class Friends extends React.Component{
         super(props);
 
         this.state = {
-            inputText : "https://ozcanseker.inrupt.net/profile/card#me",
+            inputText : "",
             error : undefined
         }
     }
@@ -20,7 +20,26 @@ class Friends extends React.Component{
     }
 
     onButtonClick = async () => {
-        if(this.props.user.getWebId() === this.state.inputText){
+        let friends = this.props.user.getFriends();
+        friends = friends.filter(friend => {
+            let text = this.state.inputText.toUpperCase();
+            let friendUri = friend.getUri().toUpperCase();
+            let friendUri2 = friend.getUri().toUpperCase().replace("#ME", "").replace("#I", "");
+            let friendUri3 = friendUri.replace("HTTPS://", "");
+            let friendUri4 = friendUri2.replace("HTTPS://", "");
+            
+            return  friendUri === text || friendUri2 == text || friendUri3 == text || friendUri4 == text;
+        });
+
+        if (friends.length != 0){
+            let index = this.props.user.getFriends().map((profile, index) => {
+                if(friends[0].getUri() === profile.getUri()){
+                    return index;
+                }
+            }).filter(index => {return index})
+
+            this.props.history.push(`/friend/${index[0]}`);
+        } else if(this.props.user.getWebId() === this.state.inputText){
             this.props.history.push("/profile");
         }else{
             try{
@@ -40,12 +59,20 @@ class Friends extends React.Component{
 
     render(){
         let friends = this.props.user.getFriends();
+        friends = friends.filter(friend => {
+            let text = this.state.inputText.toUpperCase();
+            if(friend.getName()){
+                return friend.getName().toUpperCase().includes(text) || friend.getUri().toUpperCase().includes(text);
+            }
+
+            return friend.getUri().toUpperCase().includes(text);
+        });
         
         let friendsElements = friends.map((friend, index) => {
-            return <li key = {friend.uri}>
+            return <li key = {friend.getUri()}>
                 <Link  to= {`/friend/${index}`}>
                     <p>
-                        {friend.getName()}
+                        {friend.getName() ? friend.getName() : friend.getUri()}
                     </p>
                 </Link>
             </li> 

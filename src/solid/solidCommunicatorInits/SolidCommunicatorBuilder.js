@@ -1,5 +1,7 @@
 import { buildFolders, checkFolderIntegrity } from './PodFolderBuilder'
-import Friend from '../model/Friend';
+import { postSolidFile, putSolidFile, getUserFile, fetchFriend } from "../SolidMethods";
+import Friend from '../../model/Friend';
+import {checkacess} from './AccessChecker'
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
@@ -27,6 +29,9 @@ export async function buildSolidCommunicator(user){
     //get a store of the profile card of the logged in user
     //store
     let storeProfileCard = await getUserCard(webIdNN.uri);
+
+    //check the acess before trying to make an application
+    checkacess(storeProfileCard);
      
     //store for the Public Profile Index
     //object with store and nn
@@ -136,104 +141,10 @@ async function getAppData(url){
   let query = graph.each(group, VCARD('hasMember'), undefined); 
 
   for (let index = 0; index < query.length; index++) {
-    let friend = await fetchFriend(query[index]);
+    let friend = await fetchFriend(query[index].value);
     friends.push(friend);
   }
 
   return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};
 }
-
-async function fetchFriend(friendNamedNode){
-  let friend = await getUserFile(friendNamedNode.value);
-
-  return new Friend(friendNamedNode.value, friend.name, friend.imageUrl, friend.appLocation);
-}
-
-async function getUserFile(url){
-  let inbox;
-
-  //get url resource
-  let userttt = await fileClient.readFile(url);
-  let graph = rdfLib.graph();
-
-  try{
-    //parse to check if it is ttl
-    rdfLib.parse(userttt, graph, url, "text/turtle");
-
-    //check if it is a profile card
-    let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
-
-    if(query){
-      let profile = rdfLib.sym(url);
-      
-      //check if user has ppi
-      const publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
-
-      if(publicProfileIndex){
-        let ppiTTL = await fileClient.readFile(publicProfileIndex.value);
-        let ppigraph = rdfLib.graph();
-        rdfLib.parse(ppiTTL, ppigraph, publicProfileIndex.value, "text/turtle");
-
-        let app = rdfLib.sym(publicProfileIndex.value + "#SocialLinkedBeer");
-        let appQuery = ppigraph.any(app, SOLID("instance"));
-
-        //get name and Image            
-        let nameFN =  graph.any(profile,VCARD('fn'));
-        let imageURL =  graph.any(profile,VCARD('hasPhoto')); 
-
-        if(!appQuery){
-          inbox = graph.any(profile, LDP('inbox'));
-        }
-  
-        let result = {
-          url : url,
-          name: nameFN ? nameFN.value : undefined,
-          imageUrl :  imageURL ? imageURL.value : undefined,
-          appLocation : appQuery ? appQuery.value : undefined,
-          inbox : inbox ? inbox.value : undefined
-        }
-  
-        return result;
-      }else{
-        throw new Error("no ppi");
-      }
-    }else{
-      throw new Error("not a profile card");
-    }
-  }catch(err){
-    throw new Error("Not a linked data file");
-  }    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   function makeUser(profile, storeProfileCard, friends, appdata){
-//       let nameFN =  storeProfileCard.any(profile,VCARD('fn'));
-//       let imageURL =  storeProfileCard.any(profile,VCARD('hasPhoto')); 
-
-//       nameFN = nameFN ? nameFN.value : undefined;
-//       imageURL = imageURL ? imageURL.value : undefined;
-
-//       return new User(profile.value, nameFN, imageURL, friends, appdata.startdate , appdata.points);
-//   }
-
  
