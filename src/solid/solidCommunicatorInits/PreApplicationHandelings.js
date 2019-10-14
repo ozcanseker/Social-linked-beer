@@ -71,6 +71,7 @@ async function checkAcceptedFriendShipRequests(applicationFolder,acceptedRequest
     //update the original friend file
     let friendsTtl = await rdfLib.serialize(undefined, friendGraph, postLocation, 'text/turtle');
     //TODO post new file for user so that he know friendship is accepted
+    //TODO delete afterwards
     putSolidFile(postLocation, friendsTtl);
 }
 
@@ -101,4 +102,5 @@ async function checkDeclinedFriendShipRequests(applicationFolder,declinedRequest
     putSolidFile(postLocation, friendsTtl);
 
     //TODO post new file for user so that he know friendship is declined
+    //TODO delete afterwards
 }

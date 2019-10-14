@@ -1,5 +1,5 @@
 import { postSolidFile, putSolidFile, getUserFile, fetchFriend } from "./SolidMethods";
-import Friend from '../model/Friend'
+import Beer from '../model/Beer'
 import { buildSolidCommunicator } from './solidCommunicatorInits/SolidCommunicatorBuilder'
 import { preApplicationHandelings } from './solidCommunicatorInits/PreApplicationHandelings'
 import { getInviteToLSBInvitation, getDeclineFriendshipRequest, getFriendShipRequest, getAcceptFriendshipRequest} from './rdf/SolidTtlTemplates'
@@ -16,6 +16,8 @@ const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
 const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
 const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
+const DBPEDIA = rdfLib.Namespace('http://dbeerpedia.com/def#');
+const SCHEMA = rdfLib.Namespace('http://schema.org/');
 
 class SolidCommunicator {
   /**
@@ -61,7 +63,6 @@ class SolidCommunicator {
    * Check if user is already friend
    * @param {*} url 
    */
-
   async getInboxContents() {
     let inbox = this._user.getApplicationLocation() + "inbox/"
     let res = await fileClient.readFolder(inbox);
@@ -213,12 +214,51 @@ class SolidCommunicator {
 
     this._user.addFriends(friend);
   }
-}
 
-//after this
-//when opening folder pod check inbox and handle messages.
-//  -delete user from friendsrequested if declined
-//  -Add user to FriendsRequested
-//friendspage
+  async fetchBeerData() {
+    let url = "https://testbrouwer.inrupt.net/public/brewerInformation/beers/beersIndex.ttl";
+    let beersIndexTTl = await fileClient.readFile(url);
+    
+    let graph = rdfLib.graph();
+    rdfLib.parse(beersIndexTTl, graph, url, "text/turtle");
+
+    let query = graph.each(undefined, RDF('type') ,SOLIDLINKEDBEER('Beer'));
+    let beers = []; 
+    query.forEach(blankNode => {
+      let brewer = graph.any(blankNode, SOLIDLINKEDBEER('brewedBy'));
+      let type = graph.any(blankNode, SOLIDLINKEDBEER('type'));
+      let name = graph.any(blankNode, SCHEMA('name'));
+      let style = graph.any(blankNode, SOLIDLINKEDBEER('style'));
+      let location = graph.any(blankNode, SOLID('instance'));
+      
+      beers.push(new Beer(name.value, type.value, style.value, brewer.value, location.value));
+    })
+
+    return beers;
+  }
+
+  async fetchBeer(url, beer) {
+    let beerTTl = await fileClient.readFile(url);
+    
+    let graph = rdfLib.graph();
+    rdfLib.parse(beerTTl, graph, url, "text/turtle");
+    
+    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('beerDescription'));
+
+    let brewer = graph.any(blankNode, SOLIDLINKEDBEER('brewedBy'));
+    let type = graph.any(blankNode, SOLIDLINKEDBEER('type'));
+    let name = graph.any(blankNode, SCHEMA('name'));
+    let style = graph.any(blankNode, SOLIDLINKEDBEER('style'));
+    let description = graph.any(blankNode, SOLIDLINKEDBEER('beerDescription'));
+    let containers= [];
+    graph.each(blankNode, SOLIDLINKEDBEER('container')).forEach(container => {
+      containers.push(container.value);
+    });
+    
+    beer.updateInformation(name.value, type.value, style.value, brewer.value, description.value, containers);
+    return beer;
+  }
+
+}
 
 export default SolidCommunicator;

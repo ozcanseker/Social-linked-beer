@@ -1,44 +1,50 @@
 import React from 'react';
 import '../css/BeerResults.scss';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-class BeerResults extends React.Component{
-    constructor(props){
+class BeerResults extends React.Component {
+    constructor(props) {
         super(props);
-
-        this.list = [
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-            {name: "Hertog jan"},
-        ]
+        this.state = {
+            beers: []
+        }
     }
 
+    componentDidMount() { 
+        this.props.solidCommunicator.fetchBeerData().then(res => {
+            if(res){
+                this.setState({
+                    beers : res
+                })
+            }
+        });
+    }
 
-    render(){
-        let elements = this.list.map(listItem => {
-                return (
-                    <li>
-                        <Link to = "/beer/hertogJan" onClick = {this.props.onLinkClick}>
-                            {listItem.name}
-                        </Link>
-                    </li>
-                )
+    render() {
+
+        let elements = this.state.beers.map(listItem => {
+            return (
+                <li key = {listItem._location}>
+                    <Link to={{
+                        pathname: `/beer/${listItem._name}`,
+                        state: {
+                            beer : listItem
+                        }
+                    }} onClick={this.props.onLinkClick}>
+                    {listItem._name}
+                    </Link>
+                </li>
+            )
         })
 
-        return(
-            <div>
+
+        return (
+            <section className = "beerResults">
                 <h1>Beer Results</h1>
                 <ul>
                     {elements}
                 </ul>
-            </div>
+            </section>
         )
     }
 }

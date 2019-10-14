@@ -54,8 +54,16 @@ export async function getUserFile(url) {
   let inbox;
 
   //get url resource
-  let userttt = await fileClient.readFile(url);
+  let userttt = await authClient.fetch(url);
   let graph = rdfLib.graph();
+
+  if(userttt.status > 403){
+    throw new Error("403: user unauthorized");
+  }else if(userttt.status > 400){
+    throw new Error("file not found");
+  }
+
+  userttt = await userttt.text();
 
   try {
     //parse to check if it is ttl
@@ -112,18 +120,25 @@ export async function getUserFile(url) {
  * @param {String} friendUrl 
  */
 export async function fetchFriend(friendUrl){
-  let friend = await getUserFile(friendUrl);
+  try{
+    let friend = await getUserFile(friendUrl);
 
-  let friendAppdataLocation = friend.appLocation + 'beerdrinker/appdata.ttl';
-  let friendsAppdata = await fileClient.readFile(friendAppdataLocation);
-
-  let graph = rdfLib.graph();
-  rdfLib.parse(friendsAppdata, graph, friendAppdataLocation, "text/turtle");
-
-  let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
-
-  let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
-  let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
-
-  return new Friend(friendUrl, friend.name, friend.imageUrl, friend.appLocation, new Date(startdate.value), points.value);
+    let friendAppdataLocation = friend.appLocation + 'beerdrinker/appdata.ttl';
+    let friendsAppdata = await fileClient.readFile(friendAppdataLocation);
+  
+    let graph = rdfLib.graph();
+    rdfLib.parse(friendsAppdata, graph, friendAppdataLocation, "text/turtle");
+  
+    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
+  
+    let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
+    let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
+  
+    return new Friend(friendUrl, friend.name, friend.imageUrl, friend.appLocation, new Date(startdate.value), points.value);
+  }catch(e){
+    //TODO delete user from friends if 403
+    //TODO general error handling
+    console.log(e);
+    return undefined;
+  }
 }

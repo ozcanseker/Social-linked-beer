@@ -1,6 +1,7 @@
 import React from 'react';
 import '../css/Profile.scss'
 import profilePic from '../../assets/profilePic.png'
+import { Link, withRouter } from "react-router-dom";
 
 class Profile extends React.Component{
     render(){
@@ -31,6 +32,9 @@ class Profile extends React.Component{
                         </p>
                     </div>
                     <div className="column">
+                        <div className = "checkinDiv">
+                            <Link to="/checkIns">All check ins &rarr;</Link>
+                        </div>
                         <h1>
                             Recent activities
                         </h1>

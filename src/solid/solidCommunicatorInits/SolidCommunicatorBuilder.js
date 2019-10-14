@@ -22,6 +22,8 @@ export async function buildSolidCommunicator(user){
   //TODO check acl
     let returnObject = {};
 
+    console.log(user);
+
     //make a named node of the session webid of the user
     //namednode
     const webIdNN = rdfLib.sym(user.getWebId());
@@ -44,7 +46,6 @@ export async function buildSolidCommunicator(user){
     //locatie voor de applicatie
     //string
     let applicationLocation = await getApplicationLocation(ppiObject.ppi , ppiObject.store, storagePublic, webIdNN.value);
-
 
     //returnobject
     returnObject.sc = {};
@@ -142,7 +143,10 @@ async function getAppData(url){
 
   for (let index = 0; index < query.length; index++) {
     let friend = await fetchFriend(query[index].value);
-    friends.push(friend);
+
+    if(friend){
+      friends.push(friend);
+    }
   }
 
   return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import Friend from "../../model/Friend"
 import '../css/Friends.scss'
 
 class Friends extends React.Component{

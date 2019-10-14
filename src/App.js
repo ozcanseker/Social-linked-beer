@@ -82,6 +82,8 @@ class App extends React.Component {
 
         this.props.history.push(`/`)
 
+        this.onBeerSearch('a');
+
       } catch (e) {
         if (e instanceof AccessError) {
           this.setState({
@@ -152,7 +154,6 @@ class App extends React.Component {
           loggedIn={this.state.loggedIn}
           searchQuery={this.state.searchQuery}>
           <Link to="/profile">Profile</Link>
-          <Link to="/checkIns">Check ins</Link>
           <Link to="/friend">Friends</Link>
           <Link to="/groups">Groups</Link>
           <Link to="/inbox">Inbox</Link>
