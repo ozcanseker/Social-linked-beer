@@ -1,0 +1,58 @@
+.profileScreen {  
+    flex: auto;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}
+
+.leftColum {
+    padding : 3%;
+    background-color: darkblue;
+    color: white;
+    float: left;
+    width: 50%;
+    margin: 5% 2% 5% 1%;
+    border-radius: 3%;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.leftColum > h1 {
+    margin-bottom: 5%;
+}
+
+.leftColum > img{
+    object-fit: cover;
+    height : 100px;
+    width : 100px;
+    margin-bottom: 5%;
+}
+
+.column {
+    padding : 3%;
+    float: left;
+    width: 50%;
+    overflow-y: scroll;
+}
+  
+.row{
+    flex: auto;
+    display: flex;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.checkinDiv {
+    overflow: hidden;
+}
+
+.checkinDiv *{
+    float: right;
+}
+
+
+
