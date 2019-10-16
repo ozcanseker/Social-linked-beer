@@ -17,6 +17,8 @@ import Profile from './page/Profile';
 import UserPage from './page/User';
 import Inbox from './page/Inbox';
 import BeerDetailScreen from './page/BeerDetailScreen';
+import BrewerPage from './page/BrewerPage';
+
 
 class AppRoutes extends React.Component{
     render(){
@@ -24,8 +26,9 @@ class AppRoutes extends React.Component{
          <Switch>
               <Route exact path="/" component={Home} isLoggedIn = {this.props.loggedIn} solidCommunicator = {this.props.solidCommunicator}/>
               <PrivateRoute path="/user" component={UserPage} isLoggedIn = {this.props.loggedIn} solidCommunicator = {this.props.solidCommunicator}/> 
-              <PrivateRoute path="/beer/:id" component={BeerDetailScreen} isLoggedIn = {this.props.loggedIn} solidCommunicator = {this.props.solidCommunicator}/> 
-              <PrivateRoute exact path="/friend" component={Friends} isLoggedIn = {this.props.loggedIn} user = {this.props.userObject} solidCommunicator = {this.props.solidCommunicator}/>
+              <PrivateRoute path="/beer/:id" component={BeerDetailScreen} isLoggedIn = {this.props.loggedIn} solidCommunicator = {this.props.solidCommunicator}/>
+             <PrivateRoute path="/brewer/:id" component={BrewerPage} isLoggedIn = {this.props.loggedIn} solidCommunicator = {this.props.solidCommunicator}/>
+             <PrivateRoute exact path="/friend" component={Friends} isLoggedIn = {this.props.loggedIn} user = {this.props.userObject} solidCommunicator = {this.props.solidCommunicator}/>
               <PrivateRoute path="/friend/:id" component={FriendsPage} isLoggedIn = {this.props.loggedIn} user = {this.props.userObject}/>
               <PrivateRoute path="/beerresults" component={BeerResults} isLoggedIn = {this.props.loggedIn} onLinkClick = {this.props.clearSearchQuery} solidCommunicator = {this.props.solidCommunicator}/>
               <PrivateRoute path="/groups" component={Groups} isLoggedIn = {this.props.loggedIn}/>

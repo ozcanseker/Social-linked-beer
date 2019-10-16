@@ -1,6 +1,7 @@
 import React from 'react';
 import '../css/BeerDetailScreen.scss';
 import BeerCheckInScreen from '../../component/BeerCheckInScreen';
+import {Link, Redirect} from "react-router-dom";
 
 class BeerDetailScreen extends React.Component {
     constructor(props) {
@@ -60,9 +61,10 @@ class BeerDetailScreen extends React.Component {
         })
     }
 
-
     render() {
         let beer = this.state.beer;
+        let brewerName = beer._brewer.replace("https://", "").replace(/\..*/, "");
+        console.log(brewerName);
 
         return (
             <section className="beerDetailScreen">
@@ -76,7 +78,14 @@ class BeerDetailScreen extends React.Component {
                     <button onClick= {this.onCheckInClick}>Check in beer</button>
                 </div>
                 <p>
-                    <a href={beer._brewer}>brewer</a>
+                    <Redirect to={{
+                        pathname: `/brewer/${brewerName}`,
+                        state: {
+                            brewer : beer._brewer
+                        }
+                    }}>
+                        brewer
+                    </Redirect>
                 </p>
                 <p>
                     containers: {beer._containers}

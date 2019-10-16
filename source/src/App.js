@@ -81,6 +81,7 @@ class App extends React.Component {
         })
 
         this.props.history.push(`/`)
+        this.onBeerSearch("a");
       } catch (e) {
         if (e instanceof AccessError) {
           this.setState({

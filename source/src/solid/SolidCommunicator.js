@@ -4,6 +4,7 @@ import BeerCheckIn from '../model/BeerCheckIn'
 import { buildSolidCommunicator } from './solidCommunicatorInits/SolidCommunicatorBuilder'
 import { preApplicationHandelings } from './solidCommunicatorInits/PreApplicationHandelings'
 import * as SolidTemplates from './rdf/SolidTtlTemplates';
+import Brewer from "../model/Brewer";
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
@@ -317,8 +318,52 @@ class SolidCommunicator {
   }
 
   async getBrewerInformation(url){
+    let brewerTTl = await fileClient.fetch(url);
 
-    return new Brewer();
+    let graph = rdfLib.graph();
+    await rdfLib.parse(brewerTTl, graph, url, "text/turtle");
+
+    let blankNode = graph.any(undefined, RDF('type'));
+
+    let name = graph.any(blankNode, FOAF("name")).value;
+    let groep = graph.any(blankNode, DBPEDIA("groep")).value;
+    let opgericht = graph.any(blankNode, DBPEDIA("opgericht")).value;
+    let owners = [];
+    graph.each(blankNode, DBPEDIA("owners")).forEach(owner => {
+      owners.push(owner.value);
+    })
+    let provincie = graph.any(blankNode, DBPEDIA("provincie")).value;
+    let email = graph.any(blankNode, SCHEMA("email")).value;
+    let taxid =  graph.any(blankNode, SCHEMA("taxID")).value;
+    let telephone = graph.any(blankNode, SCHEMA("telephone")).value;
+    let brewerUrl = graph.any(blankNode, SCHEMA("url")).value;
+
+    let blankNodeAdress = graph.any(blankNode, SCHEMA("address"));
+
+    let postalcode = graph.any(blankNodeAdress, SCHEMA("postalCode")).value;
+    let streetaddress = graph.any(blankNodeAdress, SCHEMA("streetAddress")).value;
+    let addressregion = graph.any(blankNodeAdress, SCHEMA("addressRegion")).value;
+    let addresslocality = graph.any(blankNodeAdress, SCHEMA("addressLocality")).value;
+
+    let beerLocation = "https://testbrouwer.inrupt.net/public/brewerInformation/beers/beersIndex.ttl";
+
+    this.fetchBeerData().then( res => {
+      console.log(res);
+    })
+
+    return new Brewer(name,
+        groep,
+        opgericht,
+        owners,
+        provincie,
+        email,
+        taxid,
+        telephone,
+        brewerUrl,
+        postalcode,
+        streetaddress,
+        addressregion,
+        addresslocality);
   }
 }
 export default SolidCommunicator;

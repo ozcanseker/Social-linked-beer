@@ -46,8 +46,6 @@ graph.add(blankNode, SCHEMA("name"), biertestbierbrouwer.name)
 graph.add(blankNode, SCHEMA("taxID"), biertestbierbrouwer.kvk)
 graph.add(blankNode, SCHEMA("telephone"), biertestbierbrouwer.telefoon)
 graph.add(blankNode, SCHEMA("url"), biertestbierbrouwer.url)
-graph.add(blankNode, SCHEMA("taxID"), biertestbierbrouwer.kvk)
-graph.add(blankNode, SCHEMA("taxID"), biertestbierbrouwer.kvk)
 
 let blankNodeAdress = rdfLib.blankNode();
 graph.add(blankNode, SCHEMA("address"), blankNodeAdress)

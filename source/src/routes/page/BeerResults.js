@@ -25,14 +25,14 @@ class BeerResults extends React.Component {
         let elements = this.state.beers.map(listItem => {
             return (
                 <li key = {listItem._location}>
-                    <Link to={{
+                    <Redirect to={{
                         pathname: `/beer/${listItem._name}`,
                         state: {
                             beer : listItem
                         }
                     }} onClick={this.props.onLinkClick}>
                     {listItem._name}
-                    </Link>
+                    </Redirect>
                 </li>
             )
         })
