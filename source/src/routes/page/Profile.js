@@ -2,7 +2,7 @@ import React from 'react';
 import '../css/Profile.scss'
 import profilePic from '../../assets/profilePic.png'
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
-import { Link, withRouter } from "react-router-dom";
+import {Link, Redirect, withRouter} from "react-router-dom";
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import Fade from 'react-reveal/Fade';
 

@@ -15,10 +15,27 @@ class Brewer {
         this._addressRegion = addressRegion;
         this._addressLocality = addressLocality;
         this._beers = [];
+
+        this._subscribers = [];
     }
 
     addBeers(beers){
-        this._beers.concat(beers);
+        this._beers = this._beers.concat(beers);
+        this.upDateSubScribers();
+    }
+
+    upDateSubScribers(){
+        this._subscribers.map(subscriber => subscriber.update());
+    }
+
+    subscribe(subscriber){
+        this._subscribers.push(subscriber);
+    }
+
+    unsubscribe(subscriber){
+        this._subscribers.filter(subscriberList  => {
+            return subscriberList !== subscriber;
+        });
     }
 }
 

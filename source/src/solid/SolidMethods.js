@@ -198,3 +198,7 @@ export async function getTenUserCheckIns(applicationLocation){
 
   return {userBeerCheckIns : userBeerCheckIns, reviews : reviews, checkIns : checkIns};
 }
+
+export async function getSingleCheckInFile(){
+  
+}

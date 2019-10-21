@@ -1,5 +1,6 @@
 import React from "react";
 import "../css/BrewerPage.scss"
+import {Link} from "react-router-dom";
 
 class BrewerPage extends React.Component {
     constructor(props, context) {
@@ -18,6 +19,9 @@ class BrewerPage extends React.Component {
         this.mounted = true;
 
         if (this.brewer) {
+            this.brewer.unsubscribe(this);
+            this.brewer.subscribe(this);
+
             this.setState({
                 brewer: this.brewer
             })
@@ -27,6 +31,9 @@ class BrewerPage extends React.Component {
     getBrewer = () => {
         this.props.solidCommunicator.getBrewerInformation(this.state.brewerId).then(res => {
             if (this.mounted) {
+                res.unsubscribe(this);
+                res.subscribe(this);
+
                 this.setState({
                     brewer: res
                 })
@@ -36,12 +43,19 @@ class BrewerPage extends React.Component {
         })
     }
 
+    update = () => {
+        this.setState({
+                brewer: this.state.brewer
+            }
+        )
+    }
 
     render() {
         let section;
         let brewer = this.state.brewer;
+        let beers;
 
-        if (this.state.brewer) {
+        if (brewer) {
             section = (
                 <div>
                     <h1>
@@ -61,11 +75,35 @@ class BrewerPage extends React.Component {
                     <p>{brewer._addressLocality}</p>
                 </div>
             )
+
+            if (brewer._beers) {
+                beers = brewer._beers.map(listItem => {
+                    return ( <li key = {listItem._location}>
+                            <Link to={{
+                                pathname: `/beer/${listItem._name}`,
+                                state: {
+                                    beer : listItem
+                                }
+                            }} onClick={this.props.onLinkClick}>
+                                {listItem._name}
+                            </Link>
+                        </li>
+                    )
+                })
+            }
         }
 
         return (
             <section className="brewerPage">
                 {section}
+
+                <br/>
+                <br/>
+
+                <h3>Beers</h3>
+                <ul>
+                    {beers}
+                </ul>
             </section>
         )
     }

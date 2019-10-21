@@ -80,8 +80,7 @@ class App extends React.Component {
           fetchingFiles: false
         })
 
-        this.props.history.push(`/`)
-        this.onBeerSearch("a");
+        this.props.history.push(`/profile`)
       } catch (e) {
         if (e instanceof AccessError) {
           this.setState({

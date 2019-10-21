@@ -3,7 +3,7 @@ import '../css/BeerCheckInScreen.scss';
 
 import Rating from '@material-ui/lab/Rating';
 
-class BeerCheckInScreen extends React.Component {
+class BeerCheckInOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -57,4 +57,4 @@ class BeerCheckInScreen extends React.Component {
     }
 }
 
-export default BeerCheckInScreen;
+export default BeerCheckInOverlay;

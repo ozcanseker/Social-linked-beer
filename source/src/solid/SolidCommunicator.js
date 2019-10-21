@@ -40,7 +40,6 @@ class SolidCommunicator {
     user.setApplicationLocation(values.user.applicationLocation + "beerdrinker/");
 
     getTenUserCheckIns(values.user.applicationLocation).then(res => {
-      console.log(res);
       user.addUserCheckIns(res.userBeerCheckIns);
       user.setBeerReviews(res.reviews);
       user.setCheckIns(res.checkIns);
@@ -337,6 +336,7 @@ class SolidCommunicator {
     let taxid =  graph.any(blankNode, SCHEMA("taxID")).value;
     let telephone = graph.any(blankNode, SCHEMA("telephone")).value;
     let brewerUrl = graph.any(blankNode, SCHEMA("url")).value;
+    let beerIndex = graph.any(blankNode, DBPEDIA('beersIndex'));
 
     let blankNodeAdress = graph.any(blankNode, SCHEMA("address"));
 
@@ -345,13 +345,7 @@ class SolidCommunicator {
     let addressregion = graph.any(blankNodeAdress, SCHEMA("addressRegion")).value;
     let addresslocality = graph.any(blankNodeAdress, SCHEMA("addressLocality")).value;
 
-    let beerLocation = "https://testbrouwer.inrupt.net/public/brewerInformation/beers/beersIndex.ttl";
-
-    this.fetchBeerData().then( res => {
-      console.log(res);
-    })
-
-    return new Brewer(name,
+    let brewer = new Brewer(name,
         groep,
         opgericht,
         owners,
@@ -364,6 +358,16 @@ class SolidCommunicator {
         streetaddress,
         addressregion,
         addresslocality);
+
+    this.fetchBeerData(beerIndex.value).then( res => {
+      brewer.addBeers(res);
+    });
+
+    return brewer;
+  }
+
+  async getAllCheckIns(){
+
   }
 }
 export default SolidCommunicator;
