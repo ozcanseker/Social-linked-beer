@@ -1,13 +1,5 @@
-const rdfLib = require('rdflib');
-
-const SOLID = rdfLib.Namespace( "http://www.w3.org/ns/solid/terms#");
-const PIM = rdfLib.Namespace("http://www.w3.org/ns/pim/space#");
-const VCARD = rdfLib.Namespace("http://www.w3.org/2006/vcard/ns#");
-const TERMS = rdfLib.Namespace('http://purl.org/dc/terms/');
-const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
-const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
+import * as rdfLib from "rdflib";
+import {RDF, SOLIDLINKEDBEER} from "./Prefixes";
 
 export function getInviteToLSBInvitation(urlInvitee, invitation, postLocation, userWebId){
     let graph = rdfLib.graph();
@@ -80,7 +72,7 @@ export function beerCheckInTemplate(postLocation, userName, webId, beerLocation,
     }
     graph.add(namedNode, SOLIDLINKEDBEER('beerLocation'), rdfLib.sym(beerLocation));
     graph.add(namedNode, SOLIDLINKEDBEER('beerName'), beerName);
-    graph.add(namedNode, SOLIDLINKEDBEER('checkInTime'), time);    
+    graph.add(namedNode, SOLIDLINKEDBEER('checkInTime'), time);
 
     // //make a text file and send
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
@@ -97,12 +89,10 @@ export function beerReviewInTemplate(postLocation, userName, webId, beerLocation
     }
     graph.add(namedNode, SOLIDLINKEDBEER('beerLocation'), rdfLib.sym(beerLocation));
     graph.add(namedNode, SOLIDLINKEDBEER('beerName'), beerName);
-    graph.add(namedNode, SOLIDLINKEDBEER('checkInTime'), time);    
-    graph.add(namedNode, SOLIDLINKEDBEER('rating'), rating);    
-    graph.add(namedNode, SOLIDLINKEDBEER('review'), review);    
-
+    graph.add(namedNode, SOLIDLINKEDBEER('checkInTime'), time);
+    graph.add(namedNode, SOLIDLINKEDBEER('rating'), rating);
+    graph.add(namedNode, SOLIDLINKEDBEER('review'), review);
 
     // //make a text file and send
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
-
 }

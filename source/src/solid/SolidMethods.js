@@ -1,204 +1,228 @@
-import Friend from '../model/Friend';
-import BeerCheckIn from "../model/BeerCheckIn";
+import CheckIn from "../model/HolderComponents/CheckIn";
+import {
+    APPDATA_FILE,
+    APPLICATION_NAME_PTI,
+    BEERDRINKERFOLDER,
+    BEERREVIEWFILENAME,
+    CHECKIN_FOLDER
+} from "./rdf/Constants";
+import {FOAF, LDP, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
 const rdfLib = require('rdflib');
 
-const SOLID = rdfLib.Namespace("http://www.w3.org/ns/solid/terms#");
-const VCARD = rdfLib.Namespace("http://www.w3.org/2006/vcard/ns#");
-const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
-const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
-const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-
 export async function postSolidFile(folder, filename, body) {
-  authClient.fetch(folder, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/turtle',
-      'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
-      'SLUG': filename
-    },
-    body: body
-  });
+    authClient.fetch(folder, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/turtle',
+            'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+            'SLUG': filename
+        },
+        body: body
+    });
 }
 
 export async function putSolidFile(url, body) {
-  authClient.fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'text/turtle'
-    },
-    body: body
-  });
+    authClient.fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'text/turtle'
+        },
+        body: body
+    });
 }
 
-// let body = `INSERT DATA { <${this.state.webId+"#comment"}> <${SOLIDLINKEDBEER('points6').value}> <${8}> }`;
-// let appDataFile;
-// appendSolidResource(appDataFile, {body})
 /**
- * 
- * @param {*} url 
- * @param {*} body 
+ * // let body = `INSERT DATA { <${this.state.webId+"#comment"}> <${SOLIDLINKEDBEER('points6').value}> <${8}> }`;
+ // let appDataFile;
+ // appendSolidResource(appDataFile, {body})
+ * @param {*} url
+ * @param {*} body
  */
 export async function appendSolidResource(url, body) {
-  authClient.fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/sparql-update'
-    },
-    body: body
-  });
+    authClient.fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/sparql-update'
+        },
+        body: body
+    });
 }
 
+/**
+ *
+ * @param url
+ * @returns {Promise<{appLocation: (*), imageUrl: (*), name: (*), inbox: (*), url: *}>}
+ */
 export async function getUserFile(url) {
-  let inbox;
+    let inbox;
 
-  //get url resource
-  let userttt = await authClient.fetch(url);
-  let graph = rdfLib.graph();
+    //get url resource
+    let userttt = await authClient.fetch(url);
+    let graph = rdfLib.graph();
 
-  if(userttt.status > 403){
-    throw new Error("403: user unauthorized");
-  }else if(userttt.status > 400){
-    throw new Error("file not found");
-  }
+    if (userttt.status === 403) {
+        throw new Error("403: user unauthorized");
+    } else if (userttt.status > 400) {
+        throw new Error("Something went wrong");
+    }
 
-  userttt = await userttt.text();
+    userttt = await userttt.text();
 
-  try {
-    //parse to check if it is ttl
-    rdfLib.parse(userttt, graph, url, "text/turtle");
+    try {
+        //parse to check if it is ttl
+        rdfLib.parse(userttt, graph, url, "text/turtle");
+    } catch (err) {
+        throw new Error("Not a correct profile linked data file");
+    }
 
     //check if it is a profile card
     let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
 
     if (query) {
-      let profile = rdfLib.sym(url);
+        let profile = rdfLib.sym(url);
 
-      //check if user has ppi
-      const publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
+        //check if user has ppi
+        const publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
 
-      if (publicProfileIndex) {
-        let ppiTTL = await fileClient.readFile(publicProfileIndex.value);
-        let ppigraph = rdfLib.graph();
-        rdfLib.parse(ppiTTL, ppigraph, publicProfileIndex.value, "text/turtle");
+        if (publicProfileIndex) {
+            let ppiTTL = await fileClient.readFile(publicProfileIndex.value);
+            let ppigraph = rdfLib.graph();
+            rdfLib.parse(ppiTTL, ppigraph, publicProfileIndex.value, "text/turtle");
 
-        let app = rdfLib.sym(publicProfileIndex.value + "#SocialLinkedBeer");
-        let appQuery = ppigraph.any(app, SOLID("instance"));
+            let app = rdfLib.sym(publicProfileIndex.value + "#" + APPLICATION_NAME_PTI);
+            let appQuery = ppigraph.any(app, SOLID("instance"));
 
-        //get name and Image            
-        let nameFN = graph.any(profile, VCARD('fn'));
-        let imageURL = graph.any(profile, VCARD('hasPhoto'));
+            //get name and Image
+            let nameFN = graph.any(profile, VCARD('fn'));
+            let imageURL = graph.any(profile, VCARD('hasPhoto'));
 
-        if (!appQuery) {
-          inbox = graph.any(profile, LDP('inbox'));
+            if (!appQuery) {
+                inbox = graph.any(profile, LDP('inbox'));
+            }
+
+            //applocation is not of beerdrinker
+            let result = {
+                url: url,
+                name: nameFN ? nameFN.value : undefined,
+                imageUrl: imageURL ? imageURL.value : undefined,
+                appLocation: appQuery ? appQuery.value : undefined,
+                inbox: inbox ? inbox.value : undefined
+            }
+
+            return result;
+        } else {
+            throw new Error("no ppi");
         }
-
-        //applocation is not of beerdrinker
-        let result = {
-          url: url,
-          name: nameFN ? nameFN.value : undefined,
-          imageUrl: imageURL ? imageURL.value : undefined,
-          appLocation: appQuery ? appQuery.value : undefined,
-          inbox: inbox ? inbox.value : undefined
-        }
-
-        return result;
-      } else {
-        throw new Error("no ppi");
-      }
     } else {
-      throw new Error("not a profile card");
+        throw new Error("not a profile card");
     }
-  } catch (err) {
-    throw new Error("Not a correct profile linked data file");
-  }
 }
+
 
 /**
- * 
- * @param {String} friendUrl 
+ *
+ * @param friend
  */
-export async function fetchFriend(friendUrl){
-  try{
-    let friend = await getUserFile(friendUrl);
+export async function loadFriendData(friend) {
+    //getUserFile
+    let userDetails = await getUserFile(friend.getUri());
+    friend.setUserDetails(userDetails.name, userDetails.imageUrl, userDetails.appLocation + BEERDRINKERFOLDER);
 
-    let friendAppdataLocation = friend.appLocation + 'beerdrinker/appdata.ttl';
-    let friendsAppdata = await fileClient.readFile(friendAppdataLocation);
-  
-    let graph = rdfLib.graph();
-    rdfLib.parse(friendsAppdata, graph, friendAppdataLocation, "text/turtle");
-  
-    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
-  
-    let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
-    let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
-  
-    friend = new Friend(friendUrl, friend.name, friend.imageUrl, friend.appLocation, new Date(startdate.value), points.value);
+    //appdatafile
+    let friendAppdataLocation = userDetails.appLocation + BEERDRINKERFOLDER + APPDATA_FILE;
 
-    getTenUserCheckIns(friend.getApplocation()).then(res => {
-      friend.addUserCheckIns(res.userBeerCheckIns);
-      friend.setBeerReviews(res.reviews);
-      friend.setCheckIns(res.checkIns);
+    fileClient.readFile(friendAppdataLocation).then(friendsAppdata => {
+        let graph = rdfLib.graph();
+        rdfLib.parse(friendsAppdata, graph, friendAppdataLocation, "text/turtle");
+
+        let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
+
+        let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
+        let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
+
+        friend.setAppData(new Date(startdate.value), points.value);
     });
 
-    return friend;
-  }catch(e){
-    //TODO delete user from friends if 403
-    //TODO general error handling
-    console.log(e);
-    return undefined;
-  }
+    getTenUserCheckIns(friend.getBeerDrinkerFolder()).then(res => {
+        friend.setCheckInData(res.reviews, res.checkIns, res.userBeerCheckIns)
+    });
 }
 
-export async function getTenUserCheckIns(applicationLocation){
-  let checkinLocation = applicationLocation + 'beerdrinker/checkins/';
-  let fileContents = (await fileClient.readFolder(checkinLocation)).files.reverse();
-  let userBeerCheckIns = [];
+export async function getTenUserCheckIns(beerDrinkerFolder) {
+    let checkinLocation = beerDrinkerFolder + CHECKIN_FOLDER;
+    let fileContents = (await fileClient.readFolder(checkinLocation)).files.reverse();
+    let userBeerCheckIns = [];
 
-  let checkIns = 0;
-  let reviews = 0;
+    let checkIns = 0;
+    let reviews = 0;
 
-  for (let i = 0; i < fileContents.length && i < 10; i++) {
-    let ttlFile = await fileClient.readFile(fileContents[i].url);
+    for (let i = 0; i < fileContents.length; i++) {
+        if (i < 10) {
+            let beerCheckIn = new CheckIn(fileContents[i].url);
+            loadValuesInCheckInFile(beerCheckIn);
+            userBeerCheckIns.push(beerCheckIn);
+        }
 
-    let graph = rdfLib.graph();
-    let namedNode = rdfLib.sym(fileContents[i].url);
-    rdfLib.parse(ttlFile, graph, fileContents[i].url, "text/turtle");
+        if (fileContents[i].url.includes(BEERREVIEWFILENAME)) {
+            reviews++;
+        } else {
+            checkIns++;
+        }
 
-    let type = graph.any(namedNode, RDF('type'));
-    let webId = graph.any(namedNode, SOLIDLINKEDBEER('webId'));
-    let userId = graph.any(namedNode, SOLIDLINKEDBEER('username'));
-    let beerlocation = graph.any(namedNode, SOLIDLINKEDBEER('beerLocation'));
-    let beername = graph.any(namedNode, SOLIDLINKEDBEER('beerName'));
-    let checkinTime = graph.any(namedNode, SOLIDLINKEDBEER('checkInTime'));
-    let rating = graph.any(namedNode, SOLIDLINKEDBEER('rating'));
-    let review = graph.any(namedNode, SOLIDLINKEDBEER('review'));
-
-    let beerCheckIn = new BeerCheckIn(fileContents[i].url,
-        webId.value,
-        userId? userId.value : undefined,
-        beerlocation.value,
-        beername.value,
-        checkinTime.value,
-        rating ? rating.value : undefined,
-        review ? review.value : undefined
-    );
-
-    if(rating){
-      reviews++;
-    }else{
-      checkIns++;
     }
 
-    userBeerCheckIns.push(beerCheckIn);
-  }
-
-  return {userBeerCheckIns : userBeerCheckIns, reviews : reviews, checkIns : checkIns};
+    return {userBeerCheckIns: userBeerCheckIns, reviews: reviews, checkIns: checkIns};
 }
 
-export async function getSingleCheckInFile(){
-  
+export async function getAllUserCheckIns(beerdrinkerFolder) {
+    let checkinLocation = beerdrinkerFolder + CHECKIN_FOLDER;
+    let fileContents = (await fileClient.readFolder(checkinLocation)).files.reverse();
+    let userBeerCheckIns = [];
+
+    let checkIns = 0;
+    let reviews = 0;
+
+    for (let i = 0; i < fileContents.length; i++) {
+        let beerCheckIn = new CheckIn(fileContents[i].url);
+        loadValuesInCheckInFile(beerCheckIn);
+        userBeerCheckIns.push(beerCheckIn);
+
+        if (fileContents[i].url.includes(BEERREVIEWFILENAME)) {
+            reviews++;
+        } else {
+            checkIns++;
+        }
+
+    }
+
+    return userBeerCheckIns;
+}
+
+export async function loadValuesInCheckInFile(beerCheckIn) {
+    fileClient.readFile(beerCheckIn.getFileLocation()).then(ttlFile => {
+        let graph = rdfLib.graph();
+        let namedNode = rdfLib.sym(beerCheckIn.getFileLocation());
+        rdfLib.parse(ttlFile, graph, beerCheckIn.getFileLocation(), "text/turtle");
+
+        let webId = graph.any(namedNode, SOLIDLINKEDBEER('webId'));
+        let userId = graph.any(namedNode, SOLIDLINKEDBEER('username'));
+        let beerlocation = graph.any(namedNode, SOLIDLINKEDBEER('beerLocation'));
+        let beername = graph.any(namedNode, SOLIDLINKEDBEER('beerName'));
+        let checkinTime = graph.any(namedNode, SOLIDLINKEDBEER('checkInTime'));
+        let rating = graph.any(namedNode, SOLIDLINKEDBEER('rating'));
+        let review = graph.any(namedNode, SOLIDLINKEDBEER('review'));
+
+        beerCheckIn.loadInAttributes(
+            webId.value,
+            userId ? userId.value : undefined,
+            beerlocation.value,
+            beername.value,
+            checkinTime.value,
+            rating ? rating.value : undefined,
+            review ? review.value : undefined
+        );
+    });
 }

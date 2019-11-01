@@ -1,18 +1,20 @@
-import { postSolidFile, putSolidFile, getUserFile } from "../SolidMethods";
+import {postSolidFile, putSolidFile} from "../SolidMethods";
 
-const fileClient = require('solid-file-client');
-const authClient = require('solid-auth-client');
-const rdflib = require('rdflib');
-
-const SOLID = rdflib.Namespace("http://www.w3.org/ns/solid/terms#");
-const VCARD = rdflib.Namespace("http://www.w3.org/2006/vcard/ns#");
-const TERMS = rdflib.Namespace('http://purl.org/dc/terms/');
-const RDF = rdflib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-const SOLIDLINKEDBEER = rdflib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const FOAF = rdflib.Namespace('http://xmlns.com/foaf/0.1/');
-const ACL = rdflib.Namespace("http://www.w3.org/ns/auth/acl#");
-
-const appName = "sociallinkedbeer";
+import * as fileClient from "solid-file-client";
+import authClient from "solid-auth-client";
+import * as rdflib from "rdflib";
+import {ACL, FOAF, RDF, SOLID, SOLIDLINKEDBEER, TERMS, VCARD} from "../rdf/Prefixes";
+import {
+  APPDATA_FILE,
+  APPDATA_FILENAME,
+  APPFOLDER_NAME,
+  BEERDRINKERFOLDER,
+  CHECKIN_FOLDER,
+  CONTENT_TYPE_TURTLE,
+  FRIENDS_FILE,
+  FRIENDS_FILENAME,
+  INBOX_FOLDER
+} from "../rdf/Constants";
 
 export async function buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId) {
   //TODO a whole lot of error checking. Checking for 400 error codes and stuff like that
@@ -56,7 +58,7 @@ async function createAppNodeForPublicTypeIndex(store, publicTypeIndex, publicLoc
   store.add(app, SOLID('instance'), appLocationNN);
 
   //serialize and send the pti
-  let newTTLpublicTypeindex = await rdflib.serialize(undefined, store, publicTypeIndex.value, 'text/turtle');
+  let newTTLpublicTypeindex = await rdflib.serialize(undefined, store, publicTypeIndex.value, CONTENT_TYPE_TURTLE);
   await putSolidFile(publicTypeIndex.value, newTTLpublicTypeindex);
 
   return appLocation;
@@ -68,7 +70,7 @@ async function createAppNodeForPublicTypeIndex(store, publicTypeIndex, publicLoc
  */
 async function findEmptyFolder(publicLocation) {
   //TODO improve this. You can check if the other folder holds up to your standards. A lot of possibilities
-  let appLocation = publicLocation + appName + '/'
+  let appLocation = publicLocation + APPFOLDER_NAME + '/'
 
   //see if there is a folder at the applocation
   let res = await authClient.fetch(appLocation);
@@ -77,7 +79,7 @@ async function findEmptyFolder(publicLocation) {
   if (res.status % 400 < 100) {
     return appLocation;
   } else {
-    return appLocation = publicLocation + appName + makeRandomString(10) + '/'
+    return appLocation = publicLocation + APPFOLDER_NAME + makeRandomString(10) + '/'
   }
 }
 
@@ -112,27 +114,27 @@ async function makeAppFolderStructure(appFolderUrl, webId) {
   await putSolidFile(aclUrl, body);
 
   //beerdrinker
-  let beerDrinkerUrl = appFolderUrl + "beerdrinker/";
+  let beerDrinkerUrl = appFolderUrl + BEERDRINKERFOLDER;
   await fileClient.createFolder(beerDrinkerUrl);
 
   // friends
-  let friendsUrl = beerDrinkerUrl + 'friends.ttl';
+  let friendsUrl = beerDrinkerUrl + FRIENDS_FILE;
   body = getFriendsFile(friendsUrl, webId);
 
-  await postSolidFile(beerDrinkerUrl, 'friends', body);
+  await postSolidFile(beerDrinkerUrl, FRIENDS_FILENAME, body);
 
   //appData 
-  let appDataFile = beerDrinkerUrl + 'appdata.ttl';
+  let appDataFile = beerDrinkerUrl + APPDATA_FILE;
   let appDataFileAcl = appDataFile + '.acl';
   
   body = getAppDataInit(appDataFile);
-  await postSolidFile(beerDrinkerUrl, 'appdata', body);
+  await postSolidFile(beerDrinkerUrl, APPDATA_FILENAME, body);
   
   body = getAclAppData(appDataFile, appDataFileAcl, webId, friendsUrl);
   await putSolidFile(appDataFileAcl, body);
 
   //inboxfolder
-  let inboxUrl = beerDrinkerUrl + 'inbox/';
+  let inboxUrl = beerDrinkerUrl + INBOX_FOLDER;
   let inboxUrlacl = inboxUrl + '.acl';
   body = getACLInboxFolder(inboxUrl, inboxUrlacl, webId);
 
@@ -140,7 +142,7 @@ async function makeAppFolderStructure(appFolderUrl, webId) {
   await putSolidFile(inboxUrlacl, body);
 
   //check in folder        
-  let reviewUrl = beerDrinkerUrl + 'checkins/';
+  let reviewUrl = beerDrinkerUrl + CHECKIN_FOLDER;
   let reviewUrlacl = reviewUrl + '.acl';
 
   await fileClient.createFolder(reviewUrl);
@@ -160,8 +162,7 @@ function getAppDataInit(url) {
   graph.add(bn, SOLIDLINKEDBEER('startdate'), new Date());
   graph.add(bn, SOLIDLINKEDBEER('points'), 0);
 
-  let ttl = rdflib.serialize(undefined, graph, url, 'text/turtle');
-  return ttl;
+  return rdflib.serialize(undefined, graph, url, 'text/turtle');
 }
 
 /**

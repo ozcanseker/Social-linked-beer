@@ -1,30 +1,28 @@
-import { buildFolders, checkFolderIntegrity } from './PodFolderBuilder'
-import { postSolidFile, putSolidFile, getUserFile, fetchFriend, getTenUserCheckIns } from "../SolidMethods";
-import BeerCheckIn from '../../model/BeerCheckIn';
-import {checkacess} from './AccessChecker'
+import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
+import {getTenUserCheckIns, loadFriendData} from "../SolidMethods";
+import {checkacess} from './AccessChecker';
+import {PIM, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
-const fileClient = require('solid-file-client');
-const authClient = require('solid-auth-client');
-const rdfLib = require('rdflib');
+import * as fileClient from "solid-file-client";
+import * as rdfLib from "rdflib";
+import {
+    APPDATA_FILE,
+    APPLICATION_NAME_PTI,
+    BEERDRINKERFOLDER, CONTENT_TYPE_TURTLE,
+    FRIENDS_FILE,
+    FRIENDSGROUPNAME,
+    FRIENDSSENTGROUPNAME
+} from "../rdf/Constants";
+import Friend from "../../model/HolderComponents/Friend";
 
-const SOLID = rdfLib.Namespace( "http://www.w3.org/ns/solid/terms#");
-const VCARD = rdfLib.Namespace("http://www.w3.org/2006/vcard/ns#");
-const TERMS = rdfLib.Namespace('http://purl.org/dc/terms/');
-const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
-const ACL = rdfLib.Namespace("http://www.w3.org/ns/auth/acl#");
-const PIM = rdfLib.Namespace("http://www.w3.org/ns/pim/space#");
-const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
-
-export async function buildSolidCommunicator(user){
-  //TODO do some thing parallel
-  //TODO check acl
+export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     let returnObject = {};
+    let user = modelHolder.getUser();
+    let checkInHandler = modelHolder.getCheckInHandler();
 
     //make a named node of the session webid of the user
     //namednode
-    const webIdNN = rdfLib.sym(user.getWebId());
+    const webIdNN = rdfLib.sym(user.getUri());
 
     //get a store of the profile card of the logged in user
     //store
@@ -32,124 +30,132 @@ export async function buildSolidCommunicator(user){
 
     //check the acess before trying to make an application
     checkacess(storeProfileCard);
-     
+
     //store for the Public Profile Index
     //object with store and nn
     let ppiObject = await getPPILocation(webIdNN, storeProfileCard);
 
     //String that shows the location of the public storage of the pod
     //string 
-    let storagePublic = await getStorePublic(webIdNN, storeProfileCard);     
+    let storagePublic = getStorePublic(webIdNN, storeProfileCard);
 
     //locatie voor de applicatie
     //string
-    let applicationLocation = await getApplicationLocation(ppiObject.ppi , ppiObject.store, storagePublic, webIdNN.value);
+    let applicationLocation = await getApplicationLocation(ppiObject.ppi, ppiObject.store, storagePublic, webIdNN.value);
 
     //returnobject
     returnObject.sc = {};
-    returnObject.user = {};
 
-    returnObject.user = getUserDetails(webIdNN, storeProfileCard);
-    let appData = await getAppData(applicationLocation);
+    let userDetails = getUserDetails(webIdNN, storeProfileCard);
+    user.loadInUserValues(userDetails.name, userDetails.imageURL, applicationLocation, applicationLocation + BEERDRINKERFOLDER);
 
-    returnObject.user = {...returnObject.user , ...appData.user};
+    getAppData(user.getBeerDrinkerFolder()).then(res => {
+        user.loadInAppData(new Date(res.startdate));
+        modelHolder.getCheckInHandler().setBeerPoints(res.points);
+        solidCommunicator.loadInAppStore(res.store, res.blankNode);
+    });
 
-    let friendsData = await getFriends(applicationLocation);
+    getTenUserCheckIns(user.getBeerDrinkerFolder()).then(res => {
+        checkInHandler.addUserCheckIns(res.userBeerCheckIns);
+        checkInHandler.setBeerReviewsAmount(res.reviews);
+        checkInHandler.setCheckInsAmount(res.checkIns);
+    });
 
-    returnObject.user.friends = friendsData.friends;
-    returnObject.sc.friendsStore = friendsData.friendsStore;
-    returnObject.sc.group = friendsData.group;
-    returnObject.sc.sentGroup = friendsData.sentGroup;
-    returnObject.sc.appStore = appData.sc.store;
-    returnObject.sc.blankNodeAppStore = appData.sc.blankNode;
-  
-    returnObject.user.applicationLocation = applicationLocation;
-
-    return returnObject;
+    getFriends(user.getBeerDrinkerFolder()).then(res => {
+        modelHolder.addFriends(res.friends);
+        solidCommunicator.loadInFriendsStore(res.group, res.sentGroup, res.friendsStore);
+    });
 }
 
-function getUserDetails(profile, storeProfileCard){
-  let nameFN =  storeProfileCard.any(profile,VCARD('fn'));
-  let imageURL =  storeProfileCard.any(profile,VCARD('hasPhoto')); 
-
-  nameFN = nameFN ? nameFN.value : undefined;
-  imageURL = imageURL ? imageURL.value : undefined;
-
-  return {name: nameFN, imageURL: imageURL};
-}
-
-async function getUserCard(webIdUrl){
-    const profileCardTTl = await fileClient.fetch(webIdUrl); 
-    const storeProfileCard = rdfLib.graph(); 
+/**
+ * Get the user profile card in the form of a rdflib graph.
+ *
+ * @param webIdUrl the uri for the profile card
+ * @returns {Promise<void>} graph of user VCARD
+ */
+async function getUserCard(webIdUrl) {
+    const profileCardTTl = await fileClient.fetch(webIdUrl);
+    const storeProfileCard = rdfLib.graph();
     rdfLib.parse(profileCardTTl, storeProfileCard, webIdUrl, "text/turtle");
-    
+
     return storeProfileCard;
 }
 
-async function getPPILocation(profile, storeProfileCard){
+async function getPPILocation(profile, storeProfileCard) {
     const publicProfileIndex = storeProfileCard.any(profile, SOLID("publicTypeIndex"));
-    
+
     const storePublicTypeIndex = rdfLib.graph();
     const publicTypeIndexTTL = await fileClient.fetch(publicProfileIndex.value);
     rdfLib.parse(publicTypeIndexTTL, storePublicTypeIndex, publicProfileIndex.value, "text/turtle");
-    
-    return {store : storePublicTypeIndex, ppi : publicProfileIndex};
+
+    return {store: storePublicTypeIndex, ppi: publicProfileIndex};
 }
 
-function getStorePublic(profile, storeProfileCard){
+function getStorePublic(profile, storeProfileCard) {
     let locationStorage = storeProfileCard.any(profile, PIM("storage"));
     return locationStorage.value + "public/";
 }
 
-async function getApplicationLocation(publicProfileIndex, storePublicProfileIndex, storagePublic, webId){
-    let app = rdfLib.sym(publicProfileIndex.value + "#SocialLinkedBeer");
+async function getApplicationLocation(publicProfileIndex, storePublicProfileIndex, storagePublic, webId) {
+    let app = rdfLib.sym(publicProfileIndex.value + "#" + APPLICATION_NAME_PTI);
     let appQuery = storePublicProfileIndex.any(app, SOLID("instance"));
 
-    if(appQuery){
-      checkFolderIntegrity();
-      return appQuery.value;
-    }else{
+    if (appQuery) {
+        await checkFolderIntegrity();
+        return appQuery.value;
+    } else {
         return await buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId);
     }
 }
 
-async function getAppData(url){
-  //TODO one place to save all urls
-  let appdataLocation = url + 'beerdrinker/appdata.ttl';
+function getUserDetails(profile, storeProfileCard) {
+    let nameFN = storeProfileCard.any(profile, VCARD('fn'));
+    let imageURL = storeProfileCard.any(profile, VCARD('hasPhoto'));
 
-  let appdatattl = await fileClient.readFile(appdataLocation);
-  let graph = rdfLib.graph();
-  rdfLib.parse(appdatattl, graph, appdataLocation, "text/turtle");
+    nameFN = nameFN ? nameFN.value : undefined;
+    imageURL = imageURL ? imageURL.value : undefined;
 
-  let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
-
-  let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
-  let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
-  
-  return {user: {startdate: startdate.value, points: points.value}, sc:{store: graph, blankNode: blankNode}}
+    return {name: nameFN, imageURL: imageURL};
 }
 
- async function getFriends(applicationLocation){
-  let friendsLocation = applicationLocation + 'beerdrinker/friends.ttl';
-  let ttlFriends = await fileClient.readFile(friendsLocation);
-  let group = rdfLib.sym(friendsLocation + "#Friends");
-  let sentGroup = rdfLib.sym(friendsLocation + "#FriendsRequested");
+async function getAppData(beerDrinkerFolder) {
+    //TODO one place to save all urls
+    let appdataLocation = beerDrinkerFolder + APPDATA_FILE;
 
-  let friends = [];
+    let appdatattl = await fileClient.readFile(appdataLocation);
+    let graph = rdfLib.graph();
+    rdfLib.parse(appdatattl, graph, appdataLocation, "text/turtle");
 
-  let graph = rdfLib.graph();
-  rdfLib.parse(ttlFriends, graph, friendsLocation, "text/turtle");
+    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
 
-  let query = graph.each(group, VCARD('hasMember'), undefined); 
+    let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
+    let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
 
-  for (let index = 0; index < query.length; index++) {
-    let friend = await fetchFriend(query[index].value);
+    return {startdate: startdate.value, points: points.value, store: graph, blankNode: blankNode};
+}
 
-    if(friend){
-      friends.push(friend);
+async function getFriends(beerDrinkerFolder) {
+    let friendsLocation = beerDrinkerFolder + FRIENDS_FILE;
+    let ttlFriends = await fileClient.readFile(friendsLocation);
+
+    let group = rdfLib.sym(friendsLocation + "#" + FRIENDSGROUPNAME);
+    let sentGroup = rdfLib.sym(friendsLocation + "#" + FRIENDSSENTGROUPNAME);
+    let friends = [];
+
+    let graph = rdfLib.graph();
+    rdfLib.parse(ttlFriends, graph, friendsLocation, CONTENT_TYPE_TURTLE);
+
+    let query = graph.each(group, VCARD('hasMember'), undefined);
+
+    for (let index = 0; index < query.length; index++) {
+        let friend = new Friend(query[index].value);
+        loadFriendData(friend);
+
+        if (friend) {
+            friends.push(friend);
+        }
     }
-  }
 
-  return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};
+    return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};
 }
  

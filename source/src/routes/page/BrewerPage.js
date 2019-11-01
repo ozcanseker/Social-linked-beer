@@ -19,8 +19,6 @@ class BrewerPage extends React.Component {
         this.mounted = true;
 
         if (this.brewer) {
-            this.brewer.unsubscribe(this);
-            this.brewer.subscribe(this);
 
             this.setState({
                 brewer: this.brewer
@@ -31,8 +29,6 @@ class BrewerPage extends React.Component {
     getBrewer = () => {
         this.props.solidCommunicator.getBrewerInformation(this.state.brewerId).then(res => {
             if (this.mounted) {
-                res.unsubscribe(this);
-                res.subscribe(this);
 
                 this.setState({
                     brewer: res

@@ -1,72 +1,62 @@
-import {postSolidFile, putSolidFile, getUserFile, fetchFriend, getTenUserCheckIns} from "./SolidMethods";
-import Beer from '../model/Beer'
-import BeerCheckIn from '../model/BeerCheckIn'
-import { buildSolidCommunicator } from './solidCommunicatorInits/SolidCommunicatorBuilder'
-import { preApplicationHandelings } from './solidCommunicatorInits/PreApplicationHandelings'
+import {
+  loadFriendData,
+  getAllUserCheckIns,
+  getTenUserCheckIns,
+  getUserFile,
+  postSolidFile,
+  putSolidFile
+} from "./SolidMethods";
+
 import * as SolidTemplates from './rdf/SolidTtlTemplates';
-import Brewer from "../model/Brewer";
+import {buildSolidCommunicator} from './solidCommunicatorInits/SolidCommunicatorBuilder'
+import {preApplicationHandelings} from './solidCommunicatorInits/PreApplicationHandelings'
 
-const fileClient = require('solid-file-client');
-const authClient = require('solid-auth-client');
-const rdfLib = require('rdflib');
+import Beer from '../model/HolderComponents/Beer'
+import BeerCheckIn from '../model/HolderComponents/CheckIn'
+import Brewer from "../model/HolderComponents/Brewer";
 
-const SOLID = rdfLib.Namespace("http://www.w3.org/ns/solid/terms#");
-const PIM = rdfLib.Namespace("http://www.w3.org/ns/pim/space#");
-const VCARD = rdfLib.Namespace("http://www.w3.org/2006/vcard/ns#");
-const TERMS = rdfLib.Namespace('http://purl.org/dc/terms/');
-const RDF = rdfLib.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-const SOLIDLINKEDBEER = rdfLib.Namespace('https://ozcanseker.inrupt.net/solidlinkedbeer#');
-const FOAF = rdfLib.Namespace('http://xmlns.com/foaf/0.1/');
-const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
-const DBPEDIA = rdfLib.Namespace('http://dbeerpedia.com/def#');
-const SCHEMA = rdfLib.Namespace('http://schema.org/');
+import * as fileClient from 'solid-file-client';
+import * as rdfLib from 'rdflib';
 
-const BEERREVIEWFILENAME = "_BeerReview";
-const BEERCHECKINFILENAME = "_BeerCheckIn"
+import {APPDATA_FILE, BEERCHECKINFILENAME, BEERREVIEWFILENAME, CHECKIN_FOLDER, INBOX_FOLDER} from "./rdf/Constants";
+import {DBPEDIA, FOAF, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 
 class SolidCommunicator {
   /**
    * Build the solid communicator
-   * @param {*} user 
+   * @param {*} modelHolder
    */
-  static async build(user) {
-    let values = await buildSolidCommunicator(user);
+  static async build(modelHolder) {
+    let user = modelHolder.getUser();
+    let solidCommunicator = new SolidCommunicator(modelHolder);
 
-    user.setName(values.user.name);
-    user.setImageUrl(values.user.imageURL);
-    user.addFriends(values.user.friends);
-    user.setBeerPoints(values.user.points);
-    user.setBeginDate(new Date(values.user.startdate));
-    user.setApplicationLocation(values.user.applicationLocation + "beerdrinker/");
-
-    getTenUserCheckIns(values.user.applicationLocation).then(res => {
-      user.addUserCheckIns(res.userBeerCheckIns);
-      user.setBeerReviews(res.reviews);
-      user.setCheckIns(res.checkIns);
-    });
-
-    await preApplicationHandelings(user.getApplicationLocation(), values.sc, user);
+    await buildSolidCommunicator(modelHolder, solidCommunicator);
 
     //make new solidCommunicator
-    let solidCommunicator = new SolidCommunicator(user, values.sc);
-
     return solidCommunicator;
   }
 
-  constructor(user, values) {
-    this._friendsStore = values.friendsStore;
-    this._friendGroup = values.group;
-    this._friendsRequested = values.sentGroup;
-
-    this._appStore = values.appStore;
-    this._blankNodeAppStore = values.blankNodeAppStore;
+  constructor(modelHolder) {
+    this._modelHolder = modelHolder;
+    this._user = modelHolder.getUser();
 
     //user
-    this._user = user;
+    this._beerDrinkerFolder = this._user.getBeerDrinkerFolder();
+    this._checkInFolder = this._beerDrinkerFolder + CHECKIN_FOLDER;
+    this._appStoreLocation = this._beerDrinkerFolder + APPDATA_FILE;
+  }
 
-    this._applocation = user.getApplicationLocation();
-    this._checkInFolder = this._applocation + 'checkins/';
-    this._appStoreLocation = this._applocation + 'appdata.ttl'
+  loadInFriendsStore(friendGroup, friendsRequestedGroup, friendsStore) {
+    this._friendsStore = friendsStore;
+    this._friendGroup = friendGroup;
+    this._friendsRequestedGroup = friendsRequestedGroup;
+
+    preApplicationHandelings(this._user.getBeerDrinkerFolder(), friendGroup, friendsRequestedGroup, friendsStore, this._user);
+  }
+
+  loadInAppStore(store, blankNode){
+    this._appStore = store;
+    this._blankNodeAppStore = blankNode;
   }
 
   /**
@@ -82,7 +72,7 @@ class SolidCommunicator {
    * @param {*} url 
    */
   async getInboxContents() {
-    let inbox = this._user.getApplicationLocation() + "inbox/"
+    let inbox = this._user.getBeerDrinkerFolder() + INBOX_FOLDER;
     let res = await fileClient.readFolder(inbox);
     let files = [];
 
@@ -117,7 +107,7 @@ class SolidCommunicator {
   }
 
   checkIfUserIsFriend(url) {
-    let query1 = this._friendsStore.match(this._friendsRequested, VCARD('hasMember'), rdfLib.sym(url));
+    let query1 = this._friendsStore.match(this._friendsRequestedGroup, VCARD('hasMember'), rdfLib.sym(url));
     let query2 = this._friendsStore.match(this._friendGroup, VCARD('hasMember'), rdfLib.sym(url));
 
     if (query1.length !== 0 || query2.length !== 0) {
@@ -172,7 +162,7 @@ class SolidCommunicator {
 
       //add friend to friend request send
       let friendsFile = this._user.getApplicationLocation() + 'friends.ttl';
-      this._friendsStore.add(this._friendsRequested, VCARD('hasMember'), rdfLib.sym(urlInvitee));
+      this._friendsStore.add(this._friendsRequestedGroup, VCARD('hasMember'), rdfLib.sym(urlInvitee));
       let friendsTTL = await rdfLib.serialize(undefined, this._friendsStore, friendsFile, 'text/turtle');
 
       // send files
@@ -204,7 +194,7 @@ class SolidCommunicator {
 
   async acceptFriendSchipRequest(message) {
     //get user
-    let friend = await fetchFriend(message.from);
+    let friend = await loadFriendData(message.from);
     let inbox = friend.getApplocation() + 'beerdrinker/inbox/';
 
     //add user as friend
@@ -240,7 +230,7 @@ class SolidCommunicator {
     let graph = rdfLib.graph();
     rdfLib.parse(beersIndexTTl, graph, url, "text/turtle");
 
-    let query = graph.each(undefined, RDF('type') ,SOLIDLINKEDBEER('Beer'));
+    let query = graph.each(undefined, RDF('type') , SOLIDLINKEDBEER('Beer'));
     let beers = []; 
     query.forEach(blankNode => {
       let brewer = graph.any(blankNode, SOLIDLINKEDBEER('brewedBy'));
@@ -284,12 +274,19 @@ class SolidCommunicator {
 
     let checkingFolder =  this._checkInFolder;
     let filename;
-    let postLocation = checkingFolder + filename + ".ttl";
+    let postLocation;
 
     if(hasReview){
       filename =  date.getTime() + BEERREVIEWFILENAME;
       postLocation = checkingFolder + filename + ".ttl";
-      ttlFile = SolidTemplates.beerReviewInTemplate(postLocation, this._user.getName(), this._user.getWebId(), beer._location, beer._name, date, rating, review);
+      ttlFile = SolidTemplates.beerReviewInTemplate(postLocation,
+          this._user.getName(),
+          this._user.getWebId(),
+          beer._location,
+          beer._name,
+          date,
+          rating,
+          review);
 
       this._user.addBeerReviews();
       this._user.addBeerPoints(10);
@@ -297,7 +294,12 @@ class SolidCommunicator {
     }else{
       filename =  date.getTime() + BEERCHECKINFILENAME;
       postLocation = checkingFolder + filename + ".ttl";
-      ttlFile = SolidTemplates.beerCheckInTemplate(postLocation, this._user.getName(), this._user.getWebId(), beer._location, beer._name, date);
+      ttlFile = SolidTemplates.beerCheckInTemplate(postLocation,
+          this._user.getName(),
+          this._user.getWebId(),
+          beer._location,
+          beer._name,
+          date);
 
       this._user.addCheckIn();
       this._user.addBeerPoints(5);
@@ -366,8 +368,16 @@ class SolidCommunicator {
     return brewer;
   }
 
-  async getAllCheckIns(){
+  async getAllCheckInsLoggedInUser(){
+    if(!this._modelHolder.getCheckInHandler().getAllCheckInsGotten()){
+      this._modelHolder.getCheckInHandler().setUserCheckIns(
+          await getAllUserCheckIns(
+              this._modelHolder.getUser().getBeerDrinkerFolder()
+          )
+      );
 
+      this._modelHolder.getCheckInHandler().setAllCheckInsGotten(true);
+    }
   }
 }
 export default SolidCommunicator;

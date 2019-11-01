@@ -9,19 +9,15 @@ class FriendPage extends React.Component{
         super(props);
 
         this.state = {
-            user : this.props.user.getFriendFromIndex(this.props.match.params.id)
+            user : this.props.modelHolder.getFriendFromIndex(this.props.match.params.id)
         }
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        this.state.user.unsubscribe(this);
-        this.state.user.subscribe(this);
     }
 
     render(){
         let user = this.state.user;
         let imgUrl = user.getImageUrl();
         let userCheckIns = user.getUserCheckIns()
+        let content;
 
         userCheckIns = userCheckIns.map(checkIn => {
             return (
@@ -29,29 +25,33 @@ class FriendPage extends React.Component{
             )
         })
 
+        if(user.getStartDate()){
+            content = (<div className="leftColum">
+                <h1>
+                    {user.getName()}
+                </h1>
+                {/*TODO make image load faster*/}
+                <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
+                <p>
+                    check-ins : {user.getCheckIns()}
+                </p>
+                <p>
+                    reviews : {user.getBeerReviews()}
+                </p>
+                <p>
+                    Begin date : {dateToString(user.getStartDate())}
+                </p>
+                <p>
+                    beerbonus points : {user.getPoints()}
+                </p>
+            </div>);
+        }
+
         return(
             <section className = "profileScreen">
                 
                 <div className="row">
-                    <div className="leftColum">
-                    <h1>
-                            {user.getName()}
-                        </h1>
-                            {/*TODO make image load faster*/}
-                            <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
-                        <p>
-                            check-ins : {user.getCheckIns()}
-                        </p>
-                        <p>
-                            reviews : {user.getBeerReviews()}
-                        </p>
-                        <p>
-                        Begin date : {dateToString(user.getStartDate())}
-                        </p>
-                        <p>
-                            beerbonus points : {user.getPoints()}
-                        </p>
-                    </div>
+                    {content}
                     <div className="column">
 
                         <h1>

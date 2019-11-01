@@ -57,7 +57,7 @@ class Friends extends React.Component{
     }
 
     render(){
-        let friends = this.props.user.getFriends();
+        let friends = this.props.modelHolder.getFriends();
         friends = friends.filter(friend => {
             let text = this.state.inputText.toUpperCase();
             if(friend.getName()){

@@ -1,5 +1,4 @@
 class Brewer {
-
     constructor(name, groep, opgericht, owners, provincie, email, taxID, telephone, url, postalCode, streetAddress, addressRegion, addressLocality){
         this._name = name;
         this._groep = groep;

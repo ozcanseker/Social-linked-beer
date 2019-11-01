@@ -2,31 +2,30 @@
  * Libs
  */
 import React from 'react';
-import solidAuth from 'solid-auth-client'
+import solidAuth from 'solid-auth-client';
 import { Link, withRouter } from "react-router-dom";
-import SolidCommunicator from './solid/SolidCommunicator'
-
+import SolidCommunicator from './solid/SolidCommunicator';
 
 /**
  * Components
  */
 import NavBar from './component/NavBar';
-import AppRoutes from './routes/AppRoutes'
-import AclErrorPage from './routes/extrapage/AclErrorPage'
-import FetchingPage from './routes/extrapage/FetchingPage'
+import AppRoutes from './routes/AppRoutes';
+import AclErrorPage from './routes/extrapage/AclErrorPage';
+import FetchingPage from './routes/extrapage/FetchingPage';
 
 /**
  * Errors
  */
-import AccessError from './error/AccessError'
+import AccessError from './error/AccessError';
 
 /**
  * Assests
  */
 import './css/App.scss';
-import Knipsel from './assets/Knipsel.png'
-import Logo from './assets/logo.png'
-import User from './model/User';
+import Knipsel from './assets/Knipsel.png';
+import Logo from './assets/logo.png';
+import ModelHolder from "./model/ModelHolder";
 
 class App extends React.Component {
   constructor(props) {
@@ -34,11 +33,13 @@ class App extends React.Component {
     this.state = {
       loggedIn: false,
       searchQuery: '',
-      userObject: undefined,
+      modelHolder: new ModelHolder(),
       solidCommunicator: undefined,
       accessError: false,
       fetchingFiles: false
     }
+
+    this.state.modelHolder.subscribe(this);
   }
 
   componentDidMount() {
@@ -47,7 +48,7 @@ class App extends React.Component {
 
   update = () => {
     this.setState({
-      update: true
+      modelHolder : this.state.modelHolder
     })
   }
 
@@ -67,14 +68,12 @@ class App extends React.Component {
       });
 
       //make new user
-      let user = new User(session.webId);
-      user.subscribe(this);
+      this.state.modelHolder.getUser().setUri(session.webId);
 
       try {
-        let solidCommunicator = await SolidCommunicator.build(user);
+        let solidCommunicator = await SolidCommunicator.build(this.state.modelHolder);
 
         this.setState({
-          userObject: user,
           solidCommunicator: solidCommunicator,
           loggedIn: true,
           fetchingFiles: false
@@ -96,12 +95,12 @@ class App extends React.Component {
 
 
   onClickLogOut = () => {
-    solidAuth.logout();
-
-    this.setState({
-      loggedIn: false,
-      userObject: undefined,
-      accessError : false
+    solidAuth.logout().then(res => {
+      this.setState({
+        loggedIn: false,
+        userObject: undefined,
+        accessError : false
+      });
     });
   }
 
@@ -172,7 +171,7 @@ class App extends React.Component {
     } else {
       app = (<AppRoutes
         loggedIn={this.state.loggedIn}
-        userObject={this.state.userObject}
+        modelHolder={this.state.modelHolder}
         solidCommunicator={this.state.solidCommunicator}
         clearSearchQuery={this.clearSearchQuery}
         onLoggedIn={this.onLoggedIn}

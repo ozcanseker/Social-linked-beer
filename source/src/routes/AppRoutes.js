@@ -2,7 +2,6 @@ import React from 'react';
 
 import {Switch, Route, withRouter, Redirect} from "react-router-dom";
 
-
 /**
  * Imported Pages
  */
@@ -19,34 +18,59 @@ import Inbox from './page/Inbox';
 import BeerDetailScreen from './page/BeerDetailScreen';
 import BrewerPage from './page/BrewerPage';
 
-
 class AppRoutes extends React.Component {
     render() {
         return (
             <Switch>
-                <Route exact path="/" component={Home} isLoggedIn={this.props.loggedIn}
+                <Route exact path="/"
+                       component={Home}
+                       isLoggedIn={this.props.loggedIn}
                        solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute path="/user" component={UserPage} isLoggedIn={this.props.loggedIn}
+                <PrivateRoute path="/user"
+                              component={UserPage}
+                              isLoggedIn={this.props.loggedIn}
                               solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute path="/beer/:id" component={BeerDetailScreen} isLoggedIn={this.props.loggedIn}
+                <PrivateRoute path="/beer/:id"
+                              component={BeerDetailScreen}
+                              isLoggedIn={this.props.loggedIn}
                               solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute path="/brewer/:id" component={BrewerPage} isLoggedIn={this.props.loggedIn}
+                <PrivateRoute path="/brewer/:id"
+                              component={BrewerPage}
+                              isLoggedIn={this.props.loggedIn}
                               solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute exact path="/friend" component={Friends} isLoggedIn={this.props.loggedIn}
-                              user={this.props.userObject} solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute path="/friend/:id" component={FriendsPage} isLoggedIn={this.props.loggedIn}
-                              user={this.props.userObject}/>
-                <PrivateRoute path="/beerresults" component={BeerResults} isLoggedIn={this.props.loggedIn}
+                <PrivateRoute exact path="/friend"
+                              component={Friends}
+                              isLoggedIn={this.props.loggedIn}
+                              modelHolder={this.props.modelHolder}
+                              solidCommunicator={this.props.solidCommunicator}/>
+                <PrivateRoute path="/friend/:id"
+                              component={FriendsPage}
+                              isLoggedIn={this.props.loggedIn}
+                              modelHolder={this.props.modelHolder}/>
+                <PrivateRoute path="/beerresults"
+                              component={BeerResults}
+                              isLoggedIn={this.props.loggedIn}
                               onLinkClick={this.props.clearSearchQuery}
                               solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRoute path="/groups" component={Groups} isLoggedIn={this.props.loggedIn}/>
-                <PrivateRoute path='/profile' component={Profile} isLoggedIn={this.props.loggedIn}
-                              user={this.props.userObject}/>
-                <PrivateRoute path='/checkIns' component={CheckIns} isLoggedIn={this.props.loggedIn}
-                              solidCommunicator={this.props.solidCommunicator} user={this.props.userObject}/>
-                <PrivateRoute path='/inbox' component={Inbox} isLoggedIn={this.props.loggedIn}
+                <PrivateRoute path="/groups"
+                              component={Groups}
+                              isLoggedIn={this.props.loggedIn}/>
+                <PrivateRoute path='/profile'
+                              component={Profile}
+                              isLoggedIn={this.props.loggedIn}
+                              modelHolder={this.props.modelHolder}/>
+                <PrivateRoute path='/checkIns'
+                              component={CheckIns}
+                              isLoggedIn={this.props.loggedIn}
+                              solidCommunicator={this.props.solidCommunicator}
+                              modelHolder={this.props.modelHolder}/>
+                <PrivateRoute path='/inbox'
+                              component={Inbox}
+                              isLoggedIn={this.props.loggedIn}
                               solidCommunicator={this.props.solidCommunicator}/>
-                <PrivateRouteLogIn path="/login" component={LogIn} isLoggedIn={this.props.loggedIn}
+                <PrivateRouteLogIn path="/login"
+                                   component={LogIn}
+                                   isLoggedIn={this.props.loggedIn}
                                    onLoggedIn={this.props.onLoggedIn}/>
             </Switch>)
     }

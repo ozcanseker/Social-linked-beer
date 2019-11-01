@@ -3,46 +3,49 @@ import '../css/Profile.scss'
 import profilePic from '../../assets/profilePic.png'
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 import {Link, Redirect, withRouter} from "react-router-dom";
-import TransitionGroup from 'react-transition-group/TransitionGroup';
-import Fade from 'react-reveal/Fade';
 
 class Profile extends React.Component{
     render(){
-        let user = this.props.user;
+        let user = this.props.modelHolder.getUser();
         let imgUrl = user.getImageUrl();
-        let userCheckIns = user.getUserCheckIns()
+        let checkInHandler = this.props.modelHolder.getCheckInHandler();
+        let userCheckIns = checkInHandler.getUserCheckIns();
+        let content;
+
 
         userCheckIns = userCheckIns.map(checkIn => {
             return (
-                <Fade key = {checkIn._fileLocation}>
-                    <BeerCheckInComponent  checkin = {checkIn}/>
-                </Fade>
+                <BeerCheckInComponent key = {checkIn._fileLocation} checkin = {checkIn}/>
             )
         })
 
+        if(user.getBeginDate()){
+            content = (<div className="leftColum">
+                    <h1>
+                        {user.getName()}
+                    </h1>
+                    {/*TODO make image load faster*/}
+                    <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
+                    <p>
+                        check-ins : {checkInHandler.getCheckInsAmount()}
+                    </p>
+                    <p>
+                        reviews : {checkInHandler.getBeerReviewsAmount()}
+                    </p>
+                    <p>
+                        Begin date : {dateToString(user.getBeginDate())}
+                    </p>
+                    <p>
+                        beerbonus points : {checkInHandler.getBeerPoints()}
+                    </p>
+                </div>
+            )
+        }
+
         return(
             <section className = "profileScreen">
-                
                 <div className="row">
-                    <div className="leftColum">
-                        <h1>
-                            {user.getName()}
-                        </h1>
-                            {/*TODO make image load faster*/}
-                            <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
-                        <p>
-                            check-ins : {user.getCheckIns()}
-                        </p>
-                        <p>
-                            reviews : {user.getBeerReviews()}
-                        </p>
-                        <p>
-                            Begin date : {dateToString(user.getBeginDate())}
-                        </p>
-                        <p>
-                            beerbonus points : {user.getBeerPoints()}
-                        </p>
-                    </div>
+                    {content}
                     <div className="column">
                         <div className = "checkinDiv">
                             <Link to="/checkIns">All check ins &rarr;</Link>
@@ -50,11 +53,9 @@ class Profile extends React.Component{
                         <h1>
                             Recent activities
                         </h1>
-                        <TransitionGroup>
                             <ul>
                                 {userCheckIns}
                             </ul>
-                        </TransitionGroup>
                     </div>
                 </div>
             </section>
