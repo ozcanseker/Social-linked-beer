@@ -16,7 +16,7 @@ class FriendPage extends React.Component{
     render(){
         let user = this.state.user;
         let imgUrl = user.getImageUrl();
-        let userCheckIns = user.getUserCheckIns()
+        let userCheckIns = user.getCheckInHandler().getUserCheckIns()
         let content;
 
         userCheckIns = userCheckIns.map(checkIn => {
@@ -33,16 +33,16 @@ class FriendPage extends React.Component{
                 {/*TODO make image load faster*/}
                 <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
                 <p>
-                    check-ins : {user.getCheckIns()}
+                    check-ins : {user.getCheckInHandler().getCheckInsAmount()}
                 </p>
                 <p>
-                    reviews : {user.getBeerReviews()}
+                    reviews : {user.getCheckInHandler().getBeerReviewsAmount()}
                 </p>
                 <p>
                     Begin date : {dateToString(user.getStartDate())}
                 </p>
                 <p>
-                    beerbonus points : {user.getPoints()}
+                    beerbonus points : {user.getCheckInHandler().getBeerPoints()}
                 </p>
             </div>);
         }

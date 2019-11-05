@@ -7,7 +7,7 @@ class Friends extends React.Component{
         super(props);
 
         this.state = {
-            inputText : "",
+            inputText : "https://",
             error : undefined
         }
     }
@@ -19,7 +19,8 @@ class Friends extends React.Component{
     }
 
     onButtonClick = async () => {
-        let friends = this.props.user.getFriends();
+        let friends = this.props.modelHolder.getFriends();
+
         friends = friends.filter(friend => {
             let text = this.state.inputText.toUpperCase();
             let friendUri = friend.getUri().toUpperCase();
@@ -31,6 +32,7 @@ class Friends extends React.Component{
         });
 
         if (friends.length !== 0){
+            //this is a mess and lazy programming but keep it in because i do not have time to change it.
             let index = this.props.user.getFriends().map((profile, index) => {
                 if(friends[0].getUri() === profile.getUri()){
                     return index;
@@ -38,7 +40,7 @@ class Friends extends React.Component{
             }).filter(index => {return index})
 
             this.props.history.push(`/friend/${index[0]}`);
-        } else if(this.props.user.getWebId() === this.state.inputText){
+        } else if(this.props.modelHolder.getUser().getUri() === this.state.inputText){
             this.props.history.push("/profile");
         }else{
             try{
@@ -77,7 +79,6 @@ class Friends extends React.Component{
             </li> 
         });
 
-
         return(
             <section className = "friends">
                 <div className = "searchFriends">
@@ -85,7 +86,7 @@ class Friends extends React.Component{
                         Make new friends
                     </h3>
                     <br/>
-                    <input type = "text" placeholder ="profilecard link" value = {this.state.inputText} onChange = {this.onChange}></input>
+                    <input type = "text" placeholder ="profilecard link" value = {this.state.inputText} onChange = {this.onChange}/>
                     <button onClick = {this.onButtonClick}>Search on the web</button>
                     <p style = {{color: "red"}}>{this.state.error}</p>
                 </div>
@@ -98,8 +99,6 @@ class Friends extends React.Component{
                         {friendsElements}
                     </ul>
                 </div>
-
-
             </section>
         )
     }

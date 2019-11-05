@@ -12,7 +12,7 @@ import {
   CHECKIN_FOLDER,
   CONTENT_TYPE_TURTLE,
   FRIENDS_FILE,
-  FRIENDS_FILENAME,
+  FRIENDS_FILENAME, GROUPFOLDER,
   INBOX_FOLDER
 } from "../rdf/Constants";
 
@@ -33,9 +33,19 @@ function sleep(ms) {
   })
 }
 
-export async function checkFolderIntegrity() {
-  //TODO Check integrity
-  console.log("TODO checkFolderIntegrity");
+export async function checkFolderIntegrity(appfolder, webId) {
+  //TODO breidt dit uit
+
+  //Group
+  let groupFolder = appfolder + BEERDRINKERFOLDER + GROUPFOLDER;
+  let groupRes = await authClient.fetch(groupFolder);
+
+  if(groupRes.status === 404){
+    let groupFolderAcl = groupFolder + '.acl';
+    await fileClient.createFolder(groupFolder);
+    let body = getAclGroupFolder(groupFolder, groupFolderAcl, webId);
+    await putSolidFile(groupFolderAcl, body);
+  }
 }
 
 /**
@@ -148,6 +158,15 @@ async function makeAppFolderStructure(appFolderUrl, webId) {
   await fileClient.createFolder(reviewUrl);
   body = getACLSubmittersFriends(reviewUrl, reviewUrlacl, webId, friendsUrl);
   await putSolidFile(reviewUrlacl, body);
+
+  //check in folder
+  let groupFolder = beerDrinkerUrl + GROUPFOLDER;
+  let groupFolderAcl = groupFolder + '.acl';
+
+  //group folder
+  await fileClient.createFolder(groupFolder);
+  body = getAclGroupFolder(groupFolder, groupFolderAcl, webId);
+  await putSolidFile(groupFolderAcl, body);
 }
 
 /**
@@ -330,6 +349,25 @@ function getAclAppData(resourceUrl, aclUrl, webIdUserLoggedIn, friendsUrl) {
   graph.add(group1, ACL('agentGroup'), fgroup2);
 
   graph.add(group1, ACL('mode'), ACL('Read'));
+
+  return rdflib.serialize(undefined, graph, aclUrl, 'text/turtle');
+}
+
+function getAclGroupFolder(appUrl, aclUrl, webIdUserLoggedIn) {
+  let graph = rdflib.graph();
+  let owner = rdflib.sym(aclUrl + "#Owner");
+  let app = rdflib.sym(appUrl);
+  let agent = rdflib.sym(webIdUserLoggedIn);
+
+  graph.add(owner, RDF('type'), ACL('Authorization'));
+
+  graph.add(owner, ACL('accessTo'), app);
+  graph.add(owner, ACL('default'), app);
+  graph.add(owner, ACL('agent'), agent);
+
+  graph.add(owner, ACL('mode'), ACL('Control'));
+  graph.add(owner, ACL('mode'), ACL('Read'));
+  graph.add(owner, ACL('mode'), ACL('Write'));
 
   return rdflib.serialize(undefined, graph, aclUrl, 'text/turtle');
 }

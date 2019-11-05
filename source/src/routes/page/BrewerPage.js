@@ -6,44 +6,15 @@ class BrewerPage extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            brewer: undefined,
-            brewerId: this.props.location.state.brewer
+            brewer: this.props.modelHolder.getBrewer()
         }
-
-        this.mounted = false;
 
         this.getBrewer();
     }
 
-    componentDidMount() {
-        this.mounted = true;
-
-        if (this.brewer) {
-
-            this.setState({
-                brewer: this.brewer
-            })
-        }
-    }
-
     getBrewer = () => {
-        this.props.solidCommunicator.getBrewerInformation(this.state.brewerId).then(res => {
-            if (this.mounted) {
-
-                this.setState({
-                    brewer: res
-                })
-            } else {
-                this.brewer = res;
-            }
+        this.props.solidCommunicator.getBrewerInformation(this.state.brewer).then(res => {
         })
-    }
-
-    update = () => {
-        this.setState({
-                brewer: this.state.brewer
-            }
-        )
     }
 
     render() {
@@ -51,7 +22,7 @@ class BrewerPage extends React.Component {
         let brewer = this.state.brewer;
         let beers;
 
-        if (brewer) {
+        if (brewer.getGroep()) {
             section = (
                 <div>
                     <h1>

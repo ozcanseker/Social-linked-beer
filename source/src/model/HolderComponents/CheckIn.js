@@ -4,7 +4,6 @@ class CheckIn extends Observable{
     constructor(fileLocation){
         super();
         this._fileLocation = fileLocation;
-
     }
 
     getFileLocation(){

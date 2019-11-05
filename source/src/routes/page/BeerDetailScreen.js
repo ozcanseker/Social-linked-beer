@@ -2,32 +2,35 @@ import React from 'react';
 import '../css/BeerDetailScreen.scss';
 import BeerCheckInOverlay from '../../component/BeerCheckInOverlay';
 import {Link, Redirect} from "react-router-dom";
+import Brewer from "../../model/HolderComponents/Brewer";
 
 class BeerDetailScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            beer: this.props.location.state.beer,
+            beer: this.props.modelHolder.getBeer(),
             overlay : false,
             beerReview : "",
             beerRating : 2.5,
             addReview: false
         }
+
+        console.log(this.state.beer);
+        this.props.modelHolder.setBrewer(new Brewer(this.state.beer.getBrewer()));
     }
 
     componentDidMount() {
-        this.props.solidCommunicator.fetchBeer(this.state.beer._location, this.state.beer).then(res => {
-            this.setState({
-                beer: res
-            })
-        });
+        this.props.solidCommunicator.fetchBeer(this.props.modelHolder.getBeer()).then(res => {});
     }
 
     onPostBeerReview = async () => {
-        await this.props.solidCommunicator.postBeerReview(this.state.addReview, this.state.beer, this.state.addReview ? this.state.beerRating : undefined, this.state.beerReview);
+        await this.props.solidCommunicator.postBeerReview(this.state.addReview, this.state.beer, this.state.beerRating, this.state.beerReview);
 
         this.setState({
-            overlay: false
+            overlay: false,
+            beerReview : "",
+            beerRating : 2.5,
+            addReview: false
         })
     }
 
@@ -57,7 +60,9 @@ class BeerDetailScreen extends React.Component {
     
     onAddReviewClick = () => {
         this.setState({
-            addReview: !this.state.addReview
+            addReview: !this.state.addReview,
+            beerRating: 2.5,
+            beerReview: ""
         })
     }
 
@@ -77,12 +82,7 @@ class BeerDetailScreen extends React.Component {
                     <button onClick= {this.onCheckInClick}>Check in beer</button>
                 </div>
                 <p>
-                    <Link to={{
-                        pathname: `/brewer/${brewerName}`,
-                        state: {
-                            brewer : beer._brewer
-                        }
-                    }}>
+                    <Link to={`/brewer/${brewerName}`}>
                         brewer
                     </Link>
                 </p>
@@ -96,7 +96,6 @@ class BeerDetailScreen extends React.Component {
                  beerRating = {this.state.beerRating}
                  onOverLayCancelClick = {this.onOverLayCancelClick}
                  setBeerRating = {this.setBeerRating}
-                 beerReview = {this.state.beerReview}
                  onBeerReviewChange = {this.onBeerReviewChange}
                  onAddReviewClick = {this.onAddReviewClick}
                  addReview = {this.state.addReview}

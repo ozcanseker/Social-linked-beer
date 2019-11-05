@@ -1,4 +1,5 @@
 import Observable from "./Observable";
+import CheckInHandler from "./CheckInHandler";
 
 class Friend extends Observable{
     constructor(uri){
@@ -9,11 +10,14 @@ class Friend extends Observable{
         this._imageUrl = undefined;
         this._beerDrinkerFolder = undefined;
         this._startDate = undefined;
-        this._points = undefined;
 
-        this._userCheckIns = [];
-        this._checkIns = 0;
-        this._beerReviews = 0;
+        this._checkInHandler = new CheckInHandler();
+        this._checkInHandler.subscribe(this);
+    }
+
+    clearAll(){
+        this._checkInHandler.unsubscribe(this);
+        this._checkInHandler.clearAll();
     }
 
     setUserDetails(name, pictureurl, beerDrinkerFolder){
@@ -26,27 +30,18 @@ class Friend extends Observable{
         this.upDateSubScribers();
     }
 
-    setAppData(startdate, points){
+    setAppData(startdate){
         this._startDate = startdate;
-        this._points = points;
 
         this.upDateSubScribers();
     }
 
-    setCheckInData(beerReviews, checkIns, userCheckins){
-        this._beerReviews = beerReviews;
-        this._checkIns = checkIns;
-        this._userCheckIns = userCheckins.concat(this._userCheckIns);
-
+    update(){
         this.upDateSubScribers();
     }
 
-    getCheckIns(){
-        return this._checkIns;
-    }
-
-    getBeerReviews(){
-        return this._beerReviews;
+    getCheckInHandler(){
+        return this._checkInHandler;
     }
 
     getUserName(uri){
@@ -76,14 +71,6 @@ class Friend extends Observable{
         }else{
             return undefined;
         }
-    }
-
-    getPoints(){
-        return this._points;
-    }
-
-    getUserCheckIns(){
-        return this._userCheckIns;
     }
 }
 

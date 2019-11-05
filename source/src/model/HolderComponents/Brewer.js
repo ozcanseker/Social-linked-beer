@@ -1,5 +1,14 @@
-class Brewer {
-    constructor(name, groep, opgericht, owners, provincie, email, taxID, telephone, url, postalCode, streetAddress, addressRegion, addressLocality){
+import Observable from "./Observable";
+
+class Brewer extends Observable{
+    constructor( url){
+        super();
+
+        this._url = url;
+        this._beers = [];
+    }
+
+    loadInBrewerInformation(name, groep, opgericht, owners, provincie, email, taxID, telephone, postalCode, streetAddress, addressRegion, addressLocality){
         this._name = name;
         this._groep = groep;
         this._opgericht = opgericht;
@@ -8,14 +17,12 @@ class Brewer {
         this._email = email;
         this._taxid = taxID;
         this._telephone = telephone;
-        this._url = url;
         this._postalcode = postalCode;
         this._streetAdress = streetAddress;
         this._addressRegion = addressRegion;
         this._addressLocality = addressLocality;
-        this._beers = [];
 
-        this._subscribers = [];
+        this.upDateSubScribers();
     }
 
     addBeers(beers){
@@ -23,18 +30,16 @@ class Brewer {
         this.upDateSubScribers();
     }
 
-    upDateSubScribers(){
-        this._subscribers.map(subscriber => subscriber.update());
+    getUrl(){
+        return this._url;
     }
 
-    subscribe(subscriber){
-        this._subscribers.push(subscriber);
+    update(){
+        this.upDateSubScribers();
     }
 
-    unsubscribe(subscriber){
-        this._subscribers.filter(subscriberList  => {
-            return subscriberList !== subscriber;
-        });
+    getGroep(){
+        return this._groep;
     }
 }
 

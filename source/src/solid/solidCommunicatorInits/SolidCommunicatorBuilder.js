@@ -1,19 +1,20 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
 import {getTenUserCheckIns, loadFriendData} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
-import {PIM, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
 import * as fileClient from "solid-file-client";
 import * as rdfLib from "rdflib";
 import {
     APPDATA_FILE,
     APPLICATION_NAME_PTI,
-    BEERDRINKERFOLDER, CONTENT_TYPE_TURTLE,
+    BEERDRINKERFOLDER, CHECKIN_FOLDER, CONTENT_TYPE_TURTLE,
     FRIENDS_FILE,
     FRIENDSGROUPNAME,
-    FRIENDSSENTGROUPNAME
+    FRIENDSSENTGROUPNAME, GROUP_DATA_FILE, GROUPFOLDER
 } from "../rdf/Constants";
 import Friend from "../../model/HolderComponents/Friend";
+import Group from "../../model/HolderComponents/Group";
 
 export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     let returnObject = {};
@@ -48,10 +49,11 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
 
     let userDetails = getUserDetails(webIdNN, storeProfileCard);
     user.loadInUserValues(userDetails.name, userDetails.imageURL, applicationLocation, applicationLocation + BEERDRINKERFOLDER);
+    solidCommunicator.setFileLocations();
 
     getAppData(user.getBeerDrinkerFolder()).then(res => {
         user.loadInAppData(new Date(res.startdate));
-        modelHolder.getCheckInHandler().setBeerPoints(res.points);
+        modelHolder.getCheckInHandler().setBeerPoints(parseInt(res.points));
         solidCommunicator.loadInAppStore(res.store, res.blankNode);
     });
 
@@ -65,6 +67,47 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
         modelHolder.addFriends(res.friends);
         solidCommunicator.loadInFriendsStore(res.group, res.sentGroup, res.friendsStore);
     });
+
+    getGroups(user.getBeerDrinkerFolder()).then(res => {
+        modelHolder.setGroups(res);
+    })
+}
+
+async function getGroups(beerDrinkerFolder){
+    let groupsLocation = beerDrinkerFolder + GROUPFOLDER;
+    let res = await fileClient.readFolder(groupsLocation);
+    let groups = [];
+
+    let myGroups = res.folders;
+
+    myGroups.forEach(res => {
+        let url = res.url;
+        let groupCheckInsLocation = url + CHECKIN_FOLDER;
+        let groupDataLocation = url + GROUP_DATA_FILE;
+
+        let group = new Group(res.url, groupCheckInsLocation, groupDataLocation,true);
+
+        loadGroupInformation(group);
+        groups.push(group);
+    })
+
+    return groups;
+}
+
+async function loadGroupInformation(group){
+    let groupDataFile = group.getGroupDataFile();
+
+    let res = await fileClient.fetch(groupDataFile);
+    let groupDataGraph = rdfLib.graph();
+    rdfLib.parse(res, groupDataGraph, groupDataFile, CONTENT_TYPE_TURTLE);
+
+    let blankNode = groupDataGraph.any(null, SCHEMA('name'));
+    let name = groupDataGraph.any(blankNode, SCHEMA('name'));
+    group.setName(name.value);
+
+    getTenUserCheckIns(group.getUrl()).then(res => {
+        group.getCheckInHandler().setReviesCheckInsAndUserCheckIns(res.reviews, res.checkIns, res.userBeerCheckIns);
+    })
 }
 
 /**
@@ -101,7 +144,7 @@ async function getApplicationLocation(publicProfileIndex, storePublicProfileInde
     let appQuery = storePublicProfileIndex.any(app, SOLID("instance"));
 
     if (appQuery) {
-        await checkFolderIntegrity();
+        await checkFolderIntegrity(appQuery.value, webId);
         return appQuery.value;
     } else {
         return await buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId);
@@ -158,4 +201,4 @@ async function getFriends(beerDrinkerFolder) {
 
     return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};
 }
- 
+

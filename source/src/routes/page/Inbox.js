@@ -4,26 +4,25 @@ import "../css/Inbox.scss";
 class Inbox extends React.Component{
     constructor(props){
         super(props);
-
         this.state = {
             messages : []
         }
     }
 
-    declineFriendShipRequest = async (index, message) => {
+    declineFriendShipRequest = (index, message) => {
         let array = this.state.messages;
         array.splice(index, 1);
         this.setState({messages: array})
 
-        await this.props.solidCommunicator.declineFriendSchipRequest(message);
+        this.props.solidCommunicator.declineFriendSchipRequest(message);
     }
 
-    acceptFriendShipRequest = async (index, message) => {
+    acceptFriendShipRequest = (index, message) => {
         let array = this.state.messages;
         array.splice(index, 1);
         this.setState({messages: array})
 
-        await this.props.solidCommunicator.acceptFriendSchipRequest(message);
+        this.props.solidCommunicator.acceptFriendSchipRequest(message);
     }
 
     componentDidMount(){

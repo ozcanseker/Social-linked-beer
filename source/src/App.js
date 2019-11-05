@@ -79,7 +79,7 @@ class App extends React.Component {
           fetchingFiles: false
         })
 
-        this.props.history.push(`/profile`)
+        this.props.history.push(`/beerresults`)
       } catch (e) {
         if (e instanceof AccessError) {
           this.setState({
@@ -96,6 +96,8 @@ class App extends React.Component {
 
   onClickLogOut = () => {
     solidAuth.logout().then(res => {
+      this.state.modelHolder.clearAll();
+
       this.setState({
         loggedIn: false,
         userObject: undefined,

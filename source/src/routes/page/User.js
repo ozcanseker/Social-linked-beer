@@ -6,23 +6,27 @@ class User extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            clicked: false
+            clicked: false,
+            result : this.props.location.state.result
         }
+
+        console.log(this.state.result.appLocation);
+        console.log(this.state.result.url);
     }
 
     onNotJoinedButtonClick = async () => {
-        let result = this.props.location.state.result;
+        let result = this.state.result;
         await this.props.solidCommunicator.inviteUserToSolib(result.url, result.inbox);
 
         this.setState(
             {
-                clicked : true}
-            );  
+                clicked : true
+            });
     }
 
     sendFriendShipRequest = async () => {
         //TODO check if friendship request is already set
-        let result = this.props.location.state.result;
+        let result = this.state.result;
         await this.props.solidCommunicator.sendFriendshipRequest(result.url, result.appLocation);
 
         this.setState(

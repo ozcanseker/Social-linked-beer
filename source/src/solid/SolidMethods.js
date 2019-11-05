@@ -66,7 +66,7 @@ export async function getUserFile(url) {
     if (userttt.status === 403) {
         throw new Error("403: user unauthorized");
     } else if (userttt.status > 400) {
-        throw new Error("Something went wrong");
+        throw new Error("Something went wrong, check if the profile card is correct");
     }
 
     userttt = await userttt.text();
@@ -143,11 +143,12 @@ export async function loadFriendData(friend) {
         let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
         let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
 
-        friend.setAppData(new Date(startdate.value), points.value);
+        friend.setAppData(new Date(startdate.value));
+        friend.getCheckInHandler().setBeerPoints(points.value);
     });
 
     getTenUserCheckIns(friend.getBeerDrinkerFolder()).then(res => {
-        friend.setCheckInData(res.reviews, res.checkIns, res.userBeerCheckIns)
+        friend.getCheckInHandler().setReviesCheckInsAndUserCheckIns(res.reviews, res.checkIns, res.userBeerCheckIns)
     });
 }
 

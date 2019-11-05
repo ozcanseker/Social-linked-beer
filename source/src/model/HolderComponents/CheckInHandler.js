@@ -11,6 +11,19 @@ class CheckInHandler extends Observable {
         this._allCheckinsGotten = false;
     }
 
+    setReviesCheckInsAndUserCheckIns(reviews, checkIns, userBeerCheckIns){
+        this._beerReviewsAmount = reviews;
+        this._checkInsAmount = checkIns;
+
+        userBeerCheckIns.forEach(checkIn => {
+            checkIn.subscribe(this);
+        });
+
+        this._userCheckIns = userBeerCheckIns;
+
+        this.upDateSubScribers();
+    }
+
     setAllCheckInsGotten(bool){
         this._allCheckinsGotten = bool;
     }
@@ -26,7 +39,6 @@ class CheckInHandler extends Observable {
 
     setBeerPoints(beerPoints) {
         this._beerPoints = beerPoints;
-        console.log(beerPoints);
         this.upDateSubScribers();
     }
 
@@ -73,6 +85,12 @@ class CheckInHandler extends Observable {
 
         this._userCheckIns = userCheckins;
         this.upDateSubScribers();
+    }
+
+    clearAll(){
+        this._userCheckIns.forEach(res => {
+            res.unsubscribe(this);
+        })
     }
 
     addUserCheckIns(userCheckins) {
