@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/Social-linked-beer/static/css/main.d4661d62.chunk.css",
-    "main.js": "/Social-linked-beer/static/js/main.90e566d4.chunk.js",
-    "main.js.map": "/Social-linked-beer/static/js/main.90e566d4.chunk.js.map",
+    "main.css": "/Social-linked-beer/static/css/main.93873a23.chunk.css",
+    "main.js": "/Social-linked-beer/static/js/main.4362bcfc.chunk.js",
+    "main.js.map": "/Social-linked-beer/static/js/main.4362bcfc.chunk.js.map",
     "runtime-main.js": "/Social-linked-beer/static/js/runtime-main.52c802a6.js",
     "runtime-main.js.map": "/Social-linked-beer/static/js/runtime-main.52c802a6.js.map",
-    "static/js/2.73c3abf8.chunk.js": "/Social-linked-beer/static/js/2.73c3abf8.chunk.js",
-    "static/js/2.73c3abf8.chunk.js.map": "/Social-linked-beer/static/js/2.73c3abf8.chunk.js.map",
+    "static/js/2.74eec537.chunk.js": "/Social-linked-beer/static/js/2.74eec537.chunk.js",
+    "static/js/2.74eec537.chunk.js.map": "/Social-linked-beer/static/js/2.74eec537.chunk.js.map",
     "index.html": "/Social-linked-beer/index.html",
-    "precache-manifest.20119346d416153a85ab9f16214fead9.js": "/Social-linked-beer/precache-manifest.20119346d416153a85ab9f16214fead9.js",
+    "precache-manifest.0ea9ea2fa2b11cccbd51d2598bda62ae.js": "/Social-linked-beer/precache-manifest.0ea9ea2fa2b11cccbd51d2598bda62ae.js",
     "service-worker.js": "/Social-linked-beer/service-worker.js",
-    "static/css/main.d4661d62.chunk.css.map": "/Social-linked-beer/static/css/main.d4661d62.chunk.css.map",
+    "static/css/main.93873a23.chunk.css.map": "/Social-linked-beer/static/css/main.93873a23.chunk.css.map",
     "static/media/Knipsel.png": "/Social-linked-beer/static/media/Knipsel.4dafcfef.png",
     "static/media/LogIn.scss": "/Social-linked-beer/static/media/beerpouring.6dde892b.gif",
-    "static/media/logo.png": "/Social-linked-beer/static/media/logo.bc392ac4.png",
+    "static/media/logo.png": "/Social-linked-beer/static/media/logo.a311d3af.png",
     "static/media/profilePic.png": "/Social-linked-beer/static/media/profilePic.b6681619.png"
   }
 }
