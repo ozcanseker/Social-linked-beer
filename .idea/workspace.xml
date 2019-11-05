@@ -2,31 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7fa34f44-f802-4b5f-94c9-fb625ddc2bae" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/source/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Beer.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Beer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Brewer.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Brewer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckIn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckInHandler.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckInHandler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Friend.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/model/ModelHolder.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/ModelHolder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/AppRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/BeerDetailScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/BeerDetailScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/BeerResults.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/BeerResults.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/BrewerPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/BrewerPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/FriendPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/FriendPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/Friends.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/Friends.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/Groups.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/Groups.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/Inbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/Inbox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/routes/page/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/User.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/SolidCommunicator.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/SolidCommunicator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/SolidMethods.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/SolidMethods.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/rdf/Constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/rdf/Constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/rdf/SolidTtlTemplates.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/rdf/SolidTtlTemplates.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/PodFolderBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/PodFolderBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/PreApplicationHandelings.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/PreApplicationHandelings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/SolidCommunicatorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/SolidCommunicatorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/source/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/source/package.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +83,7 @@
       <workItem from="1572861892822" duration="36000" />
       <workItem from="1572862296341" duration="15801000" />
       <workItem from="1572903111463" duration="33000" />
-      <workItem from="1572942612573" duration="18898000" />
+      <workItem from="1572942612573" duration="19344000" />
     </task>
     <servers />
   </component>
