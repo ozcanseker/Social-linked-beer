@@ -9,6 +9,7 @@ class User extends Observable{
         this._startDate = undefined;
         this._appFolder = undefined;
         this._beerDrinkerFoler = undefined;
+        this._checkInFolder = undefined;
     }
 
     setUri(uri){
@@ -18,10 +19,10 @@ class User extends Observable{
             this._name = this.getUserName(uri);
         }
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
-    loadInUserValues(name, imageURL, appFolder,beerDrinkerFolder){
+    loadInUserValues(name, imageURL, appFolder,beerDrinkerFolder, checkInFolder){
         if(name){
             this._name = name;
         }
@@ -29,14 +30,15 @@ class User extends Observable{
         this._imageUrl = imageURL;
         this._appFolder = appFolder;
         this._beerDrinkerFoler = beerDrinkerFolder;
+        this._checkInFolder = checkInFolder;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     loadInAppData(startDate){
         this._startDate = startDate;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getUri(){
@@ -69,6 +71,10 @@ class User extends Observable{
 
     getBeerDrinkerFolder(){
         return this._beerDrinkerFoler;
+    }
+
+    getCheckInLocation(){
+        return this._checkInFolder;
     }
 }
 

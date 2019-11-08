@@ -17,6 +17,7 @@ import UserPage from './page/User';
 import Inbox from './page/Inbox';
 import BeerDetailScreen from './page/BeerDetailScreen';
 import BrewerPage from './page/BrewerPage';
+import GroupDetail from "./page/GroupDetail";
 
 class AppRoutes extends React.Component {
     render() {
@@ -29,7 +30,8 @@ class AppRoutes extends React.Component {
                 <PrivateRoute path="/user"
                               component={UserPage}
                               isLoggedIn={this.props.loggedIn}
-                              solidCommunicator={this.props.solidCommunicator}/>
+                              solidCommunicator={this.props.solidCommunicator}
+                              modelHolder={this.props.modelHolder}/>
                 <PrivateRoute path="/beer/:id"
                               component={BeerDetailScreen}
                               isLoggedIn={this.props.loggedIn}
@@ -55,7 +57,12 @@ class AppRoutes extends React.Component {
                               onLinkClick={this.props.clearSearchQuery}
                               solidCommunicator={this.props.solidCommunicator}
                               modelHolder={this.props.modelHolder}/>
-                <PrivateRoute path="/groups"
+                <PrivateRoute path="/groups/:id"
+                              component={GroupDetail}
+                              isLoggedIn={this.props.loggedIn}
+                              modelHolder={this.props.modelHolder}
+                              solidCommunicator={this.props.solidCommunicator}/>
+                <PrivateRoute exact path="/groups"
                               component={Groups}
                               isLoggedIn={this.props.loggedIn}
                               modelHolder={this.props.modelHolder}
@@ -72,7 +79,8 @@ class AppRoutes extends React.Component {
                 <PrivateRoute path='/inbox'
                               component={Inbox}
                               isLoggedIn={this.props.loggedIn}
-                              solidCommunicator={this.props.solidCommunicator}/>
+                              solidCommunicator={this.props.solidCommunicator}
+                              modelHolder={this.props.modelHolder}/>
                 <PrivateRouteLogIn path="/login"
                                    component={LogIn}
                                    isLoggedIn={this.props.loggedIn}

@@ -4,48 +4,52 @@ import "../css/Inbox.scss";
 class Inbox extends React.Component{
     constructor(props){
         super(props);
-        this.state = {
-            messages : []
-        }
     }
 
     declineFriendShipRequest = (index, message) => {
-        let array = this.state.messages;
-        array.splice(index, 1);
-        this.setState({messages: array})
-
+        this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.declineFriendSchipRequest(message);
-    }
+    };
 
     acceptFriendShipRequest = (index, message) => {
-        let array = this.state.messages;
-        array.splice(index, 1);
-        this.setState({messages: array})
-
+        this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.acceptFriendSchipRequest(message);
-    }
+    };
 
-    componentDidMount(){
-        this.props.solidCommunicator.getInboxContents().then(res => {
-            this.setState({messages : res})
-        })
+    declineGroupRequest = (index, message) => {
+        this.props.modelHolder.spliceAtIndex(index);
+        this.props.solidCommunicator.declineGroupRequest(message);
+    };
+
+    acceptGroupRequest = (index, message) => {
+        this.props.modelHolder.spliceAtIndex(index);
+        this.props.solidCommunicator.acceptGroupRequest(message);
+    };
+
+    componentDidMount() {
+        this.props.solidCommunicator.getInboxContents();
     }
 
     render(){
-        let items = this.state.messages.map((message, index)=> {
+        let items = this.props.modelHolder.getInboxMessages().map((message, index)=> {
             let buttonDiv;
-            
-            if(message.type === "FriendshipRequest"){
+
+            if(message.getType() === "FriendshipRequest"){
                 buttonDiv = (<div className = "buttonDiv">
                     <button onClick = {() => this.declineFriendShipRequest(index,message)}>Decline</button>
                     <button onClick = {() => this.acceptFriendShipRequest(index, message)}>Accept</button>
                 </div>)
+            }else if(message.getType() === "GroupInvitation"){
+                buttonDiv = (<div className = "buttonDiv">
+                    <button onClick = {() => this.declineGroupRequest(index,message)}>Decline</button>
+                    <button onClick = {() => this.acceptGroupRequest(index, message)}>Accept</button>
+                </div>)
             }
 
-            return (<li key = {message.url}>
-                <h4>{message.type}</h4>
-                <p>from : {message.from}</p>
-                <p>{message.description}</p>
+            return (<li key = {message.getUri()}>
+                <h4>{message.getType()}</h4>
+                <p>{message.getFrom() ? "from :" + message.getFrom(): "fetching file"}</p>
+                <p>{message.getDesc()}</p>
                 {buttonDiv}
             </li>)
         })

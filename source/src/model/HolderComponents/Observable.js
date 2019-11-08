@@ -3,7 +3,7 @@ class Observable {
         this._subscribers = [];
     }
 
-    upDateSubScribers(){
+    updateSubscribers(){
         this._subscribers.map(subscriber => subscriber.update());
     }
 

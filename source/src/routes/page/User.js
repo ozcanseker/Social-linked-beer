@@ -9,9 +9,6 @@ class User extends React.Component{
             clicked: false,
             result : this.props.location.state.result
         }
-
-        console.log(this.state.result.appLocation);
-        console.log(this.state.result.url);
     }
 
     onNotJoinedButtonClick = async () => {

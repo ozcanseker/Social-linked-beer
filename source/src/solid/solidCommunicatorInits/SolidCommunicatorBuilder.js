@@ -1,5 +1,5 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
-import {getTenUserCheckIns, loadFriendData} from "../SolidMethods";
+import {getAllUserCheckIns, getTenUserCheckIns, loadFriendData} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
 import {PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
@@ -8,7 +8,7 @@ import * as rdfLib from "rdflib";
 import {
     APPDATA_FILE,
     APPLICATION_NAME_PTI,
-    BEERDRINKERFOLDER, CHECKIN_FOLDER, CONTENT_TYPE_TURTLE,
+    BEERDRINKERFOLDER, CHECKIN_FOLDER, CHECKIN_INDEX_FILE, CONTENT_TYPE_TURTLE,
     FRIENDS_FILE,
     FRIENDSGROUPNAME,
     FRIENDSSENTGROUPNAME, GROUP_DATA_FILE, GROUPFOLDER
@@ -48,7 +48,11 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     returnObject.sc = {};
 
     let userDetails = getUserDetails(webIdNN, storeProfileCard);
-    user.loadInUserValues(userDetails.name, userDetails.imageURL, applicationLocation, applicationLocation + BEERDRINKERFOLDER);
+    user.loadInUserValues(userDetails.name,
+        userDetails.imageURL,
+        applicationLocation,
+        applicationLocation + BEERDRINKERFOLDER,
+        applicationLocation + BEERDRINKERFOLDER + CHECKIN_FOLDER);
     solidCommunicator.setFileLocations();
 
     getAppData(user.getBeerDrinkerFolder()).then(res => {
@@ -73,41 +77,84 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     })
 }
 
-async function getGroups(beerDrinkerFolder){
+async function getGroups(beerDrinkerFolder) {
     let groupsLocation = beerDrinkerFolder + GROUPFOLDER;
     let res = await fileClient.readFolder(groupsLocation);
     let groups = [];
 
     let myGroups = res.folders;
+    let friendsGroups = res.files;
 
     myGroups.forEach(res => {
-        let url = res.url;
-        let groupCheckInsLocation = url + CHECKIN_FOLDER;
-        let groupDataLocation = url + GROUP_DATA_FILE;
-
-        let group = new Group(res.url, groupCheckInsLocation, groupDataLocation,true);
+        let group = new Group(res.url, true);
 
         loadGroupInformation(group);
         groups.push(group);
-    })
+    });
+
+    friendsGroups.forEach(res => {
+        let group = new Group(res.url, false);
+
+        loadFriendGroupData(group);
+        groups.push(group);
+    });
 
     return groups;
 }
 
-async function loadGroupInformation(group){
-    let groupDataFile = group.getGroupDataFile();
+async function loadFriendGroupData(group) {
+    let file = await fileClient.fetch(group.getUrl());
 
-    let res = await fileClient.fetch(groupDataFile);
-    let groupDataGraph = rdfLib.graph();
-    rdfLib.parse(res, groupDataGraph, groupDataFile, CONTENT_TYPE_TURTLE);
+    let graph = rdfLib.graph();
+    rdfLib.parse(file, graph, group.getUrl(), CONTENT_TYPE_TURTLE);
 
-    let blankNode = groupDataGraph.any(null, SCHEMA('name'));
-    let name = groupDataGraph.any(blankNode, SCHEMA('name'));
-    group.setName(name.value);
+    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('location'));
+    let urlGroup = graph.any(blankNode, SOLIDLINKEDBEER('location'));
 
+    group.setUrl(urlGroup.value);
+
+    await loadGroupInformation(group);
+}
+
+async function loadGroupInformation(group) {
+    let groupCheckInsLocation = group.getUrl() + CHECKIN_FOLDER;
+    let groupDataLocation = group.getUrl() + GROUP_DATA_FILE;
+    let checkIndexLocation = group.getUrl() + CHECKIN_INDEX_FILE;
+
+    //krijg de checkins van de grop
     getTenUserCheckIns(group.getUrl()).then(res => {
         group.getCheckInHandler().setReviesCheckInsAndUserCheckIns(res.reviews, res.checkIns, res.userBeerCheckIns);
     })
+
+    let res = await fileClient.fetch(groupDataLocation);
+    let groupDataGraph = rdfLib.graph();
+    rdfLib.parse(res, groupDataGraph, groupDataLocation, CONTENT_TYPE_TURTLE);
+
+    //krijg de members
+    let hasMemberGroup = groupDataGraph.any(undefined, VCARD('hasLeader'));
+    let leader = groupDataGraph.any(hasMemberGroup, VCARD('hasLeader'));
+
+    let name = groupDataGraph.any(hasMemberGroup, SCHEMA('name'));
+
+    //checkInIndex
+    let checkInIndex = await fileClient.fetch(checkIndexLocation);
+    let checkInIndexGraph = rdfLib.graph();
+    rdfLib.parse(checkInIndex, checkInIndexGraph, checkIndexLocation, CONTENT_TYPE_TURTLE);
+
+    let pointsMemberGroup = checkInIndexGraph.any(undefined, VCARD('hasMember'));
+
+    let members = [];
+    checkInIndexGraph.each(pointsMemberGroup, VCARD('hasMember')).map(res => {
+        let points = checkInIndexGraph.any(res, SOLIDLINKEDBEER('points'));
+
+        if(res.value === leader.value){
+            leader = {member: res.value, points: points.value};
+        }else{
+            members.push({member: res.value, points: points.value});
+        }
+    });
+
+    group.setProperties(name.value, groupCheckInsLocation, groupDataLocation,checkIndexLocation, leader, members);
 }
 
 /**

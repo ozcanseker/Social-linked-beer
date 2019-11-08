@@ -22,12 +22,12 @@ class Brewer extends Observable{
         this._addressRegion = addressRegion;
         this._addressLocality = addressLocality;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     addBeers(beers){
         this._beers = this._beers.concat(beers);
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getUrl(){
@@ -35,7 +35,7 @@ class Brewer extends Observable{
     }
 
     update(){
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getGroep(){

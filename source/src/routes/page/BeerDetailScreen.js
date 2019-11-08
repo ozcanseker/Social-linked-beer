@@ -12,10 +12,10 @@ class BeerDetailScreen extends React.Component {
             overlay : false,
             beerReview : "",
             beerRating : 2.5,
-            addReview: false
-        }
+            addReview: false,
+            selectedOptions : [{value: this.props.modelHolder.getUser().getCheckInLocation(), label : "Public"}]
+        };
 
-        console.log(this.state.beer);
         this.props.modelHolder.setBrewer(new Brewer(this.state.beer.getBrewer()));
     }
 
@@ -24,13 +24,19 @@ class BeerDetailScreen extends React.Component {
     }
 
     onPostBeerReview = async () => {
-        await this.props.solidCommunicator.postBeerReview(this.state.addReview, this.state.beer, this.state.beerRating, this.state.beerReview);
+        await this.props.solidCommunicator.postBeerReview(this.state.addReview,
+            this.state.beer,
+            this.state.beerRating,
+            this.state.beerReview,
+            this.state.selectedOptions.map(res => {return res.value})
+        );
 
         this.setState({
             overlay: false,
             beerReview : "",
             beerRating : 2.5,
-            addReview: false
+            addReview: false,
+            selectedOptions : [{value: this.props.modelHolder.getUser().getCheckInLocation(), label : "Public"}]
         })
     }
 
@@ -64,11 +70,23 @@ class BeerDetailScreen extends React.Component {
             beerRating: 2.5,
             beerReview: ""
         })
-    }
+    };
+
+    onSelectGroup = (e) => {
+        this.setState({
+            selectedOptions : e
+        })
+    };
 
     render() {
         let beer = this.state.beer;
         let brewerName = beer._brewer.replace("https://", "").replace(/\..*/, "");
+
+        let groups = this.props.modelHolder.getGroups().map(res => {
+            return {value: res.getCheckInLocation(), label : res.getName()}
+        });
+
+        groups.push({value: this.props.modelHolder.getUser().getCheckInLocation(), label : "Public"});
 
         return (
             <section className="beerDetailScreen">
@@ -100,6 +118,9 @@ class BeerDetailScreen extends React.Component {
                  onAddReviewClick = {this.onAddReviewClick}
                  addReview = {this.state.addReview}
                  checkInBeer = {this.onPostBeerReview}
+                 groupsOptions = {groups}
+                 onSelect = {this.onSelectGroup}
+                 selectedOptions = {this.state.selectedOptions}
                 />
                 
             </section>

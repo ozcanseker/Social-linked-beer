@@ -2,22 +2,46 @@ import CheckInHandler from "./CheckInHandler";
 import Observable from "./Observable";
 
 class Group extends Observable{
-    constructor(url, checkInsLocation, groupDataLocation, createdByMe){
+    constructor(url, createdByMe){
         super();
 
         this._url = url;
         this._name = url;
-        this._checkInsLocation = checkInsLocation;
-        this._groupDataLocation = groupDataLocation;
 
         this._createdByMe = createdByMe;
-
         this._checkInHandler = new CheckInHandler();
+        this._checkInHandler.subscribe(this);
+
+        this._groupLeader = undefined;
+        this._members = [];
     }
 
-    setName(naam){
+    setProperties(naam, checkInsLocation, groupDataLocation, groupCheckInIndex,groupLeader, groupMembers){
         this._name = naam;
-        this.upDateSubScribers();
+        this._checkInsLocation = checkInsLocation;
+        this._groupDataLocation = groupDataLocation;
+        this._groupLeader = groupLeader;
+        this._members = groupMembers;
+        this._groupCheckInIndex = groupCheckInIndex;
+
+        this.updateSubscribers();
+    }
+
+    getMembers(){
+        return this._members.slice();
+    }
+
+    getGroupCheckInIndex(){
+        return this._groupCheckInIndex;
+    }
+
+    getLeader(){
+        return this._groupLeader;
+    }
+
+    setUrl(url){
+        this._url = url;
+        this.updateSubscribers();
     }
 
     getCheckInHandler(){
@@ -45,7 +69,7 @@ class Group extends Observable{
     }
 
     update(){
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 }
 

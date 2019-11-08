@@ -12,6 +12,13 @@ const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
 const rdfLib = require('rdflib');
 
+/**
+ * Post a solid file.
+ * @param folder The folder you want the file to live in
+ * @param filename
+ * @param body (ttl file)
+ * @returns {Promise<void>}
+ */
 export async function postSolidFile(folder, filename, body) {
     authClient.fetch(folder, {
         method: 'POST',
@@ -24,6 +31,12 @@ export async function postSolidFile(folder, filename, body) {
     });
 }
 
+/**
+ * Put the solid file. Will replace the current file.
+ * @param url The url of the location of the resource.
+ * @param body The body you want it to replace with
+ * @returns {Promise<void>} ?
+ */
 export async function putSolidFile(url, body) {
     authClient.fetch(url, {
         method: 'PUT',
@@ -35,11 +48,9 @@ export async function putSolidFile(url, body) {
 }
 
 /**
- * // let body = `INSERT DATA { <${this.state.webId+"#comment"}> <${SOLIDLINKEDBEER('points6').value}> <${8}> }`;
- // let appDataFile;
- // appendSolidResource(appDataFile, {body})
- * @param {*} url
- * @param {*} body
+ * Allows you to append a solid file.
+ * @param {*} url of the file you want to append
+ * @param {*} body `INSERT DATA { <subject> <predicate> <object> }`
  */
 export async function appendSolidResource(url, body) {
     authClient.fetch(url, {
@@ -121,7 +132,6 @@ export async function getUserFile(url) {
     }
 }
 
-
 /**
  *
  * @param friend
@@ -199,7 +209,7 @@ export async function getAllUserCheckIns(beerdrinkerFolder) {
 
     }
 
-    return userBeerCheckIns;
+    return {userBeerCheckIns: userBeerCheckIns, reviews: reviews, checkIns: checkIns};
 }
 
 export async function loadValuesInCheckInFile(beerCheckIn) {

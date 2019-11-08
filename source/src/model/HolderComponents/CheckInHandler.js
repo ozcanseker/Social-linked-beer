@@ -21,7 +21,7 @@ class CheckInHandler extends Observable {
 
         this._userCheckIns = userBeerCheckIns;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     setAllCheckInsGotten(bool){
@@ -34,12 +34,12 @@ class CheckInHandler extends Observable {
 
     addBeerPoints(amount) {
         this._beerPoints += amount;
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     setBeerPoints(beerPoints) {
         this._beerPoints = beerPoints;
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getBeerPoints() {
@@ -48,7 +48,7 @@ class CheckInHandler extends Observable {
 
     setBeerReviewsAmount(beerReviews) {
         this._beerReviewsAmount = beerReviews;
-        this.upDateSubScribers()
+        this.updateSubscribers()
     }
 
     getBeerReviewsAmount() {
@@ -57,12 +57,12 @@ class CheckInHandler extends Observable {
 
     addBeerReviewToAmount() {
         this._beerReviewsAmount++;
-        this.upDateSubScribers()
+        this.updateSubscribers()
     }
 
     setCheckInsAmount(checkIns) {
         this._checkInsAmount = checkIns;
-        this.upDateSubScribers()
+        this.updateSubscribers()
     }
 
     getCheckInsAmount() {
@@ -71,7 +71,7 @@ class CheckInHandler extends Observable {
 
     addToCheckInsAmount() {
         this._checkInsAmount++;
-        this.upDateSubScribers()
+        this.updateSubscribers()
     }
 
     setUserCheckIns(userCheckins) {
@@ -84,7 +84,7 @@ class CheckInHandler extends Observable {
         });
 
         this._userCheckIns = userCheckins;
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     clearAll(){
@@ -99,7 +99,7 @@ class CheckInHandler extends Observable {
         })
 
         this._userCheckIns = userCheckins.concat(this._userCheckIns);
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getUserCheckIns() {
@@ -107,7 +107,7 @@ class CheckInHandler extends Observable {
     }
 
     update() {
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 }
 

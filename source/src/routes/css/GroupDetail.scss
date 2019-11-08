@@ -1,0 +1,20 @@
+.groupDetailScreen {
+  flex: auto;
+  display: flex;
+  flex-flow: column;
+  text-align: center;
+}
+.groupDetailSection{
+  display: flex;
+  flex: 1;
+}
+
+.participants {
+  background: green;
+  flex: 1;
+}
+
+.checkInsGroup{
+  background: orange;
+  flex: 1;
+}

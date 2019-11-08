@@ -20,7 +20,7 @@ class CheckIn extends Observable{
         this._rating = rating;
         this._review = review;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 }
 

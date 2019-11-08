@@ -37,7 +37,7 @@ class App extends React.Component {
       solidCommunicator: undefined,
       accessError: false,
       fetchingFiles: false
-    }
+    };
 
     this.state.modelHolder.subscribe(this);
   }
@@ -50,13 +50,13 @@ class App extends React.Component {
     this.setState({
       modelHolder : this.state.modelHolder
     })
-  }
+  };
 
   clearSearchQuery = () => {
     this.setState({
       searchQuery: ''
     })
-  }
+  };
 
   checkLoggedIn = async () => {
     let session = await solidAuth.currentSession();
@@ -77,9 +77,9 @@ class App extends React.Component {
           solidCommunicator: solidCommunicator,
           loggedIn: true,
           fetchingFiles: false
-        })
+        });
 
-        this.props.history.push(`/beerresults`)
+        this.props.history.push(`/profile`)
       } catch (e) {
         if (e instanceof AccessError) {
           this.setState({
@@ -91,8 +91,7 @@ class App extends React.Component {
         }
       }
     }
-  }
-
+  };
 
   onClickLogOut = () => {
     solidAuth.logout().then(res => {
@@ -104,18 +103,18 @@ class App extends React.Component {
         accessError : false
       });
     });
-  }
+  };
 
   onLoggedIn = () => {
     this.checkLoggedIn();
-  }
+  };
 
   onBeerSearch = (text) => {
     let location = this.props.location.pathname;
 
     this.setState({
       searchQuery: text
-    })
+    });
 
     if (text) {
       if (location !== "/beerresults") {
@@ -128,8 +127,7 @@ class App extends React.Component {
     } else {
       this.props.history.goBack();
     }
-  }
-
+  };
 
   render() {
     let navBar;
@@ -138,7 +136,7 @@ class App extends React.Component {
     if(this.state.fetchingFiles){
       navBar = (
         <NavBar onSearchBarButtonClick={this.onSearchBarButtonClick}>
-          <Link to="/" onClick={this.onClickLogOut}></Link>
+          <Link to="/" onClick={this.onClickLogOut}/>
         </NavBar>)
     }else if(this.state.accessError){
       navBar = (

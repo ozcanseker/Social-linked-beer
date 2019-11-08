@@ -1,6 +1,7 @@
 import React from 'react';
 import "../css/Groups.scss";
 import GroupMakerOverlay from "../../component/GroupMakerOverlay";
+import {Link} from "react-router-dom";
 
 class Groups extends React.Component{
     constructor(props){
@@ -16,53 +17,54 @@ class Groups extends React.Component{
         this.setState({
             overlay : true
         });
-    }
+    };
 
     onOverLayCancelClick= () => {
         this.setState({
             overlay : false
         });
-    }
+    };
 
     makeGroup = () => {
-        if(this.state.groupName !== ""){
+        if(this.state.groupName !== "" && !(/\s/.test(this.state.groupName))){
             let beerDrinkerFolder = this.props.modelHolder.getUser().getBeerDrinkerFolder();
             let friends = this.state.selectedFriends.map(res => {
                 return res.value;
-            })
+            });
 
             this.props.solidCommunicator.makeNewGroup(beerDrinkerFolder, this.state.groupName, friends).then(res => {
-                this.setState({
-                    overlay : false,
-                    selectedFriends : [],
-                    groupName : ""
-                });
             });
-            console.log("make group");
+
+            this.setState({
+                overlay : false,
+                selectedFriends : [],
+                groupName : ""
+            });
         }
-    }
+    };
 
     onSelectFriend = (e) => {
         this.setState({
             selectedFriends : e
         })
-    }
+    };
 
     onGroupNameChange = (e) => {
         let text  = e.target.value;
         this.setState({
             groupName : text
         })
-    }
+    };
 
     render(){
         let friendsComs = this.props.modelHolder.getFriends().map(res => {
-            return {value: res.getUri(), label : res.getName()}
-        })
+            return {value: res, label : res.getName()}
+        });
 
-        let groups = this.props.modelHolder.getGroups().map(res => {
-            return (<li>
-                    <a href= "https://google.com">{res.getName()}</a>
+        let groups = this.props.modelHolder.getGroups().map((res, index) => {
+            return (
+                <li key = {res.getUrl() + res.getLeader()}>
+                    <Link to={`/groups/${index}`}>{res.getName()}</Link>
                 </li>
             )
         });

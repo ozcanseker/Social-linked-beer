@@ -23,7 +23,7 @@ class Beer extends Observable{
         this._description = description;
         this._containers = containers;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getUrl(){

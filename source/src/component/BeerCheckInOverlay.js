@@ -2,6 +2,7 @@ import React from 'react';
 import '../css/BeerCheckInScreen.scss';
 
 import Rating from '@material-ui/lab/Rating';
+import Select from "react-select";
 
 class BeerCheckInOverlay extends React.Component {
     constructor(props) {
@@ -51,6 +52,12 @@ class BeerCheckInOverlay extends React.Component {
                     {text}
                     <br />
                     <button onClick = {this.props.checkInBeer}>check in beer</button>
+                    <Select
+                        isMulti = {true}
+                        onChange = {this.props.onSelect}
+                        options = {this.props.groupsOptions}
+                        value = {this.props.selectedOptions}
+                    />
                 </div>
             </div>
         )

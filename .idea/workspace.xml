@@ -2,11 +2,43 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7fa34f44-f802-4b5f-94c9-fb625ddc2bae" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/Technical documentation.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/images/ClassDiagramModel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/images/ObservableDiagram.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/images/sequence.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/InboxMessage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/src/routes/css/GroupDetail.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/src/routes/page/GroupDetail.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/index.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/source/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/source/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/source/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/source/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/source/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/component/BeerCheckInOverlay.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/component/BeerCheckInOverlay.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/css/BeerCheckInScreen.scss" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/css/BeerCheckInScreen.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Beer.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Beer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Brewer.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Brewer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckIn.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckInHandler.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/CheckInHandler.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Group.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/Observable.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/Observable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/HolderComponents/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/HolderComponents/User.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/model/ModelHolder.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/model/ModelHolder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/routes/AppRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/AppRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/routes/page/BeerDetailScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/BeerDetailScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/routes/page/Groups.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/Groups.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/routes/page/Inbox.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/Inbox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/routes/page/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/routes/page/User.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/solid/SolidCommunicator.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/SolidCommunicator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/solid/SolidMethods.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/SolidMethods.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/solid/rdf/Constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/rdf/Constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/solid/rdf/SolidTtlTemplates.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/rdf/SolidTtlTemplates.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/SolidCommunicatorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/source/src/solid/solidCommunicatorInits/SolidCommunicatorBuilder.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,9 +63,12 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../beercounter/solid-beer-app-demo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/source/samples" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Users\ozcan\Projects\social-linked-beer\source\samples" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Users\ozcan\Projects\social-linked-beer\source\src\model\HolderComponents" />
     </key>
@@ -83,7 +118,11 @@
       <workItem from="1572861892822" duration="36000" />
       <workItem from="1572862296341" duration="15801000" />
       <workItem from="1572903111463" duration="33000" />
-      <workItem from="1572942612573" duration="19344000" />
+      <workItem from="1572942612573" duration="42675000" />
+      <workItem from="1573115902386" duration="12438000" />
+      <workItem from="1573205247018" duration="15320000" />
+      <workItem from="1573228982769" duration="116000" />
+      <workItem from="1573229129533" duration="19000" />
     </task>
     <servers />
   </component>

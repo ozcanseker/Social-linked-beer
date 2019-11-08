@@ -27,17 +27,17 @@ class Friend extends Observable{
         this._beerDrinkerFolder = beerDrinkerFolder;
 
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     setAppData(startdate){
         this._startDate = startdate;
 
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     update(){
-        this.upDateSubScribers();
+        this.updateSubscribers();
     }
 
     getCheckInHandler(){
