@@ -6,8 +6,9 @@
 This application is made to work with the solid pod. It is an application that is based on Untappd. 
 In this application you can make friends and share the beers you drunk. Also you can make groups with your friends. You can find the technical documentation [here](./docs/Technical%20documentation.md).
 
-## DOCS
+## Links
 [Documentation](docs) 
+[Live version](https://ozcanseker.github.io/Social-linked-beer)
 
 ## Not implemented features
 - Deleting friends
