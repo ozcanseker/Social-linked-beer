@@ -1,19 +1,20 @@
 {
   "files": {
-    "main.css": "/Social-linked-beer/static/css/main.c55414a7.chunk.css",
-    "main.js": "/Social-linked-beer/static/js/main.7bc98f46.chunk.js",
-    "main.js.map": "/Social-linked-beer/static/js/main.7bc98f46.chunk.js.map",
+    "main.css": "/Social-linked-beer/static/css/main.64b63acd.chunk.css",
+    "main.js": "/Social-linked-beer/static/js/main.972e0af1.chunk.js",
+    "main.js.map": "/Social-linked-beer/static/js/main.972e0af1.chunk.js.map",
     "runtime-main.js": "/Social-linked-beer/static/js/runtime-main.52c802a6.js",
     "runtime-main.js.map": "/Social-linked-beer/static/js/runtime-main.52c802a6.js.map",
     "static/js/2.dbed5797.chunk.js": "/Social-linked-beer/static/js/2.dbed5797.chunk.js",
     "static/js/2.dbed5797.chunk.js.map": "/Social-linked-beer/static/js/2.dbed5797.chunk.js.map",
     "index.html": "/Social-linked-beer/index.html",
-    "precache-manifest.9015b17c1e45989e9a9a2828ca707684.js": "/Social-linked-beer/precache-manifest.9015b17c1e45989e9a9a2828ca707684.js",
+    "precache-manifest.b326387990868ce222d041160f6f735e.js": "/Social-linked-beer/precache-manifest.b326387990868ce222d041160f6f735e.js",
     "service-worker.js": "/Social-linked-beer/service-worker.js",
-    "static/css/main.c55414a7.chunk.css.map": "/Social-linked-beer/static/css/main.c55414a7.chunk.css.map",
+    "static/css/main.64b63acd.chunk.css.map": "/Social-linked-beer/static/css/main.64b63acd.chunk.css.map",
     "static/media/Knipsel.png": "/Social-linked-beer/static/media/Knipsel.4dafcfef.png",
+    "static/media/App.scss": "/Social-linked-beer/static/media/background-top.a8992b77.png",
     "static/media/LogIn.scss": "/Social-linked-beer/static/media/beerpouring.6dde892b.gif",
-    "static/media/logo.png": "/Social-linked-beer/static/media/logo.a311d3af.png",
+    "static/media/logo.png": "/Social-linked-beer/static/media/logo.94a104b9.png",
     "static/media/profilePic.png": "/Social-linked-beer/static/media/profilePic.b6681619.png"
   }
 }
