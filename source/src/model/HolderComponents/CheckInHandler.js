@@ -77,7 +77,9 @@ class CheckInHandler extends Observable {
     setUserCheckIns(userCheckins) {
         this._userCheckIns.forEach(res => {
             res.unsubscribe(this);
-        })
+        });
+
+        userCheckins = userCheckins.userBeerCheckIns;
 
         userCheckins.forEach(checkIn => {
             checkIn.subscribe(this);

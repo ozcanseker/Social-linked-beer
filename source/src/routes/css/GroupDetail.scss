@@ -1,20 +1,43 @@
 .groupDetailScreen {
-  flex: auto;
+  flex: 1;
   display: flex;
-  flex-flow: column;
   text-align: center;
+  overflow: auto;
+  flex-direction: column;
 }
+
 .groupDetailSection{
   display: flex;
   flex: 1;
+  overflow: auto;
 }
 
 .participants {
-  background: green;
+  background: #03256C;
+  color: white;
   flex: 1;
+  overflow: auto;
+  padding: 3%;
+}
+
+.participants li{
+  border: white 1px solid;
+  border-radius: 10px;
+  list-style: none;
+  margin-bottom: 1%;
+  background: #03258C;
+  box-shadow: 0px 2px 1px -1px rgba(255,255,255,1), 0px 1px 1px 0px rgba(255,255,255, 1), 0px 1px 3px 0px rgba(255,255,255,1);
+  padding: 1%;
+}
+
+.participants img {
+  height: 20px;
+  margin-right: 1%;
 }
 
 .checkInsGroup{
   background: orange;
   flex: 1;
+  overflow: auto;
+  padding: 3%;
 }

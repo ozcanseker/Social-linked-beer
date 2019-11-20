@@ -3,30 +3,30 @@ import "../css/Groups.scss";
 import GroupMakerOverlay from "../../component/GroupMakerOverlay";
 import {Link} from "react-router-dom";
 
-class Groups extends React.Component{
-    constructor(props){
+class Groups extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
-            overlay : false,
-            groupName : "b",
-            selectedFriends : []
+            overlay: false,
+            groupName: "b",
+            selectedFriends: []
         }
     }
 
-    onMakeGroupClick= () => {
+    onMakeGroupClick = () => {
         this.setState({
-            overlay : true
+            overlay: true
         });
     };
 
-    onOverLayCancelClick= () => {
+    onOverLayCancelClick = () => {
         this.setState({
-            overlay : false
+            overlay: false
         });
     };
 
     makeGroup = () => {
-        if(this.state.groupName !== "" && !(/\s/.test(this.state.groupName))){
+        if (this.state.groupName !== "" && !(/\s/.test(this.state.groupName))) {
             let beerDrinkerFolder = this.props.modelHolder.getUser().getBeerDrinkerFolder();
             let friends = this.state.selectedFriends.map(res => {
                 return res.value;
@@ -36,57 +36,59 @@ class Groups extends React.Component{
             });
 
             this.setState({
-                overlay : false,
-                selectedFriends : [],
-                groupName : ""
+                overlay: false,
+                selectedFriends: [],
+                groupName: ""
             });
         }
     };
 
     onSelectFriend = (e) => {
         this.setState({
-            selectedFriends : e
+            selectedFriends: e
         })
     };
 
     onGroupNameChange = (e) => {
-        let text  = e.target.value;
+        let text = e.target.value;
         this.setState({
-            groupName : text
+            groupName: text
         })
     };
 
-    render(){
+    render() {
         let friendsComs = this.props.modelHolder.getFriends().map(res => {
-            return {value: res, label : res.getName()}
+            return {value: res, label: res.getName()}
         });
 
         let groups = this.props.modelHolder.getGroups().map((res, index) => {
             return (
-                <li key = {res.getUrl() + res.getLeader()}>
+                <li key={res.getUrl() + res.getLeader()}>
                     <Link to={`/groups/${index}`}>{res.getName()}</Link>
                 </li>
             )
         });
 
-        return(
-            <section id = "groupsPage">
+        return (
+            <section id="groupsPage">
                 <h1>
                     Groups
                 </h1>
-                <button className= "makeNewGroup" onClick={this.onMakeGroupClick}>makeNewGroup</button>
+                <div className="makeNewGroupDiv">
+                    <button className="makeNewGroup" onClick={this.onMakeGroupClick}>makeNewGroup</button>
+                </div>
                 <GroupMakerOverlay
-                    overlay = {this.state.overlay}
-                    onOverLayCancelClick = {this.onOverLayCancelClick}
-                    onAddReviewClick = {this.onAddReviewClick}
-                    addReview = {this.state.addReview}
-                    checkInBeer = {this.onPostBeerReview}
-                    onChange = {this.onGroupNameChange}
-                    groupName = {this.state.groupName}
-                    valuesSelector = {friendsComs}
-                    selectedFriends = {this.state.selectedFriends}
-                    onSelect = {this.onSelectFriend}
-                    makeGroup = {this.makeGroup}
+                    overlay={this.state.overlay}
+                    onOverLayCancelClick={this.onOverLayCancelClick}
+                    onAddReviewClick={this.onAddReviewClick}
+                    addReview={this.state.addReview}
+                    checkInBeer={this.onPostBeerReview}
+                    onChange={this.onGroupNameChange}
+                    groupName={this.state.groupName}
+                    valuesSelector={friendsComs}
+                    selectedFriends={this.state.selectedFriends}
+                    onSelect={this.onSelectFriend}
+                    makeGroup={this.makeGroup}
                 />
 
                 <ul>

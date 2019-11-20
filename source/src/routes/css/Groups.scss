@@ -1,6 +1,34 @@
 #groupsPage {
-  flex: auto;
+  flex: 1;
   display: flex;
-  flex-flow: column;
   text-align: center;
+  overflow: auto;
+  flex-direction: column;
+  padding: 0 10%;
+}
+
+.makeNewGroupDiv {
+  padding: 2%;
+  overflow: visible;
+}
+
+.makeNewGroupDiv > button {
+  float: right;
+  padding: 1% 2%;
+}
+
+#groupsPage > ul {
+  list-style: none;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#groupsPage > ul > li {
+  border : 1px black solid;
+  margin: 1% 3%;
+  padding : 1% 2%;
+  border-radius: 10px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+  background: white;
 }

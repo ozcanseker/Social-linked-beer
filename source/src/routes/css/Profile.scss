@@ -1,58 +1,41 @@
-.profileScreen {  
-    flex: auto;
+.profileScreen {
+    flex: 1;
     display: flex;
-    flex-flow: column;
     text-align: center;
+    overflow: auto;
 }
 
-.leftColum {
-    padding : 3%;
-    background-color: darkblue;
+.leftColumnProfile {
+    padding : 2% 4% 10%;
+    background-color: #03256C;
     color: white;
-    float: left;
-    width: 50%;
-    margin: 5% 2% 5% 1%;
-    border-radius: 3%;
+    margin: 5% 2% auto 1%;
+    border-radius: 10px;
     box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    flex: 1;
 }
 
-.leftColum > h1 {
-    margin-bottom: 5%;
+.leftColumnProfile > h1 {
+    margin-bottom: 20%;
+    font-size: 1.5em;
 }
 
-.leftColum > img{
+.leftColumnProfile > img{
     object-fit: cover;
     height : 100px;
     width : 100px;
-    margin-bottom: 5%;
+    margin-bottom: 20%;
 }
 
-.column {
+.checkedInBeersProfile {
     padding : 3%;
-    float: left;
-    width: 50%;
-    overflow-y: scroll;
+    flex: 3;
+    overflow: auto;
 }
-  
-.row{
-    flex: auto;
+
+.checkedInBeersProfile > ul {
+    overflow: auto;
     display: flex;
+    flex-direction: column;
 }
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.checkinDiv {
-    overflow: hidden;
-}
-
-.checkinDiv *{
-    float: right;
-}
-
-
 

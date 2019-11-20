@@ -33,11 +33,15 @@ class LogIn extends React.Component {
 
     render() {
         let typeLogIn;
+        let loginButton;
+
 
         if (this.state.loginAsBrewer) {
             typeLogIn = <h1>Brewer</h1>
+            loginButton = (<button onClick = {this.onButtonClick} disabled={true}>In progress</button>);
         } else {
             typeLogIn = <h1>Beer Drinker</h1>
+            loginButton = (<button onClick = {this.onButtonClick}>Log in</button>);
         }
 
         let activeClass = this.state.loginAsBrewer ? "logInBrewer" : "logInBeerDrinker";
@@ -54,7 +58,7 @@ class LogIn extends React.Component {
                     <br />
                     <div>
                         <button onClick = {this.onRegisterClick}>Register</button>
-                        <button onClick = {this.onButtonClick}>Log in</button>
+                        {loginButton}
                     </div>
 
                 </div>

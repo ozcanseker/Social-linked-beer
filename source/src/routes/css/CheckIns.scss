@@ -1,6 +1,17 @@
 #beerCheckIns {
-  flex: auto;
+  flex: 1;
   display: flex;
-  flex-flow: column;
   text-align: center;
+  overflow: auto;
+  flex-direction: column;
+}
+
+#beerCheckIns > ul {
+  overflow: auto;
+  padding: 0 5%;
+}
+
+#beerCheckIns > h1 {
+  font-size: 2em;
+  margin: 1%;
 }

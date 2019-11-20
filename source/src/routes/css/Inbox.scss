@@ -1,7 +1,9 @@
 .inbox {
-    flex: auto;
+    flex: 1;
+    display: flex;
     text-align: center;
-    margin : 2%;
+    overflow: auto;
+    flex-direction: column;
 }
 
 .inbox > h1 {
@@ -9,6 +11,7 @@
 }
 
 .inbox ul {
+    padding: 0% 5%;
     list-style-type: none;
 }
 
@@ -17,10 +20,22 @@
     margin-bottom: 2%;
 }
 
-.inbox .buttonDiv{
-    border: black solid 1px;
+.inbox li {
+    list-style: none;
+    border : 1px black solid;
+    margin: 2% 0%;
+    border-radius: 10px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    background: white;
 }
 
-.inbox .buttonDiv>button{
-    width : 50%;
+.inbox .buttonDiv{
+    padding: 0 5%;
+    border: black solid 1px;
+    border-radius: 10px;
+}
+
+.inbox .buttonDiv > button{
+    width : 40%;
+    margin: 0 5%;
 }

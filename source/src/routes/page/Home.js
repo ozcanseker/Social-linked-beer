@@ -7,8 +7,9 @@ class Home extends React.Component{
         return(
             <section className = "home">
                 <h3>
-                    This is an application that is powered by Solid.<br/> 
-                    Log in with your pod to use the application
+                    This application works with Solid.<br/>
+                    Log in with your pod to use the application. If you do not have an pod, you can get one&nbsp;
+                    <a href = "https://solid.inrupt.com/get-a-solid-pod">here</a> for free
                 </h3>
                 <br/>
                 <img src= {Knipsel} alt = "Inrupt logo"/>

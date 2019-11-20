@@ -4,16 +4,16 @@ import profilePic from '../../assets/profilePic.png'
 import {Link} from "react-router-dom";
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 
-class FriendPage extends React.Component{
-    constructor(props){
+class FriendPage extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
-            user : this.props.modelHolder.getFriendFromIndex(this.props.match.params.id)
+            user: this.props.modelHolder.getFriendFromIndex(this.props.match.params.id)
         }
     }
 
-    render(){
+    render() {
         let user = this.state.user;
         let imgUrl = user.getImageUrl();
         let userCheckIns = user.getCheckInHandler().getUserCheckIns()
@@ -21,17 +21,17 @@ class FriendPage extends React.Component{
 
         userCheckIns = userCheckIns.map(checkIn => {
             return (
-                <BeerCheckInComponent key = {checkIn._fileLocation} checkin = {checkIn}/>
+                <BeerCheckInComponent key={checkIn._fileLocation} checkin={checkIn}/>
             )
         })
 
-        if(user.getStartDate()){
-            content = (<div className="leftColum">
+        if (user.getStartDate()) {
+            content = (<div className="leftColumnProfile">
                 <h1>
                     {user.getName()}
                 </h1>
                 {/*TODO make image load faster*/}
-                <img src = {imgUrl ? imgUrl : profilePic} alt = ""/>
+                <img src={imgUrl ? imgUrl : profilePic} alt=""/>
                 <p>
                     check-ins : {user.getCheckInHandler().getCheckInsAmount()}
                 </p>
@@ -47,32 +47,28 @@ class FriendPage extends React.Component{
             </div>);
         }
 
-        return(
-            <section className = "profileScreen">
-                
-                <div className="row">
-                    {content}
-                    <div className="column">
-
-                        <h1>
-                            Recent activities
-                        </h1>
-                        <ul>
-                            {userCheckIns}
-                        </ul>
-                    </div>
+        return (
+            <section className="profileScreen">
+                {content}
+                <div className="checkedInBeersProfile">
+                    <h1>
+                        Recent activities
+                    </h1>
+                    <ul>
+                        {userCheckIns}
+                    </ul>
                 </div>
             </section>
         )
     }
-} 
+}
 
-function dateToString(date){
+function dateToString(date) {
     var dd = String(date.getDate()).padStart(2, '0');
     var mm = String(date.getMonth() + 1).padStart(2, '0');
     var yyyy = date.getFullYear();
 
-    return dd + '/' + mm + '/' + yyyy; 
+    return dd + '/' + mm + '/' + yyyy;
 }
 
 export default FriendPage;

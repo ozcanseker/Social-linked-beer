@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/BeerCheckInComponent.scss"
+import "./css/BeerCheckInComponent.scss"
 
 class BeerCheckInComponent extends React.Component {
     constructor(props, context) {
@@ -13,10 +13,14 @@ class BeerCheckInComponent extends React.Component {
 
         if(checkIn._rating){
             rating = <p>rating: {checkIn._rating}</p>
+        }else{
+            rating = <br/>;
         }
 
         if(checkIn._review){
             review = <p>review: {checkIn._review}</p>
+        }else{
+            review = <br/>;
         }
 
         return (

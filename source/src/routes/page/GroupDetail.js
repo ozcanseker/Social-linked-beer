@@ -1,7 +1,7 @@
 import React from 'react';
 import "../css/GroupDetail.scss";
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
-import {Icon} from "semantic-ui-react";
+import Star from '../../assets/star.png';
 
 class GroupDetail extends React.Component {
     constructor(props) {
@@ -29,7 +29,7 @@ class GroupDetail extends React.Component {
             let name;
 
             if (this.state.group.getLeader()) {
-                name = (<p>{res === this.state.group.getLeader() ? <b>leader: </b> : undefined}
+                name = (<p>{res === this.state.group.getLeader() ? <img src={Star} title="leader"/> : undefined}
                     {res.member + " [" + res.points + "]"}
                 </p>);
             }
@@ -45,7 +45,6 @@ class GroupDetail extends React.Component {
                 <h1>{this.state.group.getName()}</h1>
                 <div className="groupDetailSection">
                     <div className="participants">
-                        <Icon name="star"/>
                         <h2>
                             Users
                         </h2>

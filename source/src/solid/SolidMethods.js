@@ -108,6 +108,11 @@ export async function getUserFile(url) {
 
             //get name and Image
             let nameFN = graph.any(profile, VCARD('fn'));
+
+            if(!nameFN){
+                nameFN = graph.any(profile, FOAF('name'));
+            }
+
             let imageURL = graph.any(profile, VCARD('hasPhoto'));
 
             if (!appQuery) {

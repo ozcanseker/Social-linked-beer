@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/BeerCheckInScreen.scss';
+import './css/BeerCheckInScreen.scss';
 
 import Rating from '@material-ui/lab/Rating';
 import Select from "react-select";

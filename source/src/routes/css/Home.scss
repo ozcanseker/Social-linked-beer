@@ -1,12 +1,11 @@
 .home {
-        flex: auto;
-        display: flex;
-        flex-flow: column;
-        text-align: center;
+  display: flex;
+  flex-flow: column;
+  text-align: center;
+  flex: 1;
 }
 
 .home img{
     height: 100px;
-    display: flex;
     object-fit: scale-down;
 }

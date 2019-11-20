@@ -1,43 +1,38 @@
 import React from 'react';
-import '../css/NavBar.scss'
+import './css/NavBar.scss'
 
-class NavBar extends React.Component{
+class NavBar extends React.Component {
     onInput = (e) => {
         this.props.onBeerSearch(e.target.value);
-    }
+    };
 
-    render(){
-        let cldn =React.Children.toArray( this.props.children);
+    render() {
+        let cldn = React.Children.toArray(this.props.children);
         let input;
 
-        cldn = cldn.map((child, index) => {            
-            if(index !== cldn.length - 1){
-                return (
-                    <li key = {child.props.to} className = "navBarOptionContainer">
-                        {child}
-                    </li>
-                )
-            }else{
-                return(
-                    <li key = {child.props.to} className = "navBarOptionContainerLast">
-                        {child}
-                    </li>
-                )
-            }            
+        cldn = cldn.map((child, index) => {
+            return (
+                <li key={child.props.to}>
+                    {child}
+                </li>
+            )
         });
 
-        if(this.props.loggedIn){
-            input = (<li className = "navBarSearch">
-                <input  placeholder = "search for beers" value = {this.props.searchQuery} onChange = {this.onInput} />
-                <input type = "button" value = "x" onClick = {this.props.onSearchBarButtonClick}/>
-            </li>)
+        console.log(this.props);
+
+        if (this.props.loggedIn) {
+            input = (<li id="navBarSearch">
+                <input placeholder="search for beers" value={this.props.searchQuery} onChange={this.onInput}/>
+                <input type="button" value="x" onClick={this.props.onSearchBarButtonClick}/>
+            </li>);
+
+            cldn.splice(cldn.length - 1, 0, input);
         }
 
-        return(
+        return (
             <nav>
-                <ul id = "navBar">
+                <ul id="navBarUL">
                     {cldn}
-                    {input}
                 </ul>
             </nav>
         )

@@ -1,7 +1,7 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
 import {getAllUserCheckIns, getTenUserCheckIns, loadFriendData} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
-import {PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {FOAF, PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
 import * as fileClient from "solid-file-client";
 import * as rdfLib from "rdflib";
@@ -200,6 +200,11 @@ async function getApplicationLocation(publicProfileIndex, storePublicProfileInde
 
 function getUserDetails(profile, storeProfileCard) {
     let nameFN = storeProfileCard.any(profile, VCARD('fn'));
+
+    if(!nameFN){
+        nameFN = storeProfileCard.any(profile, FOAF('name'));
+    }
+
     let imageURL = storeProfileCard.any(profile, VCARD('hasPhoto'));
 
     nameFN = nameFN ? nameFN.value : undefined;

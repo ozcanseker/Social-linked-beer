@@ -12,15 +12,14 @@ class Profile extends React.Component{
         let userCheckIns = checkInHandler.getUserCheckIns();
         let content;
 
-
         userCheckIns = userCheckIns.map(checkIn => {
             return (
                 <BeerCheckInComponent key = {checkIn._fileLocation} checkin = {checkIn}/>
             )
-        })
+        });
 
         if(user.getBeginDate()){
-            content = (<div className="leftColum">
+            content = (<div className="leftColumnProfile">
                     <h1>
                         {user.getName()}
                     </h1>
@@ -44,9 +43,8 @@ class Profile extends React.Component{
 
         return(
             <section className = "profileScreen">
-                <div className="row">
                     {content}
-                    <div className="column">
+                    <div className="checkedInBeersProfile">
                         <div className = "checkinDiv">
                             <Link to="/checkIns">All check ins &rarr;</Link>
                         </div>
@@ -57,7 +55,6 @@ class Profile extends React.Component{
                                 {userCheckIns}
                             </ul>
                     </div>
-                </div>
             </section>
         )
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from "react-select";
-import "../css/GroupMakerOverlay.scss"
+import "./css/GroupMakerOverlay.scss"
 
 class GroupMakerOverlay extends React.Component {
     constructor(props) {

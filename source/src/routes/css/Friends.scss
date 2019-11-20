@@ -1,6 +1,9 @@
 .friends {
-    flex: auto;
+    flex: 1;
+    display: flex;
     text-align: center;
+    overflow: auto;
+    flex-direction: column;
 }
 
 .searchFriends {
@@ -17,10 +20,35 @@
     padding: 1%;
 }
 
-.friendSection * {
-    margin : 1%;
+.friendSection {
+    padding : 1%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.friendSection > h1{
+    margin-bottom: 1%;
 }
 
-.friendSection ul {
+.friendSection > ul{
     list-style: none;
+    overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.friendSection > ul > li {
+    //margin-bottom: 1%;
+
+    border : 1px black solid;
+    margin: 2% 1%;
+    padding : 1% 2%;
+    border-radius: 10px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    background: white;
+}
+
+.BeerCheckInComponent {
+
 }
