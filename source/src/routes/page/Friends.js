@@ -87,7 +87,6 @@ class Friends extends React.Component{
         let text = this.state.inputText.toUpperCase();
 
         let friendsElements = friends.map((friend, index) => {
-            console.log(friend.getName());
             if(friend.getUri().toUpperCase().includes(text) || (friend.getName() && friend.getName().toUpperCase().includes(text))) {
                 return <li key={friend.getUri()}>
                     <Link to={`/friend/${index}`}>

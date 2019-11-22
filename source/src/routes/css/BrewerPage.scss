@@ -1,6 +1,16 @@
 .brewerPage {
-  flex: auto;
   display: flex;
   flex-flow: column;
   text-align: center;
+  flex: 1;
+  overflow: auto;
 }
+
+.brewerPage h1 {
+  padding: 3%;
+}
+
+.brewerPageTextSectionDiv {
+  margin-bottom: 1%;
+}
+

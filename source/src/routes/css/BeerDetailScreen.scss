@@ -1,6 +1,24 @@
 .beerDetailScreen {
-    flex: auto;
+    flex: 1;
     display: flex;
-    flex-flow: column;
     text-align: center;
+    overflow: auto;
+    flex-direction: column;
+}
+
+.beerDetailScreen > h1 {
+    font-size: 1.5em;
+    padding: 2%;
+}
+
+#addReviewButtonDiv {
+    padding: 1% 5%;
+}
+
+#addReviewButtonDiv > button {
+    float: right;
+}
+
+.textBeerDetailScreen {
+    margin-bottom: 1%;
 }

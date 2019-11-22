@@ -28,7 +28,7 @@ let biertestbierbrouwer = {
 		"postcode": "9999 TT",
 		"city": "Apeldoorn",
     }
-}
+};
 
 let blankNode = rdfLib.blankNode();
 let graph = rdfLib.graph();

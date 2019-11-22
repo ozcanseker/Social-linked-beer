@@ -1,6 +1,7 @@
 import CheckInHandler from "./HolderComponents/CheckInHandler";
 import User from "./HolderComponents/User";
 import Observable from "./HolderComponents/Observable";
+import Beer from "./HolderComponents/Beer";
 
 class ModelHolder extends Observable {
     constructor() {
@@ -20,7 +21,7 @@ class ModelHolder extends Observable {
         this._user.subscribe(this);
     }
 
-    setInboxMessages(inboxMessages){
+    setInboxMessages(inboxMessages) {
         this._inboxMessages.forEach(res => {
             res.unsubscribe(this);
         });
@@ -32,11 +33,11 @@ class ModelHolder extends Observable {
         });
     }
 
-    getInboxMessages(){
+    getInboxMessages() {
         return this._inboxMessages;
     }
 
-    spliceAtIndex(index){
+    spliceAtIndex(index) {
         this._inboxMessages.splice(index, 1);
         this.updateSubscribers();
     }
@@ -44,9 +45,9 @@ class ModelHolder extends Observable {
     addFriends(newFriends) {
         newFriends.forEach(res => {
             res.subscribe(this);
-        })
+        });
 
-        this._friends = this._friends.concat(newFriends)
+        this._friends = this._friends.concat(newFriends);
         this.updateSubscribers();
     }
 
@@ -155,7 +156,16 @@ class ModelHolder extends Observable {
     }
 
     setBeers(beers) {
+        this._beers.forEach(res => {
+            res.unsubscribe(this);
+        });
+
         this._beers = beers;
+
+        this._beers.forEach(res => {
+            res.subscribe(this);
+        });
+
         this.updateSubscribers();
     }
 
@@ -192,7 +202,7 @@ class ModelHolder extends Observable {
         return this._groups[index];
     }
 
-    getGroupFromCheckInLocationUri(uri){
+    getGroupFromCheckInLocationUri(uri) {
         for (let i = 0; i < this._groups.length; i++) {
             if (this._groups[i].getCheckInLocation() === uri) {
                 return this._groups[i];

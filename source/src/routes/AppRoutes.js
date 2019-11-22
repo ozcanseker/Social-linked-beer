@@ -56,7 +56,10 @@ class AppRoutes extends React.Component {
                               isLoggedIn={this.props.loggedIn}
                               onLinkClick={this.props.clearSearchQuery}
                               solidCommunicator={this.props.solidCommunicator}
-                              modelHolder={this.props.modelHolder}/>
+                              modelHolder={this.props.modelHolder}
+                              searchQuery = {this.props.searchQuery}
+                              onBeerSearch = {this.props.onBeerSearch}
+                />
                 <PrivateRoute path="/groups/:id"
                               component={GroupDetail}
                               isLoggedIn={this.props.loggedIn}

@@ -10,6 +10,7 @@ class BeerCheckInComponent extends React.Component {
         let checkIn = this.props.checkin;
         let rating;
         let review;
+        let time
 
         if(checkIn._rating){
             rating = <p>rating: {checkIn._rating}</p>
@@ -19,8 +20,12 @@ class BeerCheckInComponent extends React.Component {
 
         if(checkIn._review){
             review = <p>review: {checkIn._review}</p>
+        }
+
+        if(checkIn._checkInTime){
+            time = (<p>date: {dateToString(new Date(checkIn._checkInTime))}</p>)
         }else{
-            review = <br/>;
+            time = <br/>;
         }
 
         return (
@@ -30,8 +35,17 @@ class BeerCheckInComponent extends React.Component {
                 </h5>
                 {rating}
                 {review}
+                {time}
             </li>)
     }
+}
+
+function dateToString(date){
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0');
+    var yyyy = date.getFullYear();
+
+    return dd + '/' + mm + '/' + yyyy;
 }
 
 export default BeerCheckInComponent;

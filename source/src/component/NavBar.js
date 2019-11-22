@@ -18,10 +18,8 @@ class NavBar extends React.Component {
             )
         });
 
-        console.log(this.props);
-
         if (this.props.loggedIn) {
-            input = (<li id="navBarSearch">
+            input = (<li key={"input"} id="navBarSearch">
                 <input placeholder="search for beers" value={this.props.searchQuery} onChange={this.onInput}/>
                 <input type="button" value="x" onClick={this.props.onSearchBarButtonClick}/>
             </li>);

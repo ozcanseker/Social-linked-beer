@@ -1,37 +1,49 @@
 import Observable from "./Observable";
 
 class Beer extends Observable{
-    constructor(name, type, style, brewer, location){
+    constructor(ldUrl, name, brewedby){
         super();
-
+        this._ldUrl = ldUrl;
         this._name = name;
-        this._type = type;
-        this._style = style;
-        this._brewer = brewer;
-        this._location = location;
+        this._brewedby = brewedby;
     }
 
     getBrewer(){
         return this._brewer;
     }
 
-    updateInformation(name, type, style, brewer, description, containers){
-        this._name = name;
+    updateInformation(type,
+                      label,
+                      description,
+                      alcoholpercentage,
+                      style,
+                      minSchenkTemperatuur,
+                      stamwortgehalte,
+                      maxSchenkTemperatuur,
+                      depiction,){
         this._type = type;
         this._style = style;
-        this._brewer = brewer;
+        this._label = label;
         this._description = description;
-        this._containers = containers;
+        this._minSchenkTemperatuur = minSchenkTemperatuur;
+        this._maxSchenkTemperatuur = maxSchenkTemperatuur;
+        this._stamwortgehalte = stamwortgehalte;
+        this._alcoholpercentage = alcoholpercentage;
 
+        this._depiction =depiction;
         this.updateSubscribers();
     }
 
     getUrl(){
-        return this._location;
+        return this._ldUrl;
     }
 
     getName(){
         return this._name;
+    }
+
+    getBrewerUrl(){
+        return this._brewedby;
     }
 }
 

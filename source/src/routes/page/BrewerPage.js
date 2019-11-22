@@ -5,67 +5,90 @@ import {Link} from "react-router-dom";
 class BrewerPage extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            brewer: this.props.modelHolder.getBrewer()
-        }
-
-        this.getBrewer();
+        this.props.solidCommunicator.getBrewerInformation(this.props.modelHolder.getBrewer());
     }
 
-    getBrewer = () => {
-        this.props.solidCommunicator.getBrewerInformation(this.state.brewer).then(res => {
-        })
-    }
+    onLinkClick = (e) => {
+        this.props.modelHolder.setBeer(e);
+    };
 
     render() {
         let section;
-        let brewer = this.state.brewer;
+        let brewer = this.props.modelHolder.getBrewer();
+
+        console.log(brewer);
+
+        let name;
+        let adress;
+        let groep;
+        let url;
+
         let beers;
 
-        if (brewer.getGroep()) {
-            section = (
-                <div>
-                    <h1>
-                        {this.state.brewer._name}
-                    </h1>
-                    <p>{brewer._groep}</p>
-                    <p>{brewer._opgericht}</p>
-                    <p>{brewer._owners.join(", ")}</p>
-                    <p>{brewer._provincie}</p>
-                    <p>{brewer._email}</p>
-                    <p>{brewer._taxid}</p>
-                    <p>{brewer._telephone}</p>
-                    <p>{brewer._url}</p>
-                    <p>{brewer._postalcode}</p>
-                    <p>{brewer._streetAdress}</p>
-                    <p>{brewer._addressRegion}</p>
-                    <p>{brewer._addressLocality}</p>
-                </div>
-            )
 
-            if (brewer._beers) {
-                beers = brewer._beers.map(listItem => {
-                    return ( <li key = {listItem._location}>
-                            <Link to={{
-                                pathname: `/beer/${listItem._name}`,
-                                state: {
-                                    beer : listItem
-                                }
-                            }} onClick={this.props.onLinkClick}>
-                                {listItem._name}
-                            </Link>
-                        </li>
-                    )
-                })
-            }
+        if (brewer._name) {
+            name = (
+                <h1>
+                    {brewer._name}
+                </h1>
+            );
         }
+
+        if(brewer._groep){
+            groep = (<div className={"brewerPageTextSectionDiv"}>
+                    <p><b>
+                        Group
+                    </b></p>
+                    <p>
+                        {brewer._groep}
+                    </p>
+                </div>
+            );
+        }
+
+        if (brewer.getAddress() !== "") {
+            url = (
+                <div className={"brewerPageTextSectionDiv"}>
+                    <p><b>
+                        Website
+                    </b></p>
+                    <a href={brewer._url}>
+                        {brewer._url}
+                    </a>
+                </div>
+            );
+        }
+
+        if (brewer._url) {
+            adress = (
+                <div className={"brewerPageTextSectionDiv"}>
+                    <p><b>
+                        Adress
+                    </b></p>
+                    <p>
+                        {brewer.getAddress()}
+                    </p>
+                </div>
+            );
+        }
+
+        beers = brewer._beers.map((listItem, index) => {
+            return (<li key={listItem.getUrl()}>
+                    <Link to={`/beer/${index}`} onClick={() => {
+                        this.onLinkClick(listItem)
+                    }}>
+                        {listItem.getName()}
+                    </Link>
+                </li>
+            )
+        })
 
         return (
             <section className="brewerPage">
-                {section}
-
-                <br/>
-                <br/>
+                {name}
+                {groep}
+                {url}
+                {adress}
 
                 <h3>Beers</h3>
                 <ul>

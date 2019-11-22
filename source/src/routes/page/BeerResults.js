@@ -1,36 +1,43 @@
 import React from 'react';
 import '../css/BeerResults.scss';
 import {Link, Redirect} from "react-router-dom";
+import Brewer from "../../model/HolderComponents/Brewer";
 
 class BeerResults extends React.Component {
     constructor(props) {
         super(props);
     }
 
-    componentDidMount() {
-        this.props.solidCommunicator.fetchBeerData().then(res => {
-            if (res) {
-                this.props.modelHolder.setBeers(res);
-            }
-        });
-    }
+    // componentDidMount() {
+    //     if(this.props.searchQuery !== ""){
+    //         this.props.solidCommunicator.fetchBeerList(this.props.searchQuery).then(res => {});
+    //     }else{
+    //         this.props.modelHolder.setBeers([]);
+    //     }
+    // }
+
+    onButtonClick= () => {
+        if(this.props.searchQuery !== ""){
+            this.props.solidCommunicator.fetchBeerList(this.props.searchQuery).then(res => {});
+        }else{
+            this.props.modelHolder.setBeers([]);
+        }
+    };
 
     onLinkClick = (e) => {
         this.props.modelHolder.setBeer(e);
-
         this.props.onLinkClick();
-    }
+    };
 
     render() {
-
-        let elements = this.props.modelHolder.getBeers().map(listItem => {
+        let elements = this.props.modelHolder.getBeers().map((listItem , index) => {
             return (
-                <li key={listItem._location}>
-                    <Link to={`/beer/${listItem._name}`}
+                <li key={listItem.getUrl()}>
+                    <Link to={`/beer/${index}`}
                           onClick={() => {
                               this.onLinkClick(listItem)
                           }}>
-                        {listItem._name}
+                        {listItem.getName()}
                     </Link>
                 </li>
             )
@@ -39,6 +46,12 @@ class BeerResults extends React.Component {
         return (
             <section className="beerResults">
                 <h1>Beer Results</h1>
+                <div className={"searchScreenSearch"}>
+                    <input value={this.props.searchQuery} onChange={(e) => {
+                        this.props.onBeerSearch(e.target.value);
+                    }}/>
+                    <button onClick={this.onButtonClick}>search</button>
+                </div>
                 <ul>
                     {elements}
                 </ul>

@@ -79,7 +79,7 @@ class App extends React.Component {
                     fetchingFiles: false
                 });
 
-                this.props.history.push(`/profile`)
+                this.props.history.push(`/profile`);
             } catch (e) {
                 if (e instanceof AccessError) {
                     this.setState({
@@ -182,6 +182,8 @@ class App extends React.Component {
                 solidCommunicator={this.state.solidCommunicator}
                 clearSearchQuery={this.clearSearchQuery}
                 onLoggedIn={this.onLoggedIn}
+                searchQuery = {this.state.searchQuery}
+                onBeerSearch={this.onBeerSearch}
             />)
         }
 

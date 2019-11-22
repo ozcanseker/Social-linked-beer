@@ -10,6 +10,8 @@ import BeerCheckIn from '../model/HolderComponents/CheckIn'
 import * as fileClient from 'solid-file-client';
 import * as rdfLib from 'rdflib';
 
+import * as kadasterLabsComm from './DataLavaKadaster/DataLabsKadasterComm';
+
 import {
     APPDATA_FILE,
     APPLICATION_INVITAION_DESC,
@@ -250,49 +252,13 @@ class SolidCommunicator {
         this._modelHolder.addFriend(friend);
     }
 
-    async fetchBeerData() {
-        let url = "https://testbrouwer.inrupt.net/public/brewerInformation/beers/beersIndex.ttl";
-        let beersIndexTTl = await fileClient.readFile(url);
-
-        let graph = rdfLib.graph();
-        rdfLib.parse(beersIndexTTl, graph, url, "text/turtle");
-
-        let query = graph.each(undefined, RDF('type'), SOLIDLINKEDBEER('Beer'));
-        let beers = [];
-        query.forEach(blankNode => {
-            let brewer = graph.any(blankNode, SOLIDLINKEDBEER('brewedBy'));
-            let type = graph.any(blankNode, SOLIDLINKEDBEER('type'));
-            let name = graph.any(blankNode, SCHEMA('name'));
-            let style = graph.any(blankNode, SOLIDLINKEDBEER('style'));
-            let location = graph.any(blankNode, SOLID('instance'));
-
-            beers.push(new Beer(name.value, type.value, style.value, brewer.value, location.value));
-        })
-
-        return beers;
+    async fetchBeerList(searchQuery) {
+        let res = await kadasterLabsComm.getBeerData(searchQuery);
+        this._modelHolder.setBeers(res);
     }
 
-    async fetchBeer(beer) {
-        let url = beer.getUrl();
-        let beerTTl = await fileClient.readFile(url);
-
-        let graph = rdfLib.graph();
-        rdfLib.parse(beerTTl, graph, url, "text/turtle");
-
-        let blankNode = graph.any(undefined, SOLIDLINKEDBEER('beerDescription'));
-
-        let brewer = graph.any(blankNode, SOLIDLINKEDBEER('brewedBy'));
-        let type = graph.any(blankNode, SOLIDLINKEDBEER('type'));
-        let name = graph.any(blankNode, SCHEMA('name'));
-        let style = graph.any(blankNode, SOLIDLINKEDBEER('style'));
-        let description = graph.any(blankNode, SOLIDLINKEDBEER('beerDescription'));
-        let containers = [];
-        graph.each(blankNode, SOLIDLINKEDBEER('container')).forEach(container => {
-            containers.push(container.value);
-        });
-
-        beer.updateInformation(name.value, type.value, style.value, brewer.value, description.value, containers);
-        return beer;
+    async fetchBeerData(beer) {
+        await kadasterLabsComm.fetchBeerData(beer);
     }
 
     async postBeerReview(hasReview, beer, rating, review, groups) {
@@ -362,11 +328,21 @@ class SolidCommunicator {
         checkIn.loadInAttributes(
             this._user.getUri(),
             this._user.getName(),
-            beer._location,
-            beer._name,
-            date.getUTCDate(),
+            beer.getUrl(),
+            beer.getName(),
+            date.toString(),
             hasReview ? rating : undefined,
             hasReview ? review : undefined);
+
+        groups.forEach(res => {
+            let group = this._modelHolder.getGroupFromCheckInLocationUri(res);
+
+            if(group !== undefined){
+                group.getCheckInHandler().addUserCheckIns([checkIn]);
+            }else{
+                console.log(res);
+            }
+        });
         this._modelHolder.getCheckInHandler().addUserCheckIns([checkIn]);
     }
 
@@ -379,53 +355,7 @@ class SolidCommunicator {
     }
 
     async getBrewerInformation(brewer) {
-        let url = brewer.getUrl();
-        let brewerTTl = await fileClient.fetch(url);
-
-        let graph = rdfLib.graph();
-        await rdfLib.parse(brewerTTl, graph, url, "text/turtle");
-
-        let blankNode = graph.any(undefined, RDF('type'));
-
-        let name = graph.any(blankNode, FOAF("name")).value;
-        let groep = graph.any(blankNode, DBPEDIA("groep")).value;
-        let opgericht = graph.any(blankNode, DBPEDIA("opgericht")).value;
-        let owners = [];
-        graph.each(blankNode, DBPEDIA("owners")).forEach(owner => {
-            owners.push(owner.value);
-        })
-        let provincie = graph.any(blankNode, DBPEDIA("provincie")).value;
-        let email = graph.any(blankNode, SCHEMA("email")).value;
-        let taxid = graph.any(blankNode, SCHEMA("taxID")).value;
-        let telephone = graph.any(blankNode, SCHEMA("telephone")).value;
-        let brewerUrl = graph.any(blankNode, SCHEMA("url")).value;
-        let beerIndex = graph.any(blankNode, DBPEDIA('beersIndex'));
-
-        let blankNodeAdress = graph.any(blankNode, SCHEMA("address"));
-
-        let postalcode = graph.any(blankNodeAdress, SCHEMA("postalCode")).value;
-        let streetaddress = graph.any(blankNodeAdress, SCHEMA("streetAddress")).value;
-        let addressregion = graph.any(blankNodeAdress, SCHEMA("addressRegion")).value;
-        let addresslocality = graph.any(blankNodeAdress, SCHEMA("addressLocality")).value;
-
-        brewer.loadInBrewerInformation(name,
-            groep,
-            opgericht,
-            owners,
-            provincie,
-            email,
-            taxid,
-            telephone,
-            postalcode,
-            streetaddress,
-            addressregion,
-            addresslocality);
-
-        this.fetchBeerData(beerIndex.value).then(res => {
-            brewer.addBeers(res);
-        });
-
-        return brewer;
+        await kadasterLabsComm.getBrewerData(brewer);
     }
 
     async getAllCheckInsLoggedInUser() {

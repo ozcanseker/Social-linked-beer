@@ -1,45 +1,71 @@
 import Observable from "./Observable";
 
-class Brewer extends Observable{
-    constructor( url){
+class Brewer extends Observable {
+    constructor(url) {
         super();
 
-        this._url = url;
+        this._ldurl = url;
         this._beers = [];
     }
 
-    loadInBrewerInformation(name, groep, opgericht, owners, provincie, email, taxID, telephone, postalCode, streetAddress, addressRegion, addressLocality){
+    loadInBrewerInformation(name,
+                            groep,
+                            url,
+                            address,
+                            type,
+                            categorie,
+                            jaarproduktie,
+                            provincie) {
+
         this._name = name;
         this._groep = groep;
-        this._opgericht = opgericht;
-        this._owners = owners;
+        this._url = url;
+        this._address = address;
+        this._type = type;
+        this._categorie = categorie;
+        this._jaarproduktie = jaarproduktie;
         this._provincie = provincie;
-        this._email = email;
-        this._taxid = taxID;
-        this._telephone = telephone;
-        this._postalcode = postalCode;
-        this._streetAdress = streetAddress;
-        this._addressRegion = addressRegion;
-        this._addressLocality = addressLocality;
 
         this.updateSubscribers();
     }
 
-    addBeers(beers){
+    getAddressUrl() {
+        return this._address;
+    }
+
+    addAddressInformation(addressLocality,
+                          postalCode,
+                          streetAddress) {
+
+        this._addressLocality = addressLocality;
+        this._postalCode = postalCode;
+        this._streetAddress = streetAddress;
+
+        this.updateSubscribers();
+    }
+
+    addBeers(beers) {
         this._beers = this._beers.concat(beers);
         this.updateSubscribers();
     }
 
-    getUrl(){
-        return this._url;
+    getUrl() {
+        return this._ldurl;
     }
 
-    update(){
+    update() {
         this.updateSubscribers();
     }
 
-    getGroep(){
+    getGroep() {
         return this._groep;
+    }
+
+    getAddress(){
+        return ""
+            + (this._streetAddress ? this._streetAddress + ", " : "")
+            + (this._addressLocality ? this._addressLocality + ", " : "" )
+            + (this._postalCode ? this._postalCode + " " : "");
     }
 }
 
