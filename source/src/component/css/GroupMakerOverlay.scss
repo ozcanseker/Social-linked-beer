@@ -12,12 +12,41 @@
 }
 
 #textGroup{
-  background: red;
+  background: darkblue;
+  color: white;
+  border: 5px solid white;
+  padding: 2%;
   position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 50px;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
   cursor: default;
+  border-radius: 10px;
+}
+
+#textGroup h1{
+  font-size: 2em;
+  margin-bottom: 4%;
+}
+
+#textGroup span{
+  font-size: 1em;
+}
+
+.nameFieldGroupMakerOverlay {
+  margin-bottom: 4%;
+  display: flex;
+  margin-right: 2%;
+  white-space: nowrap;
+}
+
+.SelectGroupMakerOverlay {
+  color: black;
+  margin-bottom: 4%;
+  white-space: normal;
+}
+
+.overLayError{
+  color: red;
 }

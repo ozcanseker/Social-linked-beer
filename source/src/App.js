@@ -26,13 +26,14 @@ import './App.scss';
 import Knipsel from './assets/Knipsel.png';
 import ModelHolder from "./model/ModelHolder";
 import Logo from "./assets/logo.png";
+import StandardContext from "./context/StandardContext";
+
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loggedIn: false,
-            searchQuery: '',
             modelHolder: new ModelHolder(),
             solidCommunicator: undefined,
             accessError: false,
@@ -49,12 +50,6 @@ class App extends React.Component {
     update = () => {
         this.setState({
             modelHolder: this.state.modelHolder
-        })
-    };
-
-    clearSearchQuery = () => {
-        this.setState({
-            searchQuery: ''
         })
     };
 
@@ -109,32 +104,9 @@ class App extends React.Component {
         this.checkLoggedIn();
     };
 
-    onBeerSearch = (text) => {
-        let location = this.props.location.pathname;
-
-        this.setState({
-            searchQuery: text
-        });
-
-        if (text) {
-            if (location !== "/beerresults") {
-                this.props.history.push("/beerresults");
-            }
-
-            /**
-             * Vindt hier de bier
-             */
-        } else {
-            this.props.history.goBack();
-        }
+    onCheckInButtonClick = () => {
+        this.props.history.push("/beerresults");
     };
-
-    onDeleteButtonClicked = () =>{
-      this.clearSearchQuery();
-      if (this.props.location.pathname === "/beerresults") {
-        this.props.history.goBack();
-      }
-    }
 
     render() {
         let navBar;
@@ -142,20 +114,19 @@ class App extends React.Component {
 
         if (this.state.fetchingFiles) {
             navBar = (
-                <NavBar onSearchBarButtonClick={this.onDeleteButtonClicked}>
+                <NavBar onSearchBarButtonClick={this.onCheckInButtonClick}>
                     <Link to="/">&nbsp;</Link>
                 </NavBar>)
         } else if (this.state.accessError) {
             navBar = (
-                <NavBar onSearchBarButtonClick={this.onDeleteButtonClicked}>
+                <NavBar onSearchBarButtonClick={this.onCheckInButtonClick}>
                     <Link to="/" onClick={this.onClickLogOut}>Log out</Link>
                 </NavBar>)
         } else if (this.state.loggedIn) {
             navBar = (
-                <NavBar onSearchBarButtonClick={this.onDeleteButtonClicked}
+                <NavBar onSearchBarButtonClick={this.onCheckInButtonClick}
                         onBeerSearch={this.onBeerSearch}
-                        loggedIn={this.state.loggedIn}
-                        searchQuery={this.state.searchQuery}>
+                        loggedIn={this.state.loggedIn}>
                     <Link to="/profile">Profile</Link>
                     <Link to="/friend">Friends</Link>
                     <Link to="/groups">Groups</Link>
@@ -176,22 +147,26 @@ class App extends React.Component {
         } else if (this.state.accessError) {
             app = (<AclErrorPage/>);
         } else {
-            app = (<AppRoutes
-                loggedIn={this.state.loggedIn}
-                modelHolder={this.state.modelHolder}
-                solidCommunicator={this.state.solidCommunicator}
-                clearSearchQuery={this.clearSearchQuery}
-                onLoggedIn={this.onLoggedIn}
-                searchQuery = {this.state.searchQuery}
-                onBeerSearch={this.onBeerSearch}
-            />)
+            app = (
+                <StandardContext.Provider value={{solidCommunicator : this.state.solidCommunicator}}>
+                    <AppRoutes
+                        loggedIn={this.state.loggedIn}
+                        modelHolder={this.state.modelHolder}
+                        solidCommunicator={this.state.solidCommunicator}
+                        clearSearchQuery={this.clearSearchQuery}
+                        onLoggedIn={this.onLoggedIn}
+                        searchQuery={this.state.searchQuery}
+                        onBeerSearch={this.onBeerSearch}
+                    />
+                </StandardContext.Provider>
+            )
         }
 
         return (
             <div id="AppRoot">
                 <header>
                     <Link to="/">
-                        <img src={Logo}/>
+                        <img alt = "Social linked beer logo" src={Logo}/>
                     </Link>
                     {navBar}
                 </header>

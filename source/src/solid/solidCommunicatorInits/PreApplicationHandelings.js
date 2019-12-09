@@ -1,4 +1,4 @@
-import { postSolidFile, putSolidFile, getUserFile, loadFriendData } from "../SolidMethods";
+import {putSolidFile, loadFriendData } from "../SolidMethods";
 import {FRIENDS_FILE, FRIENDSHIPREQUEST_ACCEPTED_NAME, INBOX_FOLDER} from "../rdf/Constants";
 import {SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 import Friend from "../../model/HolderComponents/Friend";

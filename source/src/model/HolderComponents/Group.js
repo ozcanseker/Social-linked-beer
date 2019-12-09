@@ -27,6 +27,11 @@ class Group extends Observable{
         this.updateSubscribers();
     }
 
+    addMembers(members){
+        this._members = this._members.concat(members);
+        this.updateSubscribers();
+    }
+
     getMembers(){
         return this._members.slice();
     }

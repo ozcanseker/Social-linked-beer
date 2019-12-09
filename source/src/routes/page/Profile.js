@@ -2,7 +2,7 @@ import React from 'react';
 import '../css/Profile.scss'
 import profilePic from '../../assets/profilePic.png'
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
-import {Link, Redirect, withRouter} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 class Profile extends React.Component{
     render(){
@@ -40,7 +40,7 @@ class Profile extends React.Component{
                 </div>
             )
         }
-
+        
         return(
             <section className = "profileScreen">
                     {content}

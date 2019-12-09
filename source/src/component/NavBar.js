@@ -20,8 +20,7 @@ class NavBar extends React.Component {
 
         if (this.props.loggedIn) {
             input = (<li key={"input"} id="navBarSearch">
-                <input placeholder="search for beers" value={this.props.searchQuery} onChange={this.onInput}/>
-                <input type="button" value="x" onClick={this.props.onSearchBarButtonClick}/>
+                <input type="button" value="Check in beer" onClick={this.props.onSearchBarButtonClick}/>
             </li>);
 
             cldn.splice(cldn.length - 1, 0, input);

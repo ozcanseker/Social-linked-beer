@@ -1,7 +1,6 @@
 import React from 'react';
-import '../css/Profile.scss'
-import profilePic from '../../assets/profilePic.png'
-import {Link} from "react-router-dom";
+import '../css/Profile.scss';
+import profilePic from '../../assets/profilePic.png';
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 
 class FriendPage extends React.Component {

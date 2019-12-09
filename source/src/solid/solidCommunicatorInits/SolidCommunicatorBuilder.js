@@ -1,5 +1,5 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
-import {getAllUserCheckIns, getTenUserCheckIns, loadFriendData} from "../SolidMethods";
+import {getTenUserCheckIns, loadFriendData, setUserSolidMethods} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
 import {FOAF, PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
@@ -54,6 +54,8 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
         applicationLocation + BEERDRINKERFOLDER,
         applicationLocation + BEERDRINKERFOLDER + CHECKIN_FOLDER);
     solidCommunicator.setFileLocations();
+
+    setUserSolidMethods(user.getUri());
 
     getAppData(user.getBeerDrinkerFolder()).then(res => {
         user.loadInAppData(new Date(res.startdate));
@@ -144,7 +146,7 @@ async function loadGroupInformation(group) {
     let pointsMemberGroup = checkInIndexGraph.any(undefined, VCARD('hasMember'));
 
     let members = [];
-    checkInIndexGraph.each(pointsMemberGroup, VCARD('hasMember')).map(res => {
+    checkInIndexGraph.each(pointsMemberGroup, VCARD('hasMember')).forEach(res => {
         let points = checkInIndexGraph.any(res, SOLIDLINKEDBEER('points'));
 
         if(res.value === leader.value){

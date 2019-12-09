@@ -41,3 +41,19 @@
   overflow: auto;
   padding: 3%;
 }
+
+.addMembersButton{
+  float: left;
+  border: white 1px solid;
+  border-radius: 10px;
+  list-style: none;
+  margin-bottom: 1%;
+  background: #03258C;
+  box-shadow: 0px 2px 1px -1px rgba(255,255,255,1), 0px 1px 1px 0px rgba(255,255,255, 1), 0px 1px 3px 0px rgba(255,255,255,1);
+  padding: 1%;
+  color: white;
+}
+
+.addMembersButtonDiv{
+  overflow: hidden;
+}

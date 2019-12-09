@@ -1,5 +1,5 @@
 import * as rdfLib from "rdflib";
-import {ACL, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "./Prefixes";
+import {ACL, RDF, SCHEMA, SOLIDLINKEDBEER, VCARD} from "./Prefixes";
 import {GROUP_MEMBERS} from "./Constants";
 
 export function getInviteToLSBInvitation(urlInvitee, invitation, postLocation, userWebId){

@@ -14,20 +14,33 @@ class GroupMakerOverlay extends React.Component {
     }
 
     render() {
+        let text = "Add more friends";
+        let text2 = "Add friends";
+        let nameField;
+
+        if(this.props.isNewGroup){
+            text = "Make new group";
+            text2 = "Make group";
+            nameField = (<div className={"nameFieldGroupMakerOverlay"}><span>group name</span> : <input value={this.props.groupName} onChange={this.props.onChange}/></div>);
+        }
+
         return (
             <div onClick={this.props.onOverLayCancelClick} id="overlayGroup" style={this.props.overlay ? { display: "block" } : { display: "none" }}>
                 <div id="textGroup" onClick={this.onDivClick}>
-                    <h5>
-                        makeGroup
-                    </h5>
-                    <span>group name</span> : <input value={this.props.groupName} onChange={this.props.onChange}/>
-                    <button onClick={this.props.makeGroup}>make new group</button>
+                    <h1>
+                        {text}
+                    </h1>
+                    {nameField}
+                    <p className={"overLayError"}>{this.props.error}</p>
                     <Select
+                        className = {"SelectGroupMakerOverlay"}
                         isMulti = {true}
                         options={this.props.valuesSelector}
                         value = {this.props.selectedFriends}
                         onChange = {this.props.onSelect}
                     />
+
+                    <button onClick={this.props.makeGroup}>{text2}</button>
                 </div>
             </div>
         )

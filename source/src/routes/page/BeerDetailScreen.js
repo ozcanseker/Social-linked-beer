@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/BeerDetailScreen.scss';
 import BeerCheckInOverlay from '../../component/BeerCheckInOverlay';
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import Brewer from "../../model/HolderComponents/Brewer";
 
 class BeerDetailScreen extends React.Component {
@@ -12,7 +12,7 @@ class BeerDetailScreen extends React.Component {
             beerReview: "",
             beerRating: 2.5,
             addReview: false,
-            selectedOptions: [{value: this.props.modelHolder.getUser().getCheckInLocation(), label: "Public"}]
+            selectedOptions: []
         };
 
         this.props.solidCommunicator.fetchBeerData(this.props.modelHolder.getBeer()).then(res => {
@@ -85,7 +85,7 @@ class BeerDetailScreen extends React.Component {
         let groups = this.props.modelHolder.getGroups().map(res => {
             return {value: res.getCheckInLocation(), label: res.getName()}
         });
-        groups.push({value: this.props.modelHolder.getUser().getCheckInLocation(), label: "Public"});
+        groups.unshift({value: this.props.modelHolder.getUser().getCheckInLocation(), label: "Public"});
 
         let description;
         let alcholdPercentage;
@@ -137,7 +137,7 @@ class BeerDetailScreen extends React.Component {
         if (beer._style) {
             style = (<div className={"textBeerDetailScreen"}>
                     <p><b>Style</b></p>
-                    {beer._maxSchenkTemperatuur}&deg;C
+                    {beer._style}
                 </div>
             )
         }

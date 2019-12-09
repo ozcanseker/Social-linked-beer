@@ -60,6 +60,8 @@ class Friends extends React.Component{
             let index = this.props.modelHolder.getFriends().map((profile, index) => {
                 if(friends[0].getUri() === profile.getUri()){
                     return index;
+                }else{
+                    return undefined;
                 }
             }).filter(index => {return index});
 
@@ -80,7 +82,7 @@ class Friends extends React.Component{
                 this.setState({error : e.message})
             }
         }
-    }
+    };
 
     render(){
         let friends = this.props.modelHolder.getFriends();
@@ -95,6 +97,8 @@ class Friends extends React.Component{
                         </p>
                     </Link>
                 </li>
+            }else{
+                return undefined;
             }
         });
 

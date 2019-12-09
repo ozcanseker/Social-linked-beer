@@ -1,10 +1,16 @@
-import {getAllUserCheckIns, getUserFile, loadFriendData, postSolidFile, putSolidFile} from "./SolidMethods";
+import {
+    appendSolidResource,
+    getAllUserCheckIns,
+    getUserFile,
+    loadFriendData,
+    postSolidFile,
+    putSolidFile
+} from "./SolidMethods";
 
 import * as SolidTemplates from './rdf/SolidTtlTemplates';
 import {buildSolidCommunicator} from './solidCommunicatorInits/SolidCommunicatorBuilder'
 import {preApplicationHandelings} from './solidCommunicatorInits/PreApplicationHandelings'
 
-import Beer from '../model/HolderComponents/Beer'
 import BeerCheckIn from '../model/HolderComponents/CheckIn'
 
 import * as fileClient from 'solid-file-client';
@@ -36,7 +42,7 @@ import {
     GROUPINVITATION_NAME,
     INBOX_FOLDER
 } from "./rdf/Constants";
-import {DBPEDIA, FOAF, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
+import {RDF, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 import Friend from "../model/HolderComponents/Friend";
 import Group from "../model/HolderComponents/Group";
 import InboxMessage from "../model/HolderComponents/InboxMessage";
@@ -308,7 +314,7 @@ class SolidCommunicator {
                 } else {
                     this._modelHolder.getCheckInHandler().addToCheckInsAmount();
                 }
-            }else{
+            } else {
                 let group = this._modelHolder.getGroupFromCheckInLocationUri(res);
                 fileClient.fetch(group.getGroupCheckInIndex()).then(checkInIndex => {
                     let graph = rdfLib.graph();
@@ -317,7 +323,7 @@ class SolidCommunicator {
                     userNamedNode.value = parseInt(userNamedNode.value) + beerpoints + "";
 
                     let ttlFile = rdfLib.serialize(undefined, graph, group.getGroupCheckInIndex(), 'text/turtle');
-                    putSolidFile(group.getGroupCheckInIndex(),ttlFile);
+                    putSolidFile(group.getGroupCheckInIndex(), ttlFile);
                 })
             }
 
@@ -332,14 +338,15 @@ class SolidCommunicator {
             beer.getName(),
             date.toString(),
             hasReview ? rating : undefined,
-            hasReview ? review : undefined);
+            hasReview ? review : undefined,
+            false);
 
         groups.forEach(res => {
             let group = this._modelHolder.getGroupFromCheckInLocationUri(res);
 
-            if(group !== undefined){
+            if (group !== undefined) {
                 group.getCheckInHandler().addUserCheckIns([checkIn]);
-            }else{
+            } else {
                 console.log(res);
             }
         });
@@ -435,9 +442,6 @@ class SolidCommunicator {
     }
 
     async acceptGroupRequest(message) {
-        //see if the person is your friend
-        let friend = this._modelHolder.getFriendFromUri(message.getFrom());
-
         //TODO maak een ttl file voor het accepteren en verzend deze naar de persoon.
 
         //maak een ttl file om het in eigen groep folder te zetten
@@ -457,6 +461,66 @@ class SolidCommunicator {
         await fileClient.deleteFile(message.getUri());
 
         //TODO decline stuur het door, zodat je eruit wordt getrapt.
+    }
+
+    async onLikeClick(checkOut) {
+        let url = checkOut._fileLocation;
+        let body = `INSERT DATA { <${this._user.getUri()}> <https://www.w3.org/ns/activitystreams#Like> <${url}> }`;
+
+        await appendSolidResource(url, body);
+        checkOut.setLikedTrue();
+    }
+
+    async addFriendsToGroup(group, friends) {
+        if (friends.length > 0) {
+            let friendsGroup = friends.map(res => {
+                return {member: res.getUri(), points: "0"};
+            });
+
+            group.addMembers(friendsGroup);
+
+            let friendFile = await fileClient.readFile(group.getGroupDataFile());
+            let graph = rdfLib.graph();
+            await rdfLib.parse(friendFile, graph, group.getGroupDataFile(), "text/turtle");
+            let groupNN = graph.any(undefined, VCARD('hasLeader'));
+
+            let checkInIndexFile = await fileClient.readFile(group.getGroupCheckInIndex());
+            let graph2 = rdfLib.graph();
+            await rdfLib.parse(checkInIndexFile, graph2, group.getGroupDataFile(), "text/turtle");
+            let group2NN = graph.any(undefined, VCARD('hasMember'));
+
+            friends.forEach(res => {
+                let friendNN = rdfLib.sym(res.getUri());
+                graph.add(groupNN, VCARD('hasMember'), friendNN);
+                graph2.add(group2NN, VCARD('hasMember'), friendNN)
+                graph2.add(friendNN, SOLIDLINKEDBEER('points'), 0)
+            });
+
+            //stuur de uitnodigingen naar de vrienden
+            friends.forEach(res => {
+                let fileName = GROUPINVITATION_NAME + group.getName();
+                let desc = GROUPINVITATION_DESC + group.getName() + "?";
+
+                let location = res.getBeerDrinkerFolder() + INBOX_FOLDER;
+                let postLocation = location + fileName + ".ttl";
+
+                let inv = SolidTemplates.getGroupInvitaion(res.getUri(),
+                    desc,
+                    postLocation,
+                    this._user.getUri(),
+                    group.getUrl(),
+                    group.getName()
+                );
+
+                postSolidFile(location, fileName, inv);
+            });
+
+            friendFile = await rdfLib.serialize(undefined, graph, group.getGroupDataFile(), 'text/turtle');
+            await putSolidFile(group.getGroupDataFile(), friendFile);
+
+            checkInIndexFile = await rdfLib.serialize(undefined, graph2, group.getGroupCheckInIndex(), 'text/turtle');
+            await putSolidFile(group.getGroupCheckInIndex(), checkInIndexFile);
+        }
     }
 }
 

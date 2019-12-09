@@ -20,3 +20,22 @@ In this application you can make friends and share the beers you drunk. Also you
 ## Issues
  - Login in sometimes gives the error "User not logged in 2"
  - https:ozcanseker.inrupt.net/profile/card# without // also works. Breaks the app
+
+#TODO
+- documentatie over folder opzet
+- documentatie over asl
+
+## Docs
+technische bevindingen.
+solid specs vs solid imlplementatie
+publish subscribe
+stappenplan opstarten app
+- bevindingen
+ - kadaster documentatie 
+ - opzetten applicatie
+
+Pragmatisch : waarom is het me niet gelukt qua overige factoren.
+technisch : wat zijn de berperkingen van Solid.
+conceptueel : waarom is het conceptueel niet werkend.
+
+wat is goed aan solid, wat werkt niet. 

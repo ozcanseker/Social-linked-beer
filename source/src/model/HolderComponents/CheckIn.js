@@ -10,7 +10,7 @@ class CheckIn extends Observable{
         return this._fileLocation;
     }
 
-    loadInAttributes(userWebId, userName, beerLocation, beerName, checkInTime, rating, review){
+    loadInAttributes(userWebId, userName, beerLocation, beerName, checkInTime, rating, review, liked, amountOfLikes){
         this._type  = rating? "BeerReview" : "BeerCheckIn";
         this._userWebId = userWebId;
         this._userName = userName;
@@ -19,8 +19,24 @@ class CheckIn extends Observable{
         this._checkInTime = checkInTime;
         this._rating = rating;
         this._review = review;
+        this._liked = liked;
+        this._amountOfLikes = amountOfLikes;
 
         this.updateSubscribers();
+    }
+
+    setLikedTrue(){
+        this._liked = true;
+        this._amountOfLikes++;
+        this.updateSubscribers();
+    }
+
+    getLiked(){
+        return this._liked;
+    }
+
+    getAmountOfLiked() {
+        return this._amountOfLikes;
     }
 }
 

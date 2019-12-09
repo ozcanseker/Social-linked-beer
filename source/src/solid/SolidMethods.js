@@ -6,11 +6,17 @@ import {
     BEERREVIEWFILENAME,
     CHECKIN_FOLDER
 } from "./rdf/Constants";
-import {FOAF, LDP, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
+import {ACTIVITYSTREAM, FOAF, LDP, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
 const rdfLib = require('rdflib');
+
+let user;
+
+export function setUserSolidMethods(url){
+    user = url;
+}
 
 /**
  * Post a solid file.
@@ -109,7 +115,7 @@ export async function getUserFile(url) {
             //get name and Image
             let nameFN = graph.any(profile, VCARD('fn'));
 
-            if(!nameFN){
+            if (!nameFN) {
                 nameFN = graph.any(profile, FOAF('name'));
             }
 
@@ -187,7 +193,6 @@ export async function getTenUserCheckIns(beerDrinkerFolder) {
         } else {
             checkIns++;
         }
-
     }
 
     return {userBeerCheckIns: userBeerCheckIns, reviews: reviews, checkIns: checkIns};
@@ -231,6 +236,11 @@ export async function loadValuesInCheckInFile(beerCheckIn) {
         let rating = graph.any(namedNode, SOLIDLINKEDBEER('rating'));
         let review = graph.any(namedNode, SOLIDLINKEDBEER('review'));
 
+        let query = graph.each(undefined, ACTIVITYSTREAM("Like"));
+        let amount = query.length;
+
+        query = graph.any(rdfLib.sym(user), ACTIVITYSTREAM("Like"));
+
         beerCheckIn.loadInAttributes(
             webId.value,
             userId ? userId.value : undefined,
@@ -238,7 +248,9 @@ export async function loadValuesInCheckInFile(beerCheckIn) {
             beername.value,
             checkinTime.value,
             rating ? rating.value : undefined,
-            review ? review.value : undefined
+            review ? review.value : undefined,
+            query !== undefined,
+            amount
         );
     });
 }

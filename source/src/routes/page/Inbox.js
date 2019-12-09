@@ -2,10 +2,6 @@ import React from 'react';
 import "../css/Inbox.scss";
 
 class Inbox extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
     declineFriendShipRequest = (index, message) => {
         this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.declineFriendSchipRequest(message);

@@ -1,7 +1,6 @@
 import CheckInHandler from "./HolderComponents/CheckInHandler";
 import User from "./HolderComponents/User";
 import Observable from "./HolderComponents/Observable";
-import Beer from "./HolderComponents/Beer";
 
 class ModelHolder extends Observable {
     constructor() {

@@ -11,6 +11,6 @@ export const LDP = rdfLib.Namespace('http://www.w3.org/ns/ldp#');
 export const DBPEDIA = rdfLib.Namespace('http://dbeerpedia.com/def#');
 export const SCHEMA = rdfLib.Namespace('http://schema.org/');
 export const ACL = rdfLib.Namespace("http://www.w3.org/ns/auth/acl#");
-
+export const ACTIVITYSTREAM = rdfLib.Namespace("https://www.w3.org/ns/activitystreams#");
 
 

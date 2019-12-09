@@ -1,24 +1,54 @@
 #overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 2;
-    cursor: pointer;
-  }
-  
-  #text{
-      background: red;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 50px;
-    color: black;
-    transform: translate(-50%,-50%);
-    -ms-transform: translate(-50%,-50%);
-    cursor: default;
-  }
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+#text {
+  background: darkblue;
+  color: white;
+  border: 5px solid white;
+  padding: 2%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  cursor: default;
+  border-radius: 10px;
+}
+
+#text h1 {
+  font-size: 2em;
+  margin-bottom: 4%;
+}
+
+#text span {
+  font-size: 1em;
+}
+
+.nameFieldGroupMakerOverlay {
+  margin-bottom: 4%;
+  display: flex;
+  margin-right: 2%;
+  white-space: nowrap;
+}
+
+.overLayError {
+  color: red;
+}
+
+.addReviewButton {
+  margin-bottom: 4%;
+}
+
+.reviewSectionBeerCheckIn {
+  padding: 2%;
+}

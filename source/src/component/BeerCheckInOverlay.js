@@ -13,7 +13,7 @@ class BeerCheckInOverlay extends React.Component {
 
     onDivClick = (e) => {
         e.stopPropagation();
-    }
+    };
     
     render() {
         let rating;
@@ -28,36 +28,45 @@ class BeerCheckInOverlay extends React.Component {
                     this.props.setBeerRating(newValue);
                 }}
                 />
-            )
+            );
 
             text = (
                 <textarea
                     value={this.props.beerReview}
+                    placeholder={"Write a review here"}
                     onChange={event => {
                         this.props.onBeerReviewChange(event.target.value)
                     }
                     }/>
 
             )
+
+            rating = (
+                <div className={"reviewSectionBeerCheckIn"}>
+                    {rating}<br/>
+                    {text}
+                </div>
+            );
         }
 
         return (
             <div onClick={this.props.onOverLayCancelClick} id="overlay" style={this.props.overlay ? { display: "block" } : { display: "none" }}>
                 <div id="text" onClick={this.onDivClick}>
-                    <h5>
-                        check in beer
-                    </h5>
-                    <button onClick = {this.props.onAddReviewClick}>{this.props.addReview ? "dont add review": "Add review"}</button>
+                    <h1>
+                        Check in beer
+                    </h1>
+                    <button className={"addReviewButton"} onClick = {this.props.onAddReviewClick}>{this.props.addReview ? "dont add review": "Add review"}</button>
                     {rating}
-                    {text}
-                    <br />
-                    <button onClick = {this.props.checkInBeer}>check in beer</button>
+                    <h5>post location: </h5>
                     <Select
+                        className = {"SelectGroupMakerOverlay"}
                         isMulti = {true}
                         onChange = {this.props.onSelect}
                         options = {this.props.groupsOptions}
                         value = {this.props.selectedOptions}
                     />
+
+                    <button onClick = {this.props.checkInBeer}>check in beer</button>
                 </div>
             </div>
         )

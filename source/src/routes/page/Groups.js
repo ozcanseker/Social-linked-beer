@@ -8,7 +8,7 @@ class Groups extends React.Component {
         super(props);
         this.state = {
             overlay: false,
-            groupName: "b",
+            groupName: "",
             selectedFriends: []
         }
     }
@@ -23,6 +23,12 @@ class Groups extends React.Component {
         this.setState({
             overlay: false
         });
+    };
+
+    onSelectFriend = (e) => {
+        this.setState({
+            selectedFriends: e
+        })
     };
 
     makeGroup = () => {
@@ -40,13 +46,9 @@ class Groups extends React.Component {
                 selectedFriends: [],
                 groupName: ""
             });
-        }
-    };
+        }else{
 
-    onSelectFriend = (e) => {
-        this.setState({
-            selectedFriends: e
-        })
+        }
     };
 
     onGroupNameChange = (e) => {
@@ -80,15 +82,13 @@ class Groups extends React.Component {
                 <GroupMakerOverlay
                     overlay={this.state.overlay}
                     onOverLayCancelClick={this.onOverLayCancelClick}
-                    onAddReviewClick={this.onAddReviewClick}
-                    addReview={this.state.addReview}
-                    checkInBeer={this.onPostBeerReview}
                     onChange={this.onGroupNameChange}
                     groupName={this.state.groupName}
                     valuesSelector={friendsComs}
                     selectedFriends={this.state.selectedFriends}
                     onSelect={this.onSelectFriend}
                     makeGroup={this.makeGroup}
+                    isNewGroup = {true}
                 />
 
                 <ul>
