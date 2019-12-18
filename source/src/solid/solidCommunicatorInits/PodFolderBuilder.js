@@ -13,7 +13,7 @@ import {
   CONTENT_TYPE_TURTLE,
   FRIENDS_FILE,
   FRIENDS_FILENAME, GROUPFOLDER,
-  INBOX_FOLDER
+  INBOX_FOLDER, LIKE_FOLDER
 } from "../rdf/Constants";
 
 export async function buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId) {
@@ -45,6 +45,16 @@ export async function checkFolderIntegrity(appfolder, webId) {
     await fileClient.createFolder(groupFolder);
     let body = getAclGroupFolder(groupFolder, groupFolderAcl, webId);
     await putSolidFile(groupFolderAcl, body);
+  }
+
+  let likeFolder = appfolder + BEERDRINKERFOLDER + LIKE_FOLDER;
+  let likeRes = await authClient.fetch(likeFolder);
+
+  if(likeRes.status === 404){
+    let likeFolderAcl = likeFolder + '.acl';
+    await fileClient.createFolder(likeFolder);
+    let body = getAclLikeFolder(likeFolder, likeFolderAcl, webId);
+    await putSolidFile(likeFolderAcl, body);
   }
 }
 
@@ -80,7 +90,7 @@ async function createAppNodeForPublicTypeIndex(store, publicTypeIndex, publicLoc
  */
 async function findEmptyFolder(publicLocation) {
   //TODO improve this. You can check if the other folder holds up to your standards. A lot of possibilities
-  let appLocation = publicLocation + APPFOLDER_NAME + '/'
+  let appLocation = publicLocation + APPFOLDER_NAME + '/';
 
   //see if there is a folder at the applocation
   let res = await authClient.fetch(appLocation);
@@ -89,7 +99,7 @@ async function findEmptyFolder(publicLocation) {
   if (res.status % 400 < 100) {
     return appLocation;
   } else {
-    return appLocation = publicLocation + APPFOLDER_NAME + makeRandomString(10) + '/'
+    return publicLocation + APPFOLDER_NAME + makeRandomString(10) + '/'
   }
 }
 
@@ -167,6 +177,14 @@ async function makeAppFolderStructure(appFolderUrl, webId) {
   await fileClient.createFolder(groupFolder);
   body = getAclGroupFolder(groupFolder, groupFolderAcl, webId);
   await putSolidFile(groupFolderAcl, body);
+
+  //like folder
+  let likeFolder = beerDrinkerUrl + LIKE_FOLDER;
+  let likeFolderAcl = likeFolder + '.acl';
+
+  await fileClient.createFolder(likeFolder);
+  body = getAclLikeFolder(likeFolder, likeFolderAcl, webId);
+  await putSolidFile(likeFolderAcl, body);
 }
 
 /**
@@ -354,6 +372,25 @@ function getAclAppData(resourceUrl, aclUrl, webIdUserLoggedIn, friendsUrl) {
 }
 
 function getAclGroupFolder(appUrl, aclUrl, webIdUserLoggedIn) {
+  let graph = rdflib.graph();
+  let owner = rdflib.sym(aclUrl + "#Owner");
+  let app = rdflib.sym(appUrl);
+  let agent = rdflib.sym(webIdUserLoggedIn);
+
+  graph.add(owner, RDF('type'), ACL('Authorization'));
+
+  graph.add(owner, ACL('accessTo'), app);
+  graph.add(owner, ACL('default'), app);
+  graph.add(owner, ACL('agent'), agent);
+
+  graph.add(owner, ACL('mode'), ACL('Control'));
+  graph.add(owner, ACL('mode'), ACL('Read'));
+  graph.add(owner, ACL('mode'), ACL('Write'));
+
+  return rdflib.serialize(undefined, graph, aclUrl, 'text/turtle');
+}
+
+function getAclLikeFolder(appUrl, aclUrl, webIdUserLoggedIn){
   let graph = rdflib.graph();
   let owner = rdflib.sym(aclUrl + "#Owner");
   let app = rdflib.sym(appUrl);

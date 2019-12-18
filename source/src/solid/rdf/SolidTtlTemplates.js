@@ -1,5 +1,5 @@
 import * as rdfLib from "rdflib";
-import {ACL, RDF, SCHEMA, SOLIDLINKEDBEER, VCARD} from "./Prefixes";
+import {ACL, ACTIVITYSTREAM, RDF, SCHEMA, SOLIDLINKEDBEER, VCARD} from "./Prefixes";
 import {GROUP_MEMBERS} from "./Constants";
 
 export function getInviteToLSBInvitation(urlInvitee, invitation, postLocation, userWebId){
@@ -100,6 +100,7 @@ export function beerReviewInTemplate(postLocation, userName, webId, beerLocation
 
     graph.add(namedNode, RDF('type'), SOLIDLINKEDBEER('CheckReview'));
     graph.add(namedNode, SOLIDLINKEDBEER('webId'), rdfLib.sym(webId));
+
     if(userName){
         graph.add(namedNode, SOLIDLINKEDBEER('username'), userName);
     }
@@ -110,7 +111,7 @@ export function beerReviewInTemplate(postLocation, userName, webId, beerLocation
     graph.add(namedNode, SOLIDLINKEDBEER('review'), review);
 
     // //make a text file and send
-    return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
+    return rdfLib.serialize(undefined, graph, "", 'text/turtle');
 }
 
 export function getGroupAppDataTTL(urlFile,friends, leader,groupName){
@@ -254,4 +255,45 @@ export function groupCheckInIndexAcl(groupLocation, groupAppDataLocation, groupA
     graph.add(members, ACL('mode'), ACL('Append'));
 
     return rdfLib.serialize(undefined, graph, groupAcl, 'text/turtle');
+}
+
+export function getLikeBody(checkInLocation, likeLocation, userWebId){
+    let graph = rdfLib.graph();
+    let likeLocationNN = rdfLib.sym(likeLocation);
+
+    graph.add(likeLocationNN, RDF('type'), ACTIVITYSTREAM('Like'));
+    graph.add(likeLocationNN, RDF('actor'), rdfLib.sym(userWebId));
+    graph.add(likeLocationNN, RDF('object'), rdfLib.sym(checkInLocation));
+
+    return rdfLib.serialize(undefined, graph, likeLocation, 'text/turtle');
+}
+
+export function getLikeAcl(likerWebid, likedUserWebid, likeFile, likefileAclLocation){
+    let graph = rdfLib.graph();
+    let owner = rdfLib.sym(likefileAclLocation + "#Owner");
+    let ownerPost = rdfLib.sym(likefileAclLocation + "#OwnerPost");
+    let resource = rdfLib.sym(likeFile);
+
+    graph.add(owner, RDF('type'), ACL('Authorization'));
+
+    graph.add(owner, ACL('accessTo'), resource);
+    graph.add(owner, ACL('default'), resource);
+    graph.add(owner, ACL('agent'), rdfLib.sym(likerWebid));
+
+    graph.add(owner, ACL('mode'), ACL('Control'));
+    graph.add(owner, ACL('mode'), ACL('Read'));
+    graph.add(owner, ACL('mode'), ACL('Write'));
+
+    if(likerWebid !== likedUserWebid){
+        //public
+        graph.add(ownerPost, RDF('type'), ACL('Authorization'));
+
+        graph.add(ownerPost, ACL('accessTo'), resource);
+        graph.add(ownerPost, ACL('default'), resource);
+        graph.add(ownerPost, ACL('agent'), rdfLib.sym(likedUserWebid));
+
+        graph.add(ownerPost, ACL('mode'), ACL('Read'));
+    }
+
+    return rdfLib.serialize(undefined, graph, likefileAclLocation, 'text/turtle');
 }

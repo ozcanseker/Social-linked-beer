@@ -40,7 +40,7 @@ import {
     GROUPFOLDER,
     GROUPINVITATION_DESC,
     GROUPINVITATION_NAME,
-    INBOX_FOLDER
+    INBOX_FOLDER, LIKE_FOLDER, LIKEFILENAME
 } from "./rdf/Constants";
 import {RDF, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 import Friend from "../model/HolderComponents/Friend";
@@ -268,46 +268,45 @@ class SolidCommunicator {
     }
 
     async postBeerReview(hasReview, beer, rating, review, groups) {
-        let ttlFile;
-
         let date = new Date();
-
-        let checkingFolder = this._checkInFolder;
-        let filename;
-        let postLocation;
-        let beerpoints = 0;
-
-        if (hasReview) {
-            filename = date.getTime() + BEERREVIEWFILENAME;
-            postLocation = checkingFolder + filename + ".ttl";
-
-            ttlFile = SolidTemplates.beerReviewInTemplate(postLocation,
-                this._user.getName(),
-                this._user.getUri(),
-                beer.getUrl(),
-                beer.getName(),
-                date,
-                rating,
-                review);
-
-            beerpoints = 10;
-        } else {
-            filename = date.getTime() + BEERCHECKINFILENAME;
-            postLocation = checkingFolder + filename + ".ttl";
-            ttlFile = SolidTemplates.beerCheckInTemplate(postLocation,
-                this._user.getName(),
-                this._user.getUri(),
-                beer.getUrl(),
-                beer.getName(),
-                date);
-
-            beerpoints = 5;
-        }
+        let beerPoints = hasReview ? 10 : 5;
+        let filename = hasReview ? date.getTime() + BEERREVIEWFILENAME : date.getTime() + BEERCHECKINFILENAME;
 
         groups.forEach(res => {
+            let ttlFile;
+            let postLocation;
+
+            if (hasReview) {
+                filename = date.getTime() + BEERREVIEWFILENAME;
+                postLocation = res + filename + ".ttl";
+
+                ttlFile = SolidTemplates.beerReviewInTemplate(postLocation,
+                    this._user.getName(),
+                    this._user.getUri(),
+                    beer.getUrl(),
+                    beer.getName(),
+                    date,
+                    rating,
+                    review);
+
+                beerPoints = 10;
+            } else {
+                filename = date.getTime() + BEERCHECKINFILENAME;
+                postLocation = res + filename + ".ttl";
+
+                ttlFile = SolidTemplates.beerCheckInTemplate(postLocation,
+                    this._user.getName(),
+                    this._user.getUri(),
+                    beer.getUrl(),
+                    beer.getName(),
+                    date);
+
+                beerPoints = 5;
+            }
+
             if (res === this._user.getCheckInLocation()) {
-                this._modelHolder.getCheckInHandler().addBeerPoints(beerpoints);
-                this.sendBeerPoints(beerpoints);
+                this._modelHolder.getCheckInHandler().addBeerPoints(beerPoints);
+                this.sendBeerPoints(beerPoints);
 
                 if (hasReview) {
                     this._modelHolder.getCheckInHandler().addBeerReviewToAmount();
@@ -316,11 +315,12 @@ class SolidCommunicator {
                 }
             } else {
                 let group = this._modelHolder.getGroupFromCheckInLocationUri(res);
+
                 fileClient.fetch(group.getGroupCheckInIndex()).then(checkInIndex => {
                     let graph = rdfLib.graph();
                     rdfLib.parse(checkInIndex, graph, group.getGroupCheckInIndex(), "text/turtle");
                     let userNamedNode = graph.any(rdfLib.sym(this._user.getUri()), SOLIDLINKEDBEER('points'));
-                    userNamedNode.value = parseInt(userNamedNode.value) + beerpoints + "";
+                    userNamedNode.value = parseInt(userNamedNode.value) + beerPoints + "";
 
                     let ttlFile = rdfLib.serialize(undefined, graph, group.getGroupCheckInIndex(), 'text/turtle');
                     putSolidFile(group.getGroupCheckInIndex(), ttlFile);
@@ -328,29 +328,28 @@ class SolidCommunicator {
             }
 
             postSolidFile(res, filename, ttlFile);
-        });
 
-        let checkIn = new BeerCheckIn(postLocation);
-        checkIn.loadInAttributes(
-            this._user.getUri(),
-            this._user.getName(),
-            beer.getUrl(),
-            beer.getName(),
-            date.toString(),
-            hasReview ? rating : undefined,
-            hasReview ? review : undefined,
-            false);
+            //make checkin to add
+            let checkIn = new BeerCheckIn(postLocation);
+            checkIn.loadInAttributes(
+                this._user.getUri(),
+                this._user.getName(),
+                beer.getUrl(),
+                beer.getName(),
+                date.toString(),
+                hasReview ? rating : undefined,
+                hasReview ? review : undefined,
+                false,
+                0);
 
-        groups.forEach(res => {
             let group = this._modelHolder.getGroupFromCheckInLocationUri(res);
 
             if (group !== undefined) {
                 group.getCheckInHandler().addUserCheckIns([checkIn]);
             } else {
-                console.log(res);
+                this._modelHolder.getCheckInHandler().addUserCheckIns([checkIn]);
             }
         });
-        this._modelHolder.getCheckInHandler().addUserCheckIns([checkIn]);
     }
 
     async sendBeerPoints(amount) {
@@ -463,12 +462,37 @@ class SolidCommunicator {
         //TODO decline stuur het door, zodat je eruit wordt getrapt.
     }
 
-    async onLikeClick(checkOut) {
-        let url = checkOut._fileLocation;
-        let body = `INSERT DATA { <${this._user.getUri()}> <https://www.w3.org/ns/activitystreams#Like> <${url}> }`;
+    async onLikeClick(checkin) {
+        let encodedUri = checkin._fileLocation.replace(/[\/:|]/gi, "_");
+        let fileName = encodedUri.replace(".ttl", "") + LIKEFILENAME;
 
-        await appendSolidResource(url, body);
-        checkOut.setLikedTrue();
+        let likeFolderLocation = this._user.getBeerDrinkerFolder() + LIKE_FOLDER;
+        let likeLocation = likeFolderLocation + fileName + ".ttl";
+
+        let checkInUrl = checkin._fileLocation;
+        let body = `INSERT DATA { <${likeLocation}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Like> }`;
+
+        let likeBody = SolidTemplates.getLikeBody(checkInUrl, likeLocation, this._user.getUri());
+
+        let likeAclLocation = likeLocation + ".acl";
+        let likeAclBody = SolidTemplates.getLikeAcl(
+            this._user.getUri(),
+            checkin._userWebId,
+            likeLocation,
+            likeAclLocation
+        );
+
+        checkin.setLikedTrue();
+
+        fileClient.fetch(likeLocation).then(res => {
+            console.log("exists");
+        }).catch(res => {
+                postSolidFile(likeFolderLocation, fileName, likeBody);
+                putSolidFile(likeAclLocation, likeAclBody);
+            }
+        );
+
+        await appendSolidResource(checkInUrl, body);
     }
 
     async addFriendsToGroup(group, friends) {
@@ -492,8 +516,8 @@ class SolidCommunicator {
             friends.forEach(res => {
                 let friendNN = rdfLib.sym(res.getUri());
                 graph.add(groupNN, VCARD('hasMember'), friendNN);
-                graph2.add(group2NN, VCARD('hasMember'), friendNN)
-                graph2.add(friendNN, SOLIDLINKEDBEER('points'), 0)
+                graph2.add(group2NN, VCARD('hasMember'), friendNN);
+                graph2.add(friendNN, SOLIDLINKEDBEER('points'), 0);
             });
 
             //stuur de uitnodigingen naar de vrienden

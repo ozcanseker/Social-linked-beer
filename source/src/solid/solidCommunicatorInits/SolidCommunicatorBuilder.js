@@ -55,7 +55,7 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
         applicationLocation + BEERDRINKERFOLDER + CHECKIN_FOLDER);
     solidCommunicator.setFileLocations();
 
-    setUserSolidMethods(user.getUri());
+    setUserSolidMethods(user);
 
     getAppData(user.getBeerDrinkerFolder()).then(res => {
         user.loadInAppData(new Date(res.startdate));

@@ -13,7 +13,7 @@ export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, f
     //add friend from friend requested to friends
     let acceptedRequests = inboxContent.files.filter(file => {
         return file.name.includes(FRIENDSHIPREQUEST_ACCEPTED_NAME);
-    })
+    });
 
     if(acceptedRequests.length !== 0){
         checkAcceptedFriendShipRequests(beerDrinkerFolder, acceptedRequests, friendGroup, friendsRequestedGroup, FriendsStore, modelHolder);
@@ -22,7 +22,7 @@ export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, f
     //delete user from friends requested if they declined
     let declinedRequests = inboxContent.files.filter(file => {
         return file.name.includes("Social_Linked_Beer_FriendschipRequestDecline");
-    })
+    });
 
     if(declinedRequests.length !== 0){
         await checkDeclinedFriendShipRequests(beerDrinkerFolder, declinedRequests, friendsRequestedGroup, FriendsStore);

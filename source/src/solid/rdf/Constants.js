@@ -8,6 +8,7 @@ export const CHECKIN_FOLDER = "checkins/";
 export const BEERDRINKERFOLDER = "beerdrinker/";
 export const CONTENT_TYPE_TURTLE = "text/turtle";
 export const INBOX_FOLDER = 'inbox/';
+export const LIKE_FOLDER = 'like/';
 
 export const APPDATA_FILE = 'appdata.ttl';
 export const FRIENDS_FILE = "friends.ttl";
@@ -46,4 +47,6 @@ export const FRIENDSHIPREQUEST_DECLINED_DESC = " declined your friendship reques
 
 export const GROUPINVITATION_NAME = "Social_Linked_Beer_groupInvitation_to_";
 export const GROUPINVITATION_DESC = "Would you like to join us at ";
+
+export const LIKEFILENAME = "_LIKE";
 

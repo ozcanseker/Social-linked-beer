@@ -45,9 +45,12 @@ This is good because usually you fetch a file and have to fetch a bunch of other
 the user gets some feedback. You can show the user what he is about the receive. What you can do is, you can make the
 model class and fill it in later with an load in details function.
   
-In this way you also dont have to wait for every fetch request to finish. The application will update its layout with every
+In this way you also dont have to wait for every fetch request to finish. The application will update it's layout with every
 fetch.   
 
+#TODO
+- documentatie over folder opzet
+- documentatie over asl
 
 ## Code examples
 The code I use to make files. For folder I use the Solid file client.

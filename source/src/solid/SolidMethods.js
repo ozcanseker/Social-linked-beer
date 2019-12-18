@@ -6,7 +6,7 @@ import {
     BEERREVIEWFILENAME,
     CHECKIN_FOLDER
 } from "./rdf/Constants";
-import {ACTIVITYSTREAM, FOAF, LDP, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
+import {ACTIVITYSTREAM, FOAF, LDP, RDF, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
@@ -26,7 +26,7 @@ export function setUserSolidMethods(url){
  * @returns {Promise<void>}
  */
 export async function postSolidFile(folder, filename, body) {
-    authClient.fetch(folder, {
+    return await authClient.fetch(folder, {
         method: 'POST',
         headers: {
             'Content-Type': 'text/turtle',
@@ -236,10 +236,15 @@ export async function loadValuesInCheckInFile(beerCheckIn) {
         let rating = graph.any(namedNode, SOLIDLINKEDBEER('rating'));
         let review = graph.any(namedNode, SOLIDLINKEDBEER('review'));
 
-        let query = graph.each(undefined, ACTIVITYSTREAM("Like"));
+        let query = graph.each(undefined, RDF('type') , ACTIVITYSTREAM("Like"));
         let amount = query.length;
 
-        query = graph.any(rdfLib.sym(user), ACTIVITYSTREAM("Like"));
+        let liked;
+        query.forEach(res => {
+            if(res.value.includes(user._appFolder)){
+                liked = true;
+            }
+        });
 
         beerCheckIn.loadInAttributes(
             webId.value,
@@ -249,7 +254,7 @@ export async function loadValuesInCheckInFile(beerCheckIn) {
             checkinTime.value,
             rating ? rating.value : undefined,
             review ? review.value : undefined,
-            query !== undefined,
+            liked,
             amount
         );
     });
