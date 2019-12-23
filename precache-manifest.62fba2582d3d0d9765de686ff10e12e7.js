@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d008ddeaa3eaed7d90fd1f5e6abdf62f",
+    "revision": "864084740ca14e05669653ab3427871b",
     "url": "/Social-linked-beer/index.html"
   },
   {
-    "revision": "fdd5b905ec9dd8198158",
+    "revision": "dd6f063d5ba753c7da0f",
     "url": "/Social-linked-beer/static/css/main.d7f6505c.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Social-linked-beer/static/js/2.d70738f8.chunk.js"
   },
   {
-    "revision": "fdd5b905ec9dd8198158",
-    "url": "/Social-linked-beer/static/js/main.f1943daa.chunk.js"
+    "revision": "dd6f063d5ba753c7da0f",
+    "url": "/Social-linked-beer/static/js/main.d36a3a07.chunk.js"
   },
   {
     "revision": "7a462a8689be36d1daba",
@@ -36,8 +36,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Social-linked-beer/static/media/beerpouring.6dde892b.gif"
   },
   {
-    "revision": "94a104b98937f79d3777a0d6af387890",
-    "url": "/Social-linked-beer/static/media/logo.94a104b9.png"
+    "revision": "63d52f03d8478cf901f98b0e931b7f1b",
+    "url": "/Social-linked-beer/static/media/logo.63d52f03.png"
   },
   {
     "revision": "b6681619dcc616623083589aa826d2be",
