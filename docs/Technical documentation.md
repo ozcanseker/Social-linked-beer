@@ -38,7 +38,6 @@ The App react component subscribes to the Holder class.
 Image: ModelHolder class diagram  
 ![class diagram](images/ClassDiagramModel.png)
 
-
 ### 2.2 Solid communicator
 The Solid communicator handles all the messaging with the solid pod. The ui has elements(like buttons) that invoke
 the methods of the Solid communicator. This will in turn do an action and update the model. The mode then invokes the update method of 
@@ -55,7 +54,7 @@ In this way you also dont have to wait for every fetch request to finish. The ap
 fetch.   
 
 ## 3 Ontologies
-In the next section i will describe the ontologies that I used to make this application. I tried to model it with uml. 
+In the next section I will describe the ontologies that I used to make this application. I tried to model it with uml. 
 
 The ontologies will not really matter if a human has to go trough a graph to get the information. The human will 
 eventually figure it out. The goals of these ontologies is to make it possible for programs to decipher the ontologies.
@@ -63,11 +62,11 @@ The programm will be looking for well known vocabularies. Therefor it is smart t
 duplicate the same information in a different vocabulary. 
 
 ### 3.1 Meaning of symbols
-I used different kind of arrows and different kind of ways of writing things. In this section i wil explain what those 
+I used different kind of arrows and different kind of ways to write things. In this section I wil explain what those 
 symbols mean.
 
 **Prefix**  
-I used the standard way of declaring prefixes to declare the prefixes in the class diagram.
+I used the standard way of declaring prefixes to declare the prefixes in the ontologie diagram.
 
 Image: Prefix notation  
 ![prefix notation](images/prefixexample.png) 
@@ -80,10 +79,14 @@ Image: Class notation
 
 As you might see I put the class name in two different places: Once as the title and once as a rdf:type. This seems redundant.
 The logic behind it is, that rdf:type is an attribute while the title references the object itself. So the object itself will have
-an uri, for example a sch:Person object will have the uri example.inrupt.net/profile/card#me.
-
-As you might also see, I declare the literals and attributes that do not reference another class inside the box. 
-
+an uri and the attribute rdf:type.
+  
+As you might also notice, I declare the literals and attributes that do not reference another object inside the box.  
+  
+Literals are depicted in between "" with the type inside the quotations marks.  
+  
+Named nodes are depicted in between <>.  
+  
 **Association**  
 Association is when a class knows/references another class. This will be done with an arrow. The arrow will always have a
 attribute. This attribute will be near the arrow. 
@@ -97,28 +100,101 @@ foaf:primaryTopic and vice versa with the foaf:isPrimaryTopic.
 Image: Association example  
 ![association example](images/assocationexample2.png)  
 
-**Inheritance** 
+**Inheritance**  
 Inheritance is when a class extends a different class. In the image below the slb:Checkin extends the sch:Action. Extending
 allows me to make my own classes while still reusing the know vocabularies. I can add my own attributes to the class while still
-using known vocabs. Inheritance is modeled with an open white arrow.
+using known vocabs. I might also use inheritance to make a class more specific. 
+
+When a class extends another class it will inherit all attributes.
+
+Inheritance is modeled with an open white arrow.
 
 Image: Inheritance example    
 ![inheritance example](images/inheritanceexample.png)
 
-### 3.2 CheckIn
-- Public type index data
-- Appdata
-- CheckIn
-- Review
+### 3.2 Ontologies of different files
+In this section I will describe the different ontologies used in the Social linked beer application. 
 
-#TODO
-- documentatie over folder opzet
-- documentatie over asl
+#### 3.2.1 Public type index ontologie
 
-## 4 Quick start guide to making you Solid app  
+#### 3.2.2 Appdata ontologie
 
-1. set up the file structure of the application folder. Think out what you want to place where and who can acess it.
-2. Start programming until it works.
+#### 3.2.3 CheckIn ontologie
+A check in is a record of a beer that you drunk. So it is a record.  
+
+I described the Check in as follows: 
+  
+Image: Check in ontologie
+![Check in ontologie](images/CheckInOntologie.png)
+
+First we have a the document that describes the Check in. This Document has the type foaf:Document. This document is 
+different than the Check in itself. The document has the check in as primary topic.
+
+The check in has the type slb:CheckIn. This is a class I made up because the class it inherits from does not 
+describing it completely. It inherints from act:Event. 
+
+Technically the checkIn is also an event. The event is there to give the check in the published attribute. I could have made
+the Check in inherit from sch:CreativeWork but a Check in does not feel like a creative work. What might have been a Valid
+alternative is if I added the act:published attribute to the slb:Checkin as a slb:published. I am trying to use as many
+defined vocabs as possible and therefore I chose this method.  
+  
+The checkIn has three attributes: the rdf:type, the foaf:isPrimaryTopic and slb:checkInOf. The slb:checkInOf describes the ConsumeAction the user 
+checked in. The ConsumeAction links the beer and the user that check in the beer.  
+
+This file also contains the references to the likes given by other people. 
+
+#### 3.2.4 Review ontologie
+A review is technically also a check in but with a review attached to it. 
+
+I described the Review as follows: 
+  
+Image: Review ontologie
+![Review ontologie](images/ReviewOntologie.png)
+
+The Review extends the checkIn. When you are reviewing a beer you are also checking it in. 
+
+The slb:Review also extends the sch:Review. The sch:Review is defined by schema.org and has all the attributes I need.
+
+#### 3.2.5 Friends ontologie
+
+#### 3.2.6 Group check-in index ontologie
+
+#### 3.2.7 Groupdata ontologie
+
+#### 3.2.8 Solib invitation ontologie
+
+#### 3.2.9 Friend request ontologie
+
+#### 3.2.10 Group request ontologie
+
+#### 3.2.11 Like ontologie
+Like ontologie is defined as followed: 
+
+Image: Like ontologie
+![Like ontologie](images/LikeOntologie.png)
+
+There is nothing special about this. It just uses the 
+[activity stream like definition](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-like).
+
+#### 3.2.12 Accept friend request ontologie
+
+#### 3.2.13 Decline friend request ontologie
+
+## 4 Folder stucture + ACL
+
+## 5 Quick start guide to making you Solid app  
+This is a quick start guide to make your Solid app. If it is your first time working with Linked data and Solid, you are going to
+do it wrong. You might not make the best ontlogies or your folder structure might be a mess. It is important to realize that you
+will learn by making mistakes. Therefore I would not worry about it that much. You have to start somewhere.  
+  
+The thing I would worry about the least is the ontologies for the object in your app. This is quite a bit of think work and you can 
+change it later.  
+  
+1. You need to think out the app logic.
+1. set up the file structure of the application folder. Think out what you want to place where and who can access it.
+1. Make the ontologies you want to use. These might be temporary but it is still worth it to think it out before. Changing
+it afterwards might be a lot less work if you put some tought into it before you start programming.
+1. The rest will just be regular programming. The applogic needs to work.  
 
 ## 5 Code examples
 The code I use to make files. For folder I use the Solid file client.
