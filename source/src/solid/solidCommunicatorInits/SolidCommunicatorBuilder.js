@@ -190,7 +190,7 @@ function getStorePublic(profile, storeProfileCard) {
 
 async function getApplicationLocation(publicProfileIndex, storePublicProfileIndex, storagePublic, webId) {
     let app = rdfLib.sym(publicProfileIndex.value + "#" + APPLICATION_NAME_PTI);
-    let appQuery = storePublicProfileIndex.any(app, SOLID("instance"));
+    let appQuery = storePublicProfileIndex.any(app, SOLID("instanceContainer"));
 
     if (appQuery) {
         await checkFolderIntegrity(appQuery.value, webId);

@@ -75,7 +75,7 @@ async function createAppNodeForPublicTypeIndex(store, publicTypeIndex, publicLoc
   //add values to the pti
   store.add(publicTypeIndex, TERMS('references'), app);
   store.add(app, RDF('type'), SOLID('TypeRegistration'));
-  store.add(app, SOLID('instance'), appLocationNN);
+  store.add(app, SOLID('instanceContainer'), appLocationNN);
 
   //serialize and send the pti
   let newTTLpublicTypeindex = await rdflib.serialize(undefined, store, publicTypeIndex.value, CONTENT_TYPE_TURTLE);

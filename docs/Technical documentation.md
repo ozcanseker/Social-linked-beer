@@ -23,6 +23,13 @@ requests.
 The model classes are plain javascript. The ui is made with React. The Solid communication is also plain javascript with
 the help of [Solid auth client](https://github.com/solid/solid-auth-client) and [Solid file client](https://github.com/jeff-zucker/solid-file-client)
 
+This is good because usually you fetch a file and have to fetch a bunch of other files. With this method 
+the user gets some feedback. You can show the user what he is about the receive. What you can do is, you can make the
+model class and fill it in later with an load in details function.
+  
+In this way you also dont have to wait for every fetch request to finish. The application will update it's layout with every
+fetch.   
+  
 ### 2.1 Model
 I use my own observable class.  
 
@@ -46,14 +53,13 @@ the ui and the ui get updated.
 Image: Sequence diagram request example  
 ![sequence](images/sequence.png)
 
-This is good because usually you fetch a file and have to fetch a bunch of other files. With this method 
-the user gets some feedback. You can show the user what he is about the receive. What you can do is, you can make the
-model class and fill it in later with an load in details function.
-  
-In this way you also dont have to wait for every fetch request to finish. The application will update it's layout with every
-fetch.   
+## 3 Folder stucture + ACL
 
-## 3 Ontologies
+
+Image: folder structure application
+![association example uri](images/folderstructure.png)
+
+## 4 Ontologies
 In the next section I will describe the ontologies that I used to make this application. I tried to model it with uml. 
 
 The ontologies will not really matter if a human has to go trough a graph to get the information. The human will 
@@ -61,7 +67,7 @@ eventually figure it out. The goals of these ontologies is to make it possible f
 The programm will be looking for well known vocabularies. Therefor it is smart to use well known vocabs and to sometimes
 duplicate the same information in a different vocabulary. 
 
-### 3.1 Meaning of symbols
+### 4.1 Meaning of symbols
 I used different kind of arrows and different kind of ways to write things. In this section I wil explain what those 
 symbols mean.
 
@@ -79,7 +85,7 @@ Image: Class notation
 
 As you might see I put the class name in two different places: Once as the title and once as a rdf:type. This seems redundant.
 The logic behind it is, that rdf:type is an attribute while the title references the object itself. So the object itself will have
-an uri and the attribute rdf:type.
+an uri(unless it as a blanknode) and the attribute rdf:type.
   
 As you might also notice, I declare the literals and attributes that do not reference another object inside the box.  
   
@@ -100,6 +106,17 @@ foaf:primaryTopic and vice versa with the foaf:isPrimaryTopic.
 Image: Association example  
 ![association example](images/assocationexample2.png)  
 
+if the reference to another object is only an uri the second class will have an empty body.
+
+Image: reference to uri
+![association example uri](images/emptybodyclass.png)
+
+Sometimes you need to specify the amount of object it can reference. This is done by putting a number or * near the arrow. 
+\* means it can mean anything from 0 to infintite amount of references.
+
+Image: cardinality   
+![cardinality](images/cardinality.png)
+
 **Inheritance**  
 Inheritance is when a class extends a different class. In the image below the slb:Checkin extends the sch:Action. Extending
 allows me to make my own classes while still reusing the know vocabularies. I can add my own attributes to the class while still
@@ -112,14 +129,17 @@ Inheritance is modeled with an open white arrow.
 Image: Inheritance example    
 ![inheritance example](images/inheritanceexample.png)
 
-### 3.2 Ontologies of different files
-In this section I will describe the different ontologies used in the Social linked beer application. 
+### 4.2 Ontologies of different files
+In this section I will describe the different ontologies used in the Social linked beer application. You will see a lot of foaf documents.
+This is because the topic of these documents are not really the same as the document itself. The document just describes these objects.
 
-#### 3.2.1 Public type index ontologie
+#### 4.2.1 Appdata ontologie
+The app data is a document, I think. Therefore I made the BeerApplicationData extend foaf:Document.  
 
-#### 3.2.2 Appdata ontologie
-
-#### 3.2.3 CheckIn ontologie
+Image: App data ontologie  
+![Check in ontologie](images/appdataontologie.png)  
+  
+#### 4.2.2 CheckIn ontologie
 A check in is a record of a beer that you drunk. So it is a record.  
 
 I described the Check in as follows: 
@@ -143,7 +163,7 @@ checked in. The ConsumeAction links the beer and the user that check in the beer
 
 This file also contains the references to the likes given by other people. 
 
-#### 3.2.4 Review ontologie
+#### 4.2.3 Review ontologie
 A review is technically also a check in but with a review attached to it. 
 
 I described the Review as follows: 
@@ -154,20 +174,48 @@ Image: Review ontologie
 The Review extends the checkIn. When you are reviewing a beer you are also checking it in. 
 
 The slb:Review also extends the sch:Review. The sch:Review is defined by schema.org and has all the attributes I need.
+  
+#### 4.2.4 Friends ontologie  
+I used the vcard group to model the friends of the user. The vcard group get used for access control.  
+  
+I also used the foaf:knows attribute. With this attribute other applications can easily find the friends in this application.  
 
-#### 3.2.5 Friends ontologie
+Because I use the activity stream ontologie everywhere else i decided to use it here as well. 
 
-#### 3.2.6 Group check-in index ontologie
+Image: Friends ontologie  
+![Friends ontologie](images/friendsontologie.png)   
 
-#### 3.2.7 Groupdata ontologie
+#### 4.2.5 Groupdata ontologie
+The group data is just a vcard group to handle access control. The vcard group does not have a leader attibute. Therfore 
+I had to extend it and make my own class.
 
-#### 3.2.8 Solib invitation ontologie
+![group data ontologie](images/groupdataontologie.png)   
 
-#### 3.2.9 Friend request ontologie
+#### 4.2.6 Group check-in index ontologie  
+The check in index is there to hold scores. You can not do this in the groupdata because they have different acl files.
 
-#### 3.2.10 Group request ontologie
+![group data ontologie](images/groupindexchecking.png)   
 
-#### 3.2.11 Like ontologie
+#### 4.2.7 Solib invitation ontologie
+The invitation is based on [activity stream invite definition](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-invite).
+
+This is the invitation you can send to a user that is not yet using 
+
+Image: Invite ontologie.
+![Invitation ontologie](images/invontologie.png)  
+
+#### 4.2.8 Friend request ontologie
+The friendship request is also based on the activity stream definition. See [here](https://www.w3.org/TR/activitystreams-vocabulary/#modeling-friend-requests) for an example.
+
+![Invitation ontologie](images/invontologie.png)  
+
+#### 4.2.9 Group request ontologie
+This is a group request ontologie. This describes how a user gets invited to a group. Based on the activity stream way of 
+sending invitations.
+
+![Invitation ontologie](images/grouprequest.png)  
+
+#### 4.2.10 Like ontologie
 Like ontologie is defined as followed: 
 
 Image: Like ontologie
@@ -175,28 +223,35 @@ Image: Like ontologie
 
 There is nothing special about this. It just uses the 
 [activity stream like definition](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-like).
+  
+There is also a reference from the checin to the like. This reference is saves in the checkin file. 
 
-#### 3.2.12 Accept friend request ontologie
+#### 4.2.11 Accept friend request ontologie
+This is the ontologie for when you accept a friend request. The FriendShipRequest is the original friendship request. I did
+not model it out here but you should put the original Frienshiprequest there.
 
-#### 3.2.13 Decline friend request ontologie
+![friend request ontologie](images/friendshiprequestAccept.png)
 
-## 4 Folder stucture + ACL
+#### 4.2.12 Decline friend request ontologie
+Same as accept friendshiprequest only different rdf:type.
+
+![friend request ontologie](images/friendshiprequestReject.png)
 
 ## 5 Quick start guide to making you Solid app  
-This is a quick start guide to make your Solid app. If it is your first time working with Linked data and Solid, you are going to
-do it wrong. You might not make the best ontlogies or your folder structure might be a mess. It is important to realize that you
+This is a quick start guide to make your Solid app. If it is your first time working with Linked data and Solid, you might
+do it wrong. You might not make the best ontlogies or your folder structure can become a mess. It is important to realize that you
 will learn by making mistakes. Therefore I would not worry about it that much. You have to start somewhere.  
   
-The thing I would worry about the least is the ontologies for the object in your app. This is quite a bit of think work and you can 
+The thing I would worry about the least is the ontologies for the objects in your app. This is quite a bit of think work and you can 
 change it later.  
   
 1. You need to think out the app logic.
-1. set up the file structure of the application folder. Think out what you want to place where and who can access it.
+1. Think out the file structure of the application folder. what you want to place where and who can access it.
 1. Make the ontologies you want to use. These might be temporary but it is still worth it to think it out before. Changing
 it afterwards might be a lot less work if you put some tought into it before you start programming.
-1. The rest will just be regular programming. The applogic needs to work.  
+1. The rest will just be regular programming. The app logic needs to work.  
 
-## 5 Code examples
+## 6 Code examples
 The code I use to make files. For folder I use the Solid file client.
 
 Post solid file    

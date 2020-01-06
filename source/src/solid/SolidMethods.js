@@ -110,7 +110,7 @@ export async function getUserFile(url) {
             rdfLib.parse(ppiTTL, ppigraph, publicProfileIndex.value, "text/turtle");
 
             let app = rdfLib.sym(publicProfileIndex.value + "#" + APPLICATION_NAME_PTI);
-            let appQuery = ppigraph.any(app, SOLID("instance"));
+            let appQuery = ppigraph.any(app, SOLID("instanceContainer"));
 
             //get name and Image
             let nameFN = graph.any(profile, VCARD('fn'));

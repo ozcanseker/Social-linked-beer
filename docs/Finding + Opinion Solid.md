@@ -73,8 +73,9 @@ There are still quite a few technical limitations
 Solid is still young and the community is growing. This is the part that i do not really worry about. There is always a solution to 
 a problem. 
 
-**many http requests**
+**many http requests**  
 This has to do with the decantralized nature of Solid. Information is spread out.
 
-**Access shielding**
+**Access shielding**  
 
+**Seperation of concerens in application**  
