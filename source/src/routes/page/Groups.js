@@ -2,6 +2,7 @@ import React from 'react';
 import "../css/Groups.scss";
 import GroupMakerOverlay from "../../component/GroupMakerOverlay";
 import {Link} from "react-router-dom";
+import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
 class Groups extends React.Component {
     constructor(props) {
@@ -9,7 +10,8 @@ class Groups extends React.Component {
         this.state = {
             overlay: false,
             groupName: "",
-            selectedFriends: []
+            selectedFriends: [],
+            error: ""
         }
     }
 
@@ -33,12 +35,17 @@ class Groups extends React.Component {
 
     makeGroup = () => {
         if (this.state.groupName !== "" && !(/\s/.test(this.state.groupName))) {
+            let toast = waitToast("Making group " + this.state.groupName);
+
             let beerDrinkerFolder = this.props.modelHolder.getUser().getBeerDrinkerFolder();
             let friends = this.state.selectedFriends.map(res => {
                 return res.value;
             });
 
+            let name = this.state.groupName;
+
             this.props.solidCommunicator.makeNewGroup(beerDrinkerFolder, this.state.groupName, friends).then(res => {
+                updateToSuccesToast(toast, "Group " + name + " made");
             });
 
             this.setState({
@@ -47,7 +54,9 @@ class Groups extends React.Component {
                 groupName: ""
             });
         }else{
-
+            this.setState({
+                error : "Group name can not have spaces"
+            })
         }
     };
 
@@ -89,6 +98,7 @@ class Groups extends React.Component {
                     onSelect={this.onSelectFriend}
                     makeGroup={this.makeGroup}
                     isNewGroup = {true}
+                    error = {this.state.error}
                 />
 
                 <ul>

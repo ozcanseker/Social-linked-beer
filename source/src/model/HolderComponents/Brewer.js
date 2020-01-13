@@ -1,10 +1,11 @@
 import Observable from "./Observable";
 
 class Brewer extends Observable {
-    constructor(url) {
+    constructor(url, name) {
         super();
 
         this._ldurl = url;
+        this._name = name;
         this._beers = [];
     }
 
@@ -66,6 +67,10 @@ class Brewer extends Observable {
             + (this._streetAddress ? this._streetAddress + ", " : "")
             + (this._addressLocality ? this._addressLocality + ", " : "" )
             + (this._postalCode ? this._postalCode + " " : "");
+    }
+
+    getName(){
+        return this._name;
     }
 }
 

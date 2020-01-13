@@ -24,14 +24,16 @@ class GroupMakerOverlay extends React.Component {
             nameField = (<div className={"nameFieldGroupMakerOverlay"}><span>group name</span> : <input value={this.props.groupName} onChange={this.props.onChange}/></div>);
         }
 
+        let errorB = (this.props.error !== "") ? <p style={{color: "red"}}>{this.props.error}</p> : undefined;
+
         return (
             <div onClick={this.props.onOverLayCancelClick} id="overlayGroup" style={this.props.overlay ? { display: "block" } : { display: "none" }}>
                 <div id="textGroup" onClick={this.onDivClick}>
                     <h1>
                         {text}
                     </h1>
+                    {errorB}
                     {nameField}
-                    <p className={"overLayError"}>{this.props.error}</p>
                     <Select
                         className = {"SelectGroupMakerOverlay"}
                         isMulti = {true}

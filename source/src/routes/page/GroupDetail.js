@@ -4,6 +4,7 @@ import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 import Star from '../../assets/star.png';
 import GroupMakerOverlay from "../../component/GroupMakerOverlay";
 import StandardContext from "../../context/StandardContext";
+import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
 class GroupDetail extends React.Component {
     constructor(props) {
@@ -34,15 +35,18 @@ class GroupDetail extends React.Component {
     };
 
     addFriends = (e) => {
+        let toast = waitToast("Adding friends to group");
+
         let solidCommunicator = this.context.solidCommunicator;
 
-        let beerDrinkerFolder = this.props.modelHolder.getUser().getBeerDrinkerFolder();
         let friends = this.state.selectedFriends.map(res => {
             return res.value;
         });
 
         if (solidCommunicator) {
-            solidCommunicator.addFriendsToGroup(this.state.group, friends);
+            solidCommunicator.addFriendsToGroup(this.state.group, friends).then(res =>{
+                updateToSuccesToast(toast, "Friends added to group");
+            });
         }
 
         this.setState({
@@ -59,7 +63,7 @@ class GroupDetail extends React.Component {
             )
         });
 
-        let groupMembers = this.state.group.getMembers();
+        let groupMembers = this.state.group.getMembers().slice();
         groupMembers.push(this.state.group.getLeader());
         groupMembers.sort((a, b) => {
             return b.points - a.points;

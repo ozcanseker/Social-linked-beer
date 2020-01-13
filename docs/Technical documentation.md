@@ -8,11 +8,10 @@
 - [Code examples](#4-code-examples)
 
 ## 1 Introduction
-This is the technical documentation for the Linked social beer application. This documentation contains how the 
-application is build en what is used to build the application. It will mostly talk about the contents 
-of the [src](../source/src) folder. It also contains some tips and code examples on how to work with Solid.
+This is the technical documentation for the Social Linked Beer application. This documentation contains how and what is used to build the application. 
+For the source code and more detailed documentation about the code check the [src](../source/src) folder. It also contains some tips and code examples on how to work with Solid.
 
-## 2 High level overview  
+## 2 High level overview of the code structure
 This application is made according to the Model-View-Control design principles. 
 
 - This design principle makes the application stable. 
@@ -22,13 +21,6 @@ requests.
 
 The model classes are plain javascript. The ui is made with React. The Solid communication is also plain javascript with
 the help of [Solid auth client](https://github.com/solid/solid-auth-client) and [Solid file client](https://github.com/jeff-zucker/solid-file-client)
-
-This is good because usually you fetch a file and have to fetch a bunch of other files. With this method 
-the user gets some feedback. You can show the user what he is about the receive. What you can do is, you can make the
-model class and fill it in later with an load in details function.
-  
-In this way you also dont have to wait for every fetch request to finish. The application will update it's layout with every
-fetch.   
   
 ### 2.1 Model
 I use my own observable class.  
@@ -47,17 +39,29 @@ Image: ModelHolder class diagram
 
 ### 2.2 Solid communicator
 The Solid communicator handles all the messaging with the solid pod. The ui has elements(like buttons) that invoke
-the methods of the Solid communicator. This will in turn do an action and update the model. The mode then invokes the update method of 
-the ui and the ui get updated. 
+the methods of the Solid communicator. This will in turn do an action and update the model. The model then invokes the update method of 
+the ui and the ui gets updated. 
 
 Image: Sequence diagram request example  
 ![sequence](images/sequence.png)
 
-## 3 Folder stucture + ACL
+## 3 Application functionality
 
+## 3 Folder structure + ACL
+The folder structure of the application in the solid pod is as follows:
 
 Image: folder structure application
 ![association example uri](images/folderstructure.png)
+
+### 3.1 Detailed description folder structure
+The next section will describe these folders more in detail.
+
+### 3.1.1 social linked beer folder
+ACL: Owner can only see the contents of this folder.
+
+The social linked beer folder is the main folder. This folder can be seen in the public folder of the user's solid pod. 
+This folder has the beerdrinker folder. If the application get expanded to also include the beerbrewer use case than this can
+also be places in the social linked beer folder. 
 
 ## 4 Ontologies
 In the next section I will describe the ontologies that I used to make this application. I tried to model it with uml. 
@@ -207,7 +211,7 @@ Image: Invite ontologie.
 #### 4.2.8 Friend request ontologie
 The friendship request is also based on the activity stream definition. See [here](https://www.w3.org/TR/activitystreams-vocabulary/#modeling-friend-requests) for an example.
 
-![Invitation ontologie](images/invontologie.png)  
+![Invitation ontologie](images/friendshiprequest.png)  
 
 #### 4.2.9 Group request ontologie
 This is a group request ontologie. This describes how a user gets invited to a group. Based on the activity stream way of 
@@ -237,7 +241,7 @@ Same as accept friendshiprequest only different rdf:type.
 
 ![friend request ontologie](images/friendshiprequestReject.png)
 
-## 5 Quick start guide to making you Solid app  
+## 5 Quick start guide to making your Solid app  
 This is a quick start guide to make your Solid app. If it is your first time working with Linked data and Solid, you might
 do it wrong. You might not make the best ontlogies or your folder structure can become a mess. It is important to realize that you
 will learn by making mistakes. Therefore I would not worry about it that much. You have to start somewhere.  

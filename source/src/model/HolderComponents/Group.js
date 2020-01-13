@@ -16,7 +16,7 @@ class Group extends Observable{
         this._members = [];
     }
 
-    setProperties(naam, checkInsLocation, groupDataLocation, groupCheckInIndex,groupLeader, groupMembers){
+    setProperties(naam, checkInsLocation, groupDataLocation, groupCheckInIndex, groupLeader, groupMembers){
         this._name = naam;
         this._checkInsLocation = checkInsLocation;
         this._groupDataLocation = groupDataLocation;
@@ -33,7 +33,7 @@ class Group extends Observable{
     }
 
     getMembers(){
-        return this._members.slice();
+        return this._members;
     }
 
     getGroupCheckInIndex(){

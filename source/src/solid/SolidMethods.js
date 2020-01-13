@@ -6,7 +6,7 @@ import {
     BEERREVIEWFILENAME,
     CHECKIN_FOLDER
 } from "./rdf/Constants";
-import {ACTIVITYSTREAM, FOAF, LDP, RDF, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
+import {ACTIVITYSTREAM, BEER, FOAF, LDP, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 
 const fileClient = require('solid-file-client');
 const authClient = require('solid-auth-client');
@@ -81,7 +81,7 @@ export async function getUserFile(url) {
     let graph = rdfLib.graph();
 
     if (userttt.status === 403) {
-        throw new Error("403: user unauthorized");
+        throw new Error("Something went wrong, check if the profile card is correct");
     } else if (userttt.status > 400) {
         throw new Error("Something went wrong, check if the profile card is correct");
     }
@@ -99,10 +99,10 @@ export async function getUserFile(url) {
     let query = graph.any(undefined, undefined, FOAF('PersonalProfileDocument'));
 
     if (query) {
-        let profile = rdfLib.sym(url);
 
         //check if user has ppi
-        const publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
+        let profile = graph.any(undefined, SOLID("publicTypeIndex"));
+        let publicProfileIndex = graph.any(profile, SOLID("publicTypeIndex"));
 
         if (publicProfileIndex) {
             let ppiTTL = await fileClient.readFile(publicProfileIndex.value);
@@ -123,6 +123,7 @@ export async function getUserFile(url) {
 
             if (!appQuery) {
                 inbox = graph.any(profile, LDP('inbox'));
+                console.log(inbox);
             }
 
             //applocation is not of beerdrinker
@@ -136,10 +137,10 @@ export async function getUserFile(url) {
 
             return result;
         } else {
-            throw new Error("no ppi");
+            throw new Error("This user does not have a public type index");
         }
     } else {
-        throw new Error("not a profile card");
+        throw new Error("Not a profile card");
     }
 }
 
@@ -159,9 +160,9 @@ export async function loadFriendData(friend) {
         let graph = rdfLib.graph();
         rdfLib.parse(friendsAppdata, graph, friendAppdataLocation, "text/turtle");
 
-        let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
+        let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startDate'));
 
-        let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
+        let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startDate'));
         let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
 
         friend.setAppData(new Date(startdate.value));
@@ -225,16 +226,27 @@ export async function getAllUserCheckIns(beerdrinkerFolder) {
 export async function loadValuesInCheckInFile(beerCheckIn) {
     fileClient.readFile(beerCheckIn.getFileLocation()).then(ttlFile => {
         let graph = rdfLib.graph();
-        let namedNode = rdfLib.sym(beerCheckIn.getFileLocation());
         rdfLib.parse(ttlFile, graph, beerCheckIn.getFileLocation(), "text/turtle");
 
-        let webId = graph.any(namedNode, SOLIDLINKEDBEER('webId'));
-        let userId = graph.any(namedNode, SOLIDLINKEDBEER('username'));
-        let beerlocation = graph.any(namedNode, SOLIDLINKEDBEER('beerLocation'));
-        let beername = graph.any(namedNode, SOLIDLINKEDBEER('beerName'));
-        let checkinTime = graph.any(namedNode, SOLIDLINKEDBEER('checkInTime'));
-        let rating = graph.any(namedNode, SOLIDLINKEDBEER('rating'));
-        let review = graph.any(namedNode, SOLIDLINKEDBEER('review'));
+        let checkinBN = graph.any(undefined, RDF('type'), ACTIVITYSTREAM('Activity'));
+        let checkinTime = graph.any(checkinBN, ACTIVITYSTREAM('published'));
+
+        //person nn
+        let personNN = graph.any(undefined, FOAF('name'));
+        let userID = graph.any(personNN, FOAF('name'));
+        if(!userID){
+            userID = graph.any(personNN, FOAF('nick'));
+        }
+
+        //beer nn
+        let beerNN = graph.any(undefined, BEER('beerName'));
+        let beerName = graph.any(beerNN, BEER('beerName'));
+
+        let reviewNN = graph.any(undefined, SCHEMA('reviewBody'));
+        let review = graph.any(reviewNN, SCHEMA('reviewBody'));
+
+        let ratingBN = graph.any(undefined, SCHEMA('ratingValue'));
+        let rating = graph.any(ratingBN, SCHEMA('ratingValue'));
 
         let query = graph.each(undefined, RDF('type') , ACTIVITYSTREAM("Like"));
         let amount = query.length;
@@ -247,10 +259,10 @@ export async function loadValuesInCheckInFile(beerCheckIn) {
         });
 
         beerCheckIn.loadInAttributes(
-            webId.value,
-            userId ? userId.value : undefined,
-            beerlocation.value,
-            beername.value,
+            personNN.value,
+            userID ? userID.value : undefined,
+            beerNN.value,
+            beerName.value,
             checkinTime.value,
             rating ? rating.value : undefined,
             review ? review.value : undefined,

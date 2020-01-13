@@ -1,12 +1,12 @@
-import {putSolidFile, loadFriendData } from "../SolidMethods";
+import {putSolidFile, loadFriendData} from "../SolidMethods";
 import {FRIENDS_FILE, FRIENDSHIPREQUEST_ACCEPTED_NAME, INBOX_FOLDER} from "../rdf/Constants";
-import {SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {ACTIVITYSTREAM, FOAF, PURLRELATIONSHIP, RDF, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 import Friend from "../../model/HolderComponents/Friend";
 
 const fileClient = require('solid-file-client');
 const rdfLib = require('rdflib');
 
-export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, friendsRequestedGroup, FriendsStore, modelHolder){
+export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, friendsRequestedGroup, FriendsStore, modelHolder) {
     let inbox = beerDrinkerFolder + INBOX_FOLDER;
     let inboxContent = await fileClient.readFolder(inbox);
 
@@ -15,7 +15,7 @@ export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, f
         return file.name.includes(FRIENDSHIPREQUEST_ACCEPTED_NAME);
     });
 
-    if(acceptedRequests.length !== 0){
+    if (acceptedRequests.length !== 0) {
         checkAcceptedFriendShipRequests(beerDrinkerFolder, acceptedRequests, friendGroup, friendsRequestedGroup, FriendsStore, modelHolder);
     }
 
@@ -24,7 +24,7 @@ export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, f
         return file.name.includes("Social_Linked_Beer_FriendschipRequestDecline");
     });
 
-    if(declinedRequests.length !== 0){
+    if (declinedRequests.length !== 0) {
         await checkDeclinedFriendShipRequests(beerDrinkerFolder, declinedRequests, friendsRequestedGroup, FriendsStore);
     }
 }
@@ -33,38 +33,47 @@ export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, f
  * Check if there are accepted friendschip requests
  * @param {*} beerdrinkerFolder
  * @param {*} acceptedRequests
- * @param {*} scValues
- * @param {*} user
+ * @param friendsGroup
+ * @param friendsSent
+ * @param friendGraph
+ * @param modelHolder
  */
-async function checkAcceptedFriendShipRequests(beerdrinkerFolder, acceptedRequests, friendsGroup, friendsSent, friendGraph, modelHolder){
+async function checkAcceptedFriendShipRequests(beerdrinkerFolder, acceptedRequests, friendsGroup, friendsSent, friendGraph, modelHolder) {
     //get some values
     let postLocation = beerdrinkerFolder + FRIENDS_FILE;
 
-    for(let i = 0; i < acceptedRequests.length; i++){
+    for (let i = 0; i < acceptedRequests.length; i++) {
         //make a graph and get file
         let graph = rdfLib.graph();
         let filettl = await fileClient.readFile(acceptedRequests[i].url);
         rdfLib.parse(filettl, graph, acceptedRequests[i].url, "text/turtle");
 
         //get the blanknode from the message
-        let friend = graph.any(undefined, SOLIDLINKEDBEER('from'));
-        friend = graph.any(friend, SOLIDLINKEDBEER('from'));
+        let friendNN = graph.any(undefined, ACTIVITYSTREAM('actor'));
+        friendNN = graph.any(friendNN, ACTIVITYSTREAM('actor'));
 
         //add from friend requested to friend
-        friendGraph.add(friendsGroup, VCARD('hasMember'), friend);
-        friendGraph.removeMatches(friendsSent, VCARD('hasMember'), friend);
+        let userNN = rdfLib.sym(modelHolder.getUser().getUri());
+
+        let relationBn = rdfLib.blankNode();
+        friendGraph.add(relationBn, RDF('type'), ACTIVITYSTREAM('Relationship'));
+        friendGraph.add(relationBn, RDF('relationship'), PURLRELATIONSHIP('friendOf'));
+
+        friendGraph.add(friendsGroup, VCARD('hasMember'), friendNN);
+        friendGraph.add(userNN, FOAF('knows'), friendNN);
+        friendGraph.add(relationBn, ACTIVITYSTREAM('subject'), userNN);
+        friendGraph.add(relationBn, ACTIVITYSTREAM('object'), friendNN);
+
+        friendGraph.removeMatches(friendsSent, VCARD('hasMember'), friendNN);
 
         //get the friend from the internet
-        friend = new Friend(friend.value);
+        let friend = new Friend(friendNN.value);
         loadFriendData(friend);
-
-        //adding friend
         modelHolder.addFriend(friend);
     }
 
     //update the original friend file
     let friendsTtl = await rdfLib.serialize(undefined, friendGraph, postLocation, 'text/turtle');
-    //TODO post new file for user so that he know friendship is accepted
     await putSolidFile(postLocation, friendsTtl);
 
     acceptedRequests.forEach(res => {
@@ -73,21 +82,23 @@ async function checkAcceptedFriendShipRequests(beerdrinkerFolder, acceptedReques
     })
 }
 
-async function checkDeclinedFriendShipRequests(beerDrinkerFolder, declinedRequests, friendsSent, friendGraph){
+async function checkDeclinedFriendShipRequests(beerDrinkerFolder, declinedRequests, friendsSent, friendGraph) {
     let postLocation = beerDrinkerFolder + FRIENDS_FILE;
 
-    for(let i = 0; i < declinedRequests.length; i++){
+    for (let i = 0; i < declinedRequests.length; i++) {
         let graph = rdfLib.graph();
         let filettl = await fileClient.readFile(declinedRequests[i].url);
 
         rdfLib.parse(filettl, graph, declinedRequests[i].url, "text/turtle");
 
         //get blank node from friend sent
-        let friend = graph.any(undefined, SOLIDLINKEDBEER('from'));
-        friend = graph.any(friend, SOLIDLINKEDBEER('from'));
+        let friend = graph.any(undefined, ACTIVITYSTREAM('actor'));
+        friend = graph.any(friend, ACTIVITYSTREAM('actor'));
 
-        //remove friend from the friendssent file
-        friendGraph.removeMatches(friendsSent, VCARD('hasMember'), friend);
+        if(friend){
+            //remove friend from the friendssent file
+            friendGraph.removeMatches(friendsSent, VCARD('hasMember'), friend);
+        }
     }
 
     //post new friend solid file

@@ -3,13 +3,14 @@ import Observable from "./Observable";
 class User extends Observable{
     constructor(uri){
         super();
-        this._uri = uri
+        this._uri = uri;
         this._name =  this.getUserName(uri);
         this._imageUrl = undefined;
         this._startDate = undefined;
         this._appFolder = undefined;
         this._beerDrinkerFoler = undefined;
         this._checkInFolder = undefined;
+        this._isNick = true;
     }
 
     setUri(uri){
@@ -17,6 +18,7 @@ class User extends Observable{
 
         if(!this._name){
             this._name = this.getUserName(uri);
+            this._isNick = true;
         }
 
         this.updateSubscribers();
@@ -25,6 +27,7 @@ class User extends Observable{
     loadInUserValues(name, imageURL, appFolder,beerDrinkerFolder, checkInFolder){
         if(name){
             this._name = name;
+            this._isNick = false;
         }
 
         this._imageUrl = imageURL;
@@ -75,6 +78,10 @@ class User extends Observable{
 
     getCheckInLocation(){
         return this._checkInFolder;
+    }
+
+    getIsNick(){
+        return this._isNick;
     }
 }
 

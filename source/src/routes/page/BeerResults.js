@@ -39,7 +39,7 @@ class BeerResults extends React.Component {
     render() {
         let elements = this.props.modelHolder.getBeers().map((listItem, index) => {
             return (
-                <li key={listItem.getUrl() + listItem.getBrewerUrl()}>
+                <li key={listItem.getUrl()}>
                     <Link to={`/beer/${index}`}
                           onClick={() => {
                               this.onLinkClick(listItem)
@@ -61,6 +61,7 @@ class BeerResults extends React.Component {
                                this.onBeerSearch(e.target.value);
                            }}
                            onKeyPress={this.onKeyPress}
+                           autoFocus
                     />
                     <button onClick={this.onButtonClick}>search</button>
                 </div>

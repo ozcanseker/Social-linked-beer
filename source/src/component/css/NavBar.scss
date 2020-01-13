@@ -14,7 +14,7 @@ nav {
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    //border-radius: 0 0 10px 0;
+    border-radius: 0 10px 10px 0;
 }
 
 #navBarUL > li{
@@ -48,6 +48,8 @@ nav {
     text-align: center;
     background: #1446A0;
 
+    border-radius: 0 0 10px 0;
+
     &:hover{
         background: #FCC414;
     }
@@ -63,9 +65,19 @@ nav {
 }
 
 #navBarUL > li:nth-last-child(2) {
-    margin: auto 0 auto auto;
-    text-align: center;
+    margin: 0 0 0 auto;
     padding: 0 2%;
+
+    &:hover{
+        background: white;
+        cursor: auto;
+    }
+}
+
+#navBarUL > li:nth-last-child(2) > * {
+    margin: 5% 1% 5% 5%;
+    padding: 0 2%;
+    height: 80%;
 
     &:hover{
         background: white;
@@ -81,9 +93,4 @@ nav {
         background: #FCC414;
     }
 }
-
-#navBarSearch * {
-    display: inline;
-}
-
 

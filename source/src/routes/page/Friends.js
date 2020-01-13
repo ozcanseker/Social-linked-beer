@@ -1,6 +1,11 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import '../css/Friends.scss'
+import {
+    updateToErrorToast,
+    updateToSuccesToast,
+    waitToast
+} from "../../component/ToastMethods";
 
 class Friends extends React.Component{
     constructor(props){
@@ -69,6 +74,8 @@ class Friends extends React.Component{
         } else if(this.checkIfUser()){
             this.props.history.push("/profile");
         }else{
+            let toast = waitToast("Retrieving user file");
+
             try{
                 let result = await this.props.solidCommunicator.getUserFile(this.state.inputText);
 
@@ -78,11 +85,20 @@ class Friends extends React.Component{
                             result: result
                         }
                     });
+
+                updateToSuccesToast(toast,"User retrieved");
             }catch(e){
-                this.setState({error : e.message})
+                this.setState({error : e.message});
+                updateToErrorToast(toast,"Something went wrong");
             }
         }
     };
+
+    onKeyPress = (e) => {
+        if (e.key === "Enter") {
+            this.onButtonClick();
+        }
+    }
 
     render(){
         let friends = this.props.modelHolder.getFriends();
@@ -102,6 +118,8 @@ class Friends extends React.Component{
             }
         });
 
+
+
         return(
             <section className = "friends">
                 <div className = "searchFriends">
@@ -109,9 +127,9 @@ class Friends extends React.Component{
                         Make new friends
                     </h3>
                     <br/>
-                    <input type = "text" placeholder ="https://profile.card/profile/card#me" value = {this.state.inputText} onChange = {this.onChange}/>
+                    <p className={"friendsError"}>{this.state.error}</p>
+                    <input type = "text" placeholder ="https://profile.card/profile/card#me" value = {this.state.inputText} onChange = {this.onChange} onKeyPress={this.onKeyPress}/>
                     <button onClick = {this.onButtonClick}>Search on the web</button>
-                    <p style = {{color: "red"}}>{this.state.error}</p>
                 </div>
 
                 <div className = "friendSection">

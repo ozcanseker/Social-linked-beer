@@ -1,4 +1,5 @@
 import Beer from "../../model/HolderComponents/Beer";
+import Brewer from "../../model/HolderComponents/Brewer";
 
 export async function getBeerData(query) {
     let res = await queryTriply(getBeerQuery(query));
@@ -13,7 +14,7 @@ export async function getBrewerData(brewer) {
 }
 
 async function getRegularBrewerData(brewer) {
-    let res = await queryTriply(getBeerDataQuery(brewer.getUrl()));
+    let res = await queryTriply(getPredicateObject(brewer.getUrl()));
     res = await res.text();
     res = JSON.parse(res);
 
@@ -65,10 +66,12 @@ async function getRegularBrewerData(brewer) {
         provincie);
 
     getAddress(brewer);
+
+    console.log(brewer);
 }
 
 async function getAddress(brewer) {
-    let res = await queryTriply(getBeerDataQuery(brewer.getAddressUrl()));
+    let res = await queryTriply(getPredicateObject(brewer.getAddressUrl()));
     res = await res.text();
     res = JSON.parse(res);
     res = res.results.bindings;
@@ -122,9 +125,12 @@ export async function fetchBeerData(beer) {
         maxSchenkTemperatuur,
         depiction;
 
+    let brewer = [];
+
     results.forEach(res => {
         let obj = res.pred.value;
         let value = res.obj.value;
+
 
         if ("http://www.w3.org/1999/02/22-rdf-syntax-ns#type" === obj) {
             type = value;
@@ -144,6 +150,8 @@ export async function fetchBeerData(beer) {
             style = value;
         } else if ("http://xmlns.com/foaf/0.1/depiction" === obj) {
             depiction = value;
+        } else if("https://data.labs.kadaster.nl/dbeerpedia/dbeerpedia/vocab/brewedby"  === obj){
+            brewer.push(new Brewer(value, res.brouwerijnaam.value));
         }
     });
 
@@ -155,15 +163,16 @@ export async function fetchBeerData(beer) {
         minSchenkTemperatuur,
         stamwortgehalte,
         maxSchenkTemperatuur,
-        depiction);
+        depiction,
+        brewer);
 }
 
 function makeBeerList(data) {
     let beers = [];
-
     data = data.results.bindings;
+
     data.forEach(res => {
-        beers.push(new Beer(res.blyat.value, res.name.value, res.brewer.value));
+        beers.push(new Beer(res.blyat.value, res.name.value));
     });
 
     return beers;
@@ -188,8 +197,7 @@ function getBrewerBeersQuery(brewerUrl){
 
     SELECT * WHERE {
         ?blyat vocab:brewedby <${brewerUrl}>;
-        vocab:beerName ?name;
-        vocab:brewedby ?brewer.
+        vocab:beerName ?name.
     }`;
 }
 
@@ -202,15 +210,14 @@ function getBeerQuery(name) {
             
             SELECT distinct ?blyat ?name ?brewer WHERE {
               ?blyat a vocab:Beer;
-              vocab:beerName ?name;
-              vocab:brewedby ?brewer.
+              vocab:beerName ?name.
               
               FILTER(regex(?name, "${name}", "i"))
             } limit 200
 `
 }
 
-function getBeerDataQuery(url) {
+function getPredicateObject(url) {
     return `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         
@@ -218,4 +225,22 @@ function getBeerDataQuery(url) {
             <${url}> ?pred ?obj .
         }
 `;
+}
+
+function getBeerDataQuery(url) {
+    return `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX bier: <https://data.labs.kadaster.nl/dbeerpedia/dbeerpedia/id/bier/>
+    PREFIX vocab: <https://data.labs.kadaster.nl/dbeerpedia/dbeerpedia/vocab/>
+
+    SELECT ?pred ?obj ?brouwerijnaam {
+        <${url}> ?pred ?obj.
+        OPTIONAL{?obj rdfs:label ?label}
+        bind(
+            IF(?pred = vocab:brewedby,
+                IF(?label, ?label, replace(str(?obj), ".*[\\\\/#]", "")), "")
+            as ?brouwerijnaam)
+        }
+    `;
 }

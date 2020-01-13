@@ -1,11 +1,41 @@
 .home {
-  display: flex;
   flex-flow: column;
   text-align: center;
   flex: 1;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
-.home img{
-    height: 100px;
-    object-fit: scale-down;
+.homeSection{
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  vertical-align: center;
+}
+
+.homeSection h1{
+  font-size: 5em;
+}
+
+.socialLinkedBeerSection{
+  background: darkblue;
+  color: white;
+}
+
+.solidSection{
+  background: url("../../assets/r_1.png") no-repeat right center;
+}
+
+.homeSection img {
+  height: 50%;
+  margin: auto 5% auto auto;
+}
+
+.homeSection .text-section {
+  margin: auto auto auto 5%;
+  width: 50%;
+}
+
+.pldnSection{
+  background: white;
 }

@@ -1,7 +1,7 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
 import {getTenUserCheckIns, loadFriendData, setUserSolidMethods} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
-import {FOAF, PIM, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {FOAF, PIM, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
 import * as fileClient from "solid-file-client";
 import * as rdfLib from "rdflib";
@@ -60,7 +60,7 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     getAppData(user.getBeerDrinkerFolder()).then(res => {
         user.loadInAppData(new Date(res.startdate));
         modelHolder.getCheckInHandler().setBeerPoints(parseInt(res.points));
-        solidCommunicator.loadInAppStore(res.store, res.blankNode);
+        solidCommunicator.loadInAppStore(res.store, res.docNN);
     });
 
     getTenUserCheckIns(user.getBeerDrinkerFolder()).then(res => {
@@ -110,15 +110,13 @@ async function loadFriendGroupData(group) {
     let graph = rdfLib.graph();
     rdfLib.parse(file, graph, group.getUrl(), CONTENT_TYPE_TURTLE);
 
-    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('location'));
-    let urlGroup = graph.any(blankNode, SOLIDLINKEDBEER('location'));
-
-    group.setUrl(urlGroup.value);
+    let NN = graph.any(undefined, RDF('type'), SOLIDLINKEDBEER('Group'));
+    group.setUrl(NN.value);
 
     await loadGroupInformation(group);
 }
 
-async function loadGroupInformation(group) {
+export async function loadGroupInformation(group) {
     let groupCheckInsLocation = group.getUrl() + CHECKIN_FOLDER;
     let groupDataLocation = group.getUrl() + GROUP_DATA_FILE;
     let checkIndexLocation = group.getUrl() + CHECKIN_INDEX_FILE;
@@ -126,26 +124,27 @@ async function loadGroupInformation(group) {
     //krijg de checkins van de grop
     getTenUserCheckIns(group.getUrl()).then(res => {
         group.getCheckInHandler().setReviesCheckInsAndUserCheckIns(res.reviews, res.checkIns, res.userBeerCheckIns);
-    })
+    });
 
+    //group data
     let res = await fileClient.fetch(groupDataLocation);
     let groupDataGraph = rdfLib.graph();
     rdfLib.parse(res, groupDataGraph, groupDataLocation, CONTENT_TYPE_TURTLE);
 
-    //krijg de members
-    let hasMemberGroup = groupDataGraph.any(undefined, VCARD('hasLeader'));
-    let leader = groupDataGraph.any(hasMemberGroup, VCARD('hasLeader'));
-
-    let name = groupDataGraph.any(hasMemberGroup, SCHEMA('name'));
+    let hasMemberGroup = groupDataGraph.any(undefined, SOLIDLINKEDBEER('hasLeader'));
+    let leader = groupDataGraph.any(hasMemberGroup, SOLIDLINKEDBEER('hasLeader'));
+    let name = groupDataGraph.any(hasMemberGroup, SOLIDLINKEDBEER('name'));
 
     //checkInIndex
     let checkInIndex = await fileClient.fetch(checkIndexLocation);
+
     let checkInIndexGraph = rdfLib.graph();
     rdfLib.parse(checkInIndex, checkInIndexGraph, checkIndexLocation, CONTENT_TYPE_TURTLE);
 
     let pointsMemberGroup = checkInIndexGraph.any(undefined, VCARD('hasMember'));
 
     let members = [];
+
     checkInIndexGraph.each(pointsMemberGroup, VCARD('hasMember')).forEach(res => {
         let points = checkInIndexGraph.any(res, SOLIDLINKEDBEER('points'));
 
@@ -216,19 +215,16 @@ function getUserDetails(profile, storeProfileCard) {
 }
 
 async function getAppData(beerDrinkerFolder) {
-    //TODO one place to save all urls
     let appdataLocation = beerDrinkerFolder + APPDATA_FILE;
-
     let appdatattl = await fileClient.readFile(appdataLocation);
     let graph = rdfLib.graph();
     rdfLib.parse(appdatattl, graph, appdataLocation, "text/turtle");
 
-    let blankNode = graph.any(undefined, SOLIDLINKEDBEER('startdate'));
+    let docNN = graph.any(undefined, RDF('type'))
+    let startdate = graph.any(docNN, SOLIDLINKEDBEER('startDate'));
+    let points = graph.any(docNN, SOLIDLINKEDBEER('points'));
 
-    let startdate = graph.any(blankNode, SOLIDLINKEDBEER('startdate'));
-    let points = graph.any(blankNode, SOLIDLINKEDBEER('points'));
-
-    return {startdate: startdate.value, points: points.value, store: graph, blankNode: blankNode};
+    return {startdate: startdate.value, points: points.value, store: graph, docNN: docNN};
 }
 
 async function getFriends(beerDrinkerFolder) {

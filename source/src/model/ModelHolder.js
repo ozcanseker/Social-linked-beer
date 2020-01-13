@@ -142,6 +142,8 @@ class ModelHolder extends Observable {
     }
 
     setBrewer(brewer) {
+        console.log(brewer);
+
         if (this._brewer) {
             this._brewer.unsubscribe();
         }

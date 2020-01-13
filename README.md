@@ -23,7 +23,7 @@ Also you can make groups with your friends.
 
 ## Docs
 technische bevindingen.
-solid specs vs solid imlplementatie
+solid specs vs solid implementable
 publish subscribe
 stappenplan opstarten app
 - bevindingen

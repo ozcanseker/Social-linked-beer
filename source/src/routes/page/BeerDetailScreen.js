@@ -3,6 +3,7 @@ import '../css/BeerDetailScreen.scss';
 import BeerCheckInOverlay from '../../component/BeerCheckInOverlay';
 import {Link} from "react-router-dom";
 import Brewer from "../../model/HolderComponents/Brewer";
+import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
 class BeerDetailScreen extends React.Component {
     constructor(props) {
@@ -17,18 +18,22 @@ class BeerDetailScreen extends React.Component {
 
         this.props.solidCommunicator.fetchBeerData(this.props.modelHolder.getBeer()).then(res => {
         });
-        this.props.modelHolder.setBrewer(new Brewer(this.props.modelHolder.getBeer().getBrewerUrl()));
     }
 
     onPostBeerReview = async () => {
-        await this.props.solidCommunicator.postBeerReview(this.state.addReview,
+        let addreview = this.state.addReview;
+        let toast = waitToast("Posting beer " + (addreview ? "review" : "check in"));
+
+        this.props.solidCommunicator.postBeerReview(this.state.addReview,
             this.props.modelHolder.getBeer(),
             this.state.beerRating,
             this.state.beerReview,
             this.state.selectedOptions.map(res => {
                 return res.value
             })
-        );
+        ).then(res => {
+            updateToSuccesToast(toast, "Beer " + (addreview ? "review" : "check in") + " posted");
+        });
 
         this.setState({
             overlay: false,
@@ -151,22 +156,28 @@ class BeerDetailScreen extends React.Component {
             {max}
         </React.Fragment>);
 
+        let brewers = beer.getBrewers().map(res => {
+            return (<Link key={res.getUrl()} to={"/brewer/0"} onClick={() => {
+                this.props.modelHolder.setBrewer(res)
+            }}>
+                {res.getName()}
+            </Link>)
+        });
+
+
         return (
             <section className="beerDetailScreen">
                 <h1>
                     {beer._name}
                 </h1>
+                <p className={"textBeerDetailScreen"}>
+                    <b>Brewers</b>
+                </p>
+                {brewers}
                 <div id="addReviewButtonDiv">
-                    <p>
-                        <Link to={"/brewer/0"}>
-                            Brewer page
-                        </Link>
-                    </p>
                     <button onClick={this.onCheckInClick}>Check in beer</button>
                 </div>
-
                 {beerData}
-
 
                 <BeerCheckInOverlay
                     overlay={this.state.overlay}

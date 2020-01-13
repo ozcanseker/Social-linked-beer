@@ -8,7 +8,10 @@ import {
 } from "./SolidMethods";
 
 import * as SolidTemplates from './rdf/SolidTtlTemplates';
-import {buildSolidCommunicator} from './solidCommunicatorInits/SolidCommunicatorBuilder'
+import {
+    buildSolidCommunicator,
+    loadGroupInformation
+} from './solidCommunicatorInits/SolidCommunicatorBuilder'
 import {preApplicationHandelings} from './solidCommunicatorInits/PreApplicationHandelings'
 
 import BeerCheckIn from '../model/HolderComponents/CheckIn'
@@ -32,17 +35,17 @@ import {
     FRIENDSHIPREQUEST_ACCEPTED_DESC,
     FRIENDSHIPREQUEST_ACCEPTED_NAME,
     FRIENDSHIPREQUEST_DECLINED_DESC,
-    FRIENDSHIPREQUEST_DECLINED_NAME,
+    FRIENDSHIPREQUEST_DECLINED_NAME, FRIENDSHIPREQUESTCLASSNAME,
     FRIENDSSHIPREQUEST_DESC,
     FRIENDSSHIPREQUEST_NAME,
     GROUP_DATA_FILE,
     GROUP_DATA_FILENAME,
     GROUPFOLDER,
     GROUPINVITATION_DESC,
-    GROUPINVITATION_NAME,
-    INBOX_FOLDER, LIKE_FOLDER, LIKEFILENAME
+    GROUPINVITATION_NAME, GROUPINVITATIONCLASSNAME,
+    INBOX_FOLDER, LIKE_FOLDER, LIKEFILENAME, UNKOWNTYPEINBOXMESSAGE
 } from "./rdf/Constants";
-import {RDF, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
+import {ACTIVITYSTREAM, FOAF, PURLRELATIONSHIP, RDF, SOLIDLINKEDBEER, VCARD} from "./rdf/Prefixes";
 import Friend from "../model/HolderComponents/Friend";
 import Group from "../model/HolderComponents/Group";
 import InboxMessage from "../model/HolderComponents/InboxMessage";
@@ -76,7 +79,7 @@ class SolidCommunicator {
 
     loadInAppStore(store, blankNode) {
         this._appStore = store;
-        this._blankNodeAppStore = blankNode;
+        this._NNAppStore = blankNode;
     }
 
     setFileLocations() {
@@ -115,22 +118,32 @@ class SolidCommunicator {
         let url = file.getUri();
         let graph = rdfLib.graph();
         let fileTTL = await fileClient.readFile(url);
-
         await rdfLib.parse(fileTTL, graph, url, "text/turtle");
 
-        let blanknode = graph.any(undefined, RDF('type'));
+        //if not friend request then group request
+        let query = graph.any(undefined, RDF('type'), ACTIVITYSTREAM('Offer'));
+        let type = FRIENDSHIPREQUESTCLASSNAME;
 
-        let type = graph.any(blanknode, RDF('type'));
-        let description = graph.any(blanknode, SOLIDLINKEDBEER('description'));
-        let from = graph.any(blanknode, SOLIDLINKEDBEER('from'));
-        let location = graph.any(blanknode, SOLIDLINKEDBEER('location'));
-        let groupName = graph.any(blanknode, SOLIDLINKEDBEER('groupName'));
+        if(!query){
+            query = graph.any(undefined, RDF('type'), ACTIVITYSTREAM('Invite'));
+            type = GROUPINVITATIONCLASSNAME;
+
+            if(!query){
+                type = UNKOWNTYPEINBOXMESSAGE;
+            }
+        }
+
+        let description = graph.any(query, ACTIVITYSTREAM('summary'));
+        let from = graph.any(query, ACTIVITYSTREAM('actor'));
+
+        let groupQuery = graph.any(undefined, SOLIDLINKEDBEER('name'));
+        let groupName = graph.any(groupQuery, SOLIDLINKEDBEER('name'));
 
         file.setContents(
-            type.value.replace(/.*#/, ""),
+            type,
             from.value,
             description.value,
-            location ? location.value : undefined,
+            groupQuery ? groupQuery.value : undefined,
             groupName ? groupName.value : undefined
         );
     }
@@ -158,7 +171,7 @@ class SolidCommunicator {
      */
     async inviteUserToSolib(urlInvitee, inbox) {
         //name for file
-        let fileName = APPLICATION_INVITAION_NAME + this._user.getName();
+        let fileName = APPLICATION_INVITAION_NAME + encodeURI(this._user.getName());
         let invitation = this._user.getName() + APPLICATION_INVITAION_DESC;
 
         //name of the location where it will be posted
@@ -178,7 +191,7 @@ class SolidCommunicator {
     async sendFriendshipRequest(urlInvitee, appLocation) {
         if (!this.checkIfUserIsFriend(urlInvitee)) {
             //get url without https and profile card.me
-            let fileNameName = this._user.getName();
+            let fileNameName = encodeURI(this._user.getName());
 
             //make a file name
             let fileName = FRIENDSSHIPREQUEST_NAME + fileNameName;
@@ -201,6 +214,8 @@ class SolidCommunicator {
             // send files
             await postSolidFile(location, fileName, invitationTTL);
             await putSolidFile(friendsFile, friendsTTL);
+        }else{
+            throw Error("already send friendship request");
         }
     }
 
@@ -210,7 +225,7 @@ class SolidCommunicator {
         let inbox = result.appLocation + BEERDRINKERFOLDER + INBOX_FOLDER;
 
         //get file name and description string
-        let fileNameName = this._user.getName();
+        let fileNameName = encodeURI(this._user.getName());
         let fileName = FRIENDSHIPREQUEST_DECLINED_NAME + fileNameName;
         let invitation = (this._user.getName() ? this._user.getName() : this._user.getUri()) + FRIENDSHIPREQUEST_DECLINED_DESC;
 
@@ -218,7 +233,7 @@ class SolidCommunicator {
         let postLocation = inbox + fileName + ".ttl";
 
         //make a text file and send
-        let declineTTL = SolidTemplates.getDeclineFriendshipRequest(message.getFrom(), invitation, postLocation, this._user.getUri());
+        let declineTTL = SolidTemplates.getDeclineFriendshipRequest(message.getFrom(), invitation, postLocation, this._user.getUri(), message.getUri());
 
         //delete friendship request from own pod
         await postSolidFile(inbox, fileName, declineTTL);
@@ -234,11 +249,24 @@ class SolidCommunicator {
 
         //add user as friend
         let friendsFile = this._user.getBeerDrinkerFolder() + FRIENDS_FILE;
-        this._friendsStore.add(this._friendGroup, VCARD('hasMember'), rdfLib.sym(message.getFrom()));
+
+        let userNN = rdfLib.sym(this._user.getUri());
+
+        let friendNN = rdfLib.sym(message.getFrom());
+
+        let relationBn = rdfLib.blankNode();
+        this._friendsStore.add(relationBn, RDF('type'), ACTIVITYSTREAM('Relationship'));
+        this._friendsStore.add(relationBn, RDF('relationship'), PURLRELATIONSHIP('friendOf'));
+
+        this._friendsStore.add(this._friendGroup, VCARD('hasMember'), friendNN);
+        this._friendsStore.add(userNN, FOAF('knows'), friendNN);
+        this._friendsStore.add(relationBn, ACTIVITYSTREAM('subject'), userNN);
+        this._friendsStore.add(relationBn, ACTIVITYSTREAM('object'), friendNN);
+
         let friendsTTL = await rdfLib.serialize(undefined, this._friendsStore, friendsFile, 'text/turtle');
 
         //get file name and description string
-        let fileNameName = this._user.getName();
+        let fileNameName = encodeURI(this._user.getName());
         let fileName = FRIENDSHIPREQUEST_ACCEPTED_NAME + fileNameName;
         let description = this._user.getName() + FRIENDSHIPREQUEST_ACCEPTED_DESC;
 
@@ -246,7 +274,7 @@ class SolidCommunicator {
         let postLocation = inbox + fileName + ".ttl";
 
         //make a text file and send
-        let acceptedTTL = SolidTemplates.getAcceptFriendshipRequest(message.getFrom(), description, postLocation, this._user.getUri());
+        let acceptedTTL = SolidTemplates.getAcceptFriendshipRequest(message.getFrom(), description, postLocation, this._user.getUri(), message.getUri());
 
         //send friendship accepted to user
         await postSolidFile(inbox, fileName, acceptedTTL);
@@ -281,8 +309,7 @@ class SolidCommunicator {
                 postLocation = res + filename + ".ttl";
 
                 ttlFile = SolidTemplates.beerReviewInTemplate(postLocation,
-                    this._user.getName(),
-                    this._user.getUri(),
+                    this._user,
                     beer.getUrl(),
                     beer.getName(),
                     date,
@@ -295,8 +322,7 @@ class SolidCommunicator {
                 postLocation = res + filename + ".ttl";
 
                 ttlFile = SolidTemplates.beerCheckInTemplate(postLocation,
-                    this._user.getName(),
-                    this._user.getUri(),
+                    this._user,
                     beer.getUrl(),
                     beer.getName(),
                     date);
@@ -353,7 +379,7 @@ class SolidCommunicator {
     }
 
     async sendBeerPoints(amount) {
-        let beerPointsQueryNow = this._appStore.any(this._blankNodeAppStore, SOLIDLINKEDBEER("points"));
+        let beerPointsQueryNow = this._appStore.any(this._NNAppStore, SOLIDLINKEDBEER("points"));
         beerPointsQueryNow.value = parseInt(beerPointsQueryNow.value) + amount + "";
 
         let appTTL = await rdfLib.serialize(undefined, this._appStore, this._appStoreLocation, 'text/turtle');
@@ -403,7 +429,7 @@ class SolidCommunicator {
         //make checkins index
         let checkInsIndex = groupUrl + CHECKIN_INDEX_FILE;
         let checkInsIndexAcl = checkInsIndex + ".acl";
-        let checkInIndexBody = SolidTemplates.getCheckInIndexBody(checkInsIndex, friends, this._user);
+        let checkInIndexBody = SolidTemplates.getCheckInIndexBody(checkInsIndex, friends.slice(), this._user);
 
         await postSolidFile(groupUrl, CHECKIN_INDEX_NAME, checkInIndexBody);
 
@@ -433,21 +459,24 @@ class SolidCommunicator {
             postSolidFile(location, fileName, inv);
         });
 
-        let group = new Group(groupUrl);
-        group.setProperties(groupName, checkins, appdataName, this._user.getUri(), friends.map(res => {
-            return res.getUri()
+        let group = new Group(groupUrl, true);
+        group.setProperties(groupName, checkins, appdataName, checkInsIndex,{member: this._user.getUri(), points: 0}, friends.map(res => {
+            return {member: res.getUri(), points:0};
         }));
+
         this._modelHolder.addGroup(group);
     }
 
     async acceptGroupRequest(message) {
-        //TODO maak een ttl file voor het accepteren en verzend deze naar de persoon.
-
         //maak een ttl file om het in eigen groep folder te zetten
         let folderLocation = this._user.getBeerDrinkerFolder() + GROUPFOLDER;
         let postlocation = folderLocation + message.getGroupName();
         let groupLocation = message.getLocation();
         let ownGroupBody = SolidTemplates.getGroupOtherPersonTTL(groupLocation, postlocation);
+
+        let group = new Group(message.getLocation(), message.getGroupName());
+        loadGroupInformation(group);
+        this._modelHolder.addGroup(group);
 
         await postSolidFile(folderLocation, message.getGroupName(), ownGroupBody);
 
@@ -463,36 +492,38 @@ class SolidCommunicator {
     }
 
     async onLikeClick(checkin) {
-        let encodedUri = checkin._fileLocation.replace(/[\/:|]/gi, "_");
-        let fileName = encodedUri.replace(".ttl", "") + LIKEFILENAME;
+        if (!checkin.getLiked()) {
+            let encodedUri = checkin._fileLocation.replace(/[\/:|]/gi, "_");
+            let fileName = encodedUri.replace(".ttl", "") + LIKEFILENAME;
 
-        let likeFolderLocation = this._user.getBeerDrinkerFolder() + LIKE_FOLDER;
-        let likeLocation = likeFolderLocation + fileName + ".ttl";
+            let likeFolderLocation = this._user.getBeerDrinkerFolder() + LIKE_FOLDER;
+            let likeLocation = likeFolderLocation + fileName + ".ttl";
 
-        let checkInUrl = checkin._fileLocation;
-        let body = `INSERT DATA { <${likeLocation}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Like> }`;
+            let checkInUrl = checkin._fileLocation;
+            let body  = `INSERT DATA { <${likeLocation}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Like>; <https://www.w3.org/ns/activitystreams#object> <${checkin._fileLocation}>}`;
 
-        let likeBody = SolidTemplates.getLikeBody(checkInUrl, likeLocation, this._user.getUri());
+            let likeBody = SolidTemplates.getLikeBody(checkInUrl, likeLocation, this._user.getUri());
 
-        let likeAclLocation = likeLocation + ".acl";
-        let likeAclBody = SolidTemplates.getLikeAcl(
-            this._user.getUri(),
-            checkin._userWebId,
-            likeLocation,
-            likeAclLocation
-        );
+            let likeAclLocation = likeLocation + ".acl";
+            let likeAclBody = SolidTemplates.getLikeAcl(
+                this._user.getUri(),
+                checkin._userWebId,
+                likeLocation,
+                likeAclLocation
+            );
 
-        checkin.setLikedTrue();
+            checkin.setLikedTrue();
 
-        fileClient.fetch(likeLocation).then(res => {
-            console.log("exists");
-        }).catch(res => {
-                postSolidFile(likeFolderLocation, fileName, likeBody);
-                putSolidFile(likeAclLocation, likeAclBody);
-            }
-        );
+            fileClient.fetch(likeLocation).then(res => {
+                console.log("exists");
+            }).catch(res => {
+                    postSolidFile(likeFolderLocation, fileName, likeBody);
+                    putSolidFile(likeAclLocation, likeAclBody);
+                }
+            );
 
-        await appendSolidResource(checkInUrl, body);
+            await appendSolidResource(checkInUrl, body);
+        }
     }
 
     async addFriendsToGroup(group, friends) {
@@ -506,18 +537,23 @@ class SolidCommunicator {
             let friendFile = await fileClient.readFile(group.getGroupDataFile());
             let graph = rdfLib.graph();
             await rdfLib.parse(friendFile, graph, group.getGroupDataFile(), "text/turtle");
-            let groupNN = graph.any(undefined, VCARD('hasLeader'));
+            let groupNN = graph.any(undefined, SOLIDLINKEDBEER('hasLeader'));
 
             let checkInIndexFile = await fileClient.readFile(group.getGroupCheckInIndex());
             let graph2 = rdfLib.graph();
             await rdfLib.parse(checkInIndexFile, graph2, group.getGroupDataFile(), "text/turtle");
-            let group2NN = graph.any(undefined, VCARD('hasMember'));
+            let group2NN = graph2.any(undefined, VCARD('hasMember'));
 
             friends.forEach(res => {
                 let friendNN = rdfLib.sym(res.getUri());
+                //groupdata.ttl
                 graph.add(groupNN, VCARD('hasMember'), friendNN);
+
+                //checkinIndex.ttl
                 graph2.add(group2NN, VCARD('hasMember'), friendNN);
                 graph2.add(friendNN, SOLIDLINKEDBEER('points'), 0);
+                graph2.add(friendNN, RDF('type'), FOAF('Person'));
+                graph2.add(friendNN, RDF('type'), SOLIDLINKEDBEER('GroupMember'));
             });
 
             //stuur de uitnodigingen naar de vrienden

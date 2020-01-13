@@ -1,3 +1,6 @@
+export const APPURL = "https://ozcanseker.github.io/Social-linked-beer/";
+export const APPLICATION_NAME = "Social Linked Beer";
+
 /**
  * App folder names
  * @type {string}
@@ -50,3 +53,7 @@ export const GROUPINVITATION_DESC = "Would you like to join us at ";
 
 export const LIKEFILENAME = "_LIKE";
 
+export const FRIENDSHIPREQUESTCLASSNAME = "Friend request";
+export const GROUPINVITATIONCLASSNAME = "Group request";
+
+export const UNKOWNTYPEINBOXMESSAGE = "UNKOWNTYPEINBOXMESSAGE";

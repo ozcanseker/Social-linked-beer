@@ -13,10 +13,7 @@ class BrewerPage extends React.Component {
     };
 
     render() {
-        let section;
         let brewer = this.props.modelHolder.getBrewer();
-
-        console.log(brewer);
 
         let name;
         let adress;
@@ -24,7 +21,6 @@ class BrewerPage extends React.Component {
         let url;
 
         let beers;
-
 
         if (brewer._name) {
             name = (
@@ -63,7 +59,7 @@ class BrewerPage extends React.Component {
             adress = (
                 <div className={"brewerPageTextSectionDiv"}>
                     <p><b>
-                        Adress
+                        Address
                     </b></p>
                     <p>
                         {brewer.getAddress()}

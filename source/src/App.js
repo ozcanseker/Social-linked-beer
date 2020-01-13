@@ -5,6 +5,7 @@ import React from 'react';
 import solidAuth from 'solid-auth-client';
 import {Link, withRouter} from "react-router-dom";
 import SolidCommunicator from './solid/SolidCommunicator';
+import {ToastContainer} from 'react-toastify';
 
 /**
  * Components
@@ -12,7 +13,7 @@ import SolidCommunicator from './solid/SolidCommunicator';
 import NavBar from './component/NavBar';
 import AppRoutes from './routes/AppRoutes';
 import AclErrorPage from './routes/extrapage/AclErrorPage';
-import FetchingPage from './routes/extrapage/FetchingPage';
+import FetchingComponent from './component/FetchingComponent';
 
 /**
  * Errors
@@ -27,6 +28,8 @@ import Knipsel from './assets/Knipsel.png';
 import ModelHolder from "./model/ModelHolder";
 import Logo from "./assets/logo.png";
 import StandardContext from "./context/StandardContext";
+import 'react-toastify/dist/ReactToastify.css';
+import {infoToast} from "./component/ToastMethods";
 
 
 class App extends React.Component {
@@ -41,6 +44,8 @@ class App extends React.Component {
         };
 
         this.state.modelHolder.subscribe(this);
+
+        console.log("version 0.6.0");
     }
 
     componentDidMount() {
@@ -74,7 +79,9 @@ class App extends React.Component {
                     fetchingFiles: false
                 });
 
-                this.props.history.push(`/profile`);
+                this.props.history.push(`/`);
+
+                infoToast("logged in as " + this.state.modelHolder.getUser().getUri());
             } catch (e) {
                 if (e instanceof AccessError) {
                     this.setState({
@@ -143,7 +150,7 @@ class App extends React.Component {
         }
 
         if (this.state.fetchingFiles) {
-            app = (<FetchingPage/>);
+            app = (<FetchingComponent/>);
         } else if (this.state.accessError) {
             app = (<AclErrorPage/>);
         } else {
@@ -170,8 +177,18 @@ class App extends React.Component {
                     </Link>
                     {navBar}
                 </header>
-
                 {app}
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnVisibilityChange
+                    draggable
+                    pauseOnHover={false}
+                />
                 <footer>
           <span>
             This application works with

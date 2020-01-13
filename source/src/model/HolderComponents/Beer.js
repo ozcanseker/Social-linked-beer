@@ -1,15 +1,11 @@
 import Observable from "./Observable";
 
 class Beer extends Observable{
-    constructor(ldUrl, name, brewedby){
+    constructor(ldUrl, name){
         super();
         this._ldUrl = ldUrl;
         this._name = name;
-        this._brewedby = brewedby;
-    }
-
-    getBrewer(){
-        return this._brewer;
+        this._brewers = [];
     }
 
     updateInformation(type,
@@ -20,7 +16,8 @@ class Beer extends Observable{
                       minSchenkTemperatuur,
                       stamwortgehalte,
                       maxSchenkTemperatuur,
-                      depiction,){
+                      depiction,
+                      brewer){
         this._type = type;
         this._style = style;
         this._label = label;
@@ -30,7 +27,9 @@ class Beer extends Observable{
         this._stamwortgehalte = stamwortgehalte;
         this._alcoholpercentage = alcoholpercentage;
 
-        this._depiction =depiction;
+        this._depiction = depiction;
+        this._brewers = brewer;
+
         this.updateSubscribers();
     }
 
@@ -42,8 +41,8 @@ class Beer extends Observable{
         return this._name;
     }
 
-    getBrewerUrl(){
-        return this._brewedby;
+    getBrewers(){
+        return this._brewers;
     }
 }
 
