@@ -1,7 +1,7 @@
 import React from 'react';
 import "../css/Groups.scss";
 import GroupMakerOverlay from "../../component/GroupMakerOverlay";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
 class Groups extends React.Component {

@@ -11,31 +11,29 @@
 }
 
 .inbox ul {
-    padding: 0% 5%;
+    width: 100%;
+    flex: 1;
+    padding: 0 5%;
     list-style-type: none;
-}
-
-.inbox li {
-    border : black solid 1px;
-    margin-bottom: 2%;
 }
 
 .inbox li {
     list-style: none;
     border : 1px black solid;
-    margin: 2% 0%;
+    margin: 2% auto;
     border-radius: 10px;
     box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
     background: white;
+    max-width: 50rem;
 }
 
 .inbox .buttonDiv{
-    padding: 0 5%;
+    margin-top: 2%;
     border: black solid 1px;
     border-radius: 10px;
 }
 
 .inbox .buttonDiv > button{
-    width : 40%;
     margin: 0 5%;
+    width: 40%;
 }

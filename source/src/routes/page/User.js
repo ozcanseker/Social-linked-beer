@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/User.scss'
 import profilePic from '../../assets/profilePic.png';
-import {waitToast, errorToast, updateToSuccesToast, updateToErrorToast} from "../../component/ToastMethods";
+import {waitToast, updateToSuccesToast, updateToErrorToast} from "../../component/ToastMethods";
 
 class User extends React.Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class User extends React.Component {
 
         await this.props.solidCommunicator.inviteUserToSolib(result.url, result.inbox);
 
-        updateToSuccesToast(toast,"Invitation sent")
+        updateToSuccesToast(toast, "Invitation sent")
     };
 
     sendFriendShipRequest = async () => {
@@ -39,11 +39,11 @@ class User extends React.Component {
 
         let toast = waitToast("Sending friend request");
 
-        try{
+        try {
             await this.props.solidCommunicator.sendFriendshipRequest(result.url, result.appLocation);
-            updateToSuccesToast(toast,"Friend request sent")
-        }catch (e) {
-            updateToErrorToast(toast,"Already sent a friendship request")
+            updateToSuccesToast(toast, "Friend request sent")
+        } catch (e) {
+            updateToErrorToast(toast, "Already sent a friendship request")
         }
 
     };
@@ -69,13 +69,23 @@ class User extends React.Component {
                         {result.name}
                     </h1>
                     <img src={result.imageUrl ? result.imageUrl : profilePic} alt=""/>
-                </div>
-                <div className="userButtonDiv">
-                    {button}
-                </div>
-                <div className="userInfo">
-                    <p>Uri : {result.url}</p>
-                    <p>Has social linked beer account?: {result.appLocation ? "Yes" : "No"}</p>
+                    <div className="userButtonDiv">
+                        {button}
+                    </div>
+                    <table className="userInfo">
+                        <tbody>
+                        <tr>
+                            <td>Profile card URI</td>
+                            <td>&nbsp;:&nbsp;</td>
+                            <td>{result.url}</td>
+                        </tr>
+                        <tr>
+                            <td>Has social linked beer account?</td>
+                            <td>&nbsp;:&nbsp;</td>
+                            <td>{result.appLocation ? "Yes" : "No"}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         )

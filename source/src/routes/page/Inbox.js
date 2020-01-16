@@ -37,7 +37,7 @@ class Inbox extends React.Component {
         this.props.solidCommunicator.getInboxContents().then(() => {
             this.setState({fetching: false})
         });
-    }
+    };
 
     render() {
         let items;
@@ -77,10 +77,11 @@ class Inbox extends React.Component {
                 <h1>
                     Inbox
                 </h1>
+                {fetching}
                 <ul>
                     {items}
                 </ul>
-                {fetching}
+
             </section>
         )
     }

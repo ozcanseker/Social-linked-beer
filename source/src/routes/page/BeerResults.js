@@ -34,7 +34,7 @@ class BeerResults extends React.Component {
         if (e.key === "Enter") {
             this.onButtonClick();
         }
-    }
+    };
 
     render() {
         let elements = this.props.modelHolder.getBeers().map((listItem, index) => {

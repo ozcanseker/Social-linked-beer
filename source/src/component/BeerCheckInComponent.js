@@ -7,7 +7,7 @@ class BeerCheckInComponent extends React.Component {
     onLikeClick = () => {
         let solidCommunicator = this.context.solidCommunicator;
 
-        if(solidCommunicator){
+        if (solidCommunicator) {
             solidCommunicator.onLikeClick(this.props.checkin);
         }
     };
@@ -25,30 +25,37 @@ class BeerCheckInComponent extends React.Component {
         }
 
         if (checkIn._review) {
-            review = <p>review: {checkIn._review}</p>
+            review = <p>review: <br/> {checkIn._review}</p>
+        } else {
+            review = <br/>;
         }
 
         if (checkIn._checkInTime) {
-            time = (<p>date: {dateToString(new Date(checkIn._checkInTime))}</p>)
+            time = (<p>{dateToString(new Date(checkIn._checkInTime))}</p>)
         } else {
             time = <br/>;
         }
 
-        let className = checkIn.getLiked()? "" : "greyScaled";
+        let className = checkIn.getLiked() ? "" : "greyScaled";
 
         return (
             <li className="BeerCheckInComponent">
-                <div className={"beerCheckInComponentTextDiv"}>
-                    <h5>
+                <div className={"BeerCheckInComponentMainSection"}>
+                    <p>
                         {checkIn._userName ? checkIn._userName : checkIn._userWebId} is drinking a {checkIn._beerName}
-                    </h5>
-                    {rating}
-                    {review}
-                    {time}
+                    </p>
+                    <div className={"beerCheckInComponentTextDiv"}>
+                        {time}
+                        {rating}
+                    </div>
+
                 </div>
-                <div className={"beerCheckInComponentButtonDiv"}>
-                    <span>{checkIn.getAmountOfLiked()}</span>
-                    <img className={className} src={Like} alt = "like button" onClick={this.onLikeClick}/>
+                <div className={"BeerCheckInComponentLikeReviewSection"}>
+                    {review}
+                    <div className={"beerCheckInComponentButtonDiv"}>
+                        <span>{checkIn.getAmountOfLiked()}</span>
+                        <img className={className} src={Like} alt="like button" onClick={this.onLikeClick}/>
+                    </div>
                 </div>
             </li>)
     }

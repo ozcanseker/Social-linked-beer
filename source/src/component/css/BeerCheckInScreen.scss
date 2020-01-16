@@ -23,6 +23,8 @@
   -ms-transform: translate(-50%,-50%);
   cursor: default;
   border-radius: 10px;
+  width: 30rem;
+  min-height: 15rem;
 }
 
 #text h1 {
@@ -46,7 +48,7 @@
 }
 
 .addReviewButton {
-  margin-bottom: 4%;
+  margin-bottom: 2%;
 }
 
 .reviewSectionBeerCheckIn {

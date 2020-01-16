@@ -10,7 +10,7 @@ class Profile extends React.Component {
         super(props);
 
         this.state = {
-            isFlipped : false
+            isFlipped: false
         }
     }
 
@@ -33,30 +33,68 @@ class Profile extends React.Component {
             content = <div className="profileCard">
                 <div className={"card " + (isFlipped ? "is-flipped" : "")}
                      onClick={() => {
-                         this.setState({isFlipped : !this.state.isFlipped})}}>
+                         this.setState({isFlipped: !this.state.isFlipped})
+                     }}>
                     <div className="card__face card__face--front">
-                        <h1>
-                            {user.getName()}
-                        </h1>
-                        <img src={imgUrl ? imgUrl : profilePic} alt=""/>
-                        <div className={"profileUserAppContent"}>
-                            <p>
-                                check-ins : {checkInHandler.getCheckInsAmount()}
-                            </p>
-                            <p>
-                                reviews : {checkInHandler.getBeerReviewsAmount()}
-                            </p>
-                            <p>
-                                Begin date : {dateToString(user.getBeginDate())}
-                            </p>
-                            <p>
-                                beerpoints : {checkInHandler.getBeerPoints()}
-                            </p>
+                        <div className={"upperSectionProfileCard"}>
+                            <h1>
+                                {user.getName()}
+                            </h1>
+                            <img src={imgUrl ? imgUrl : profilePic} alt=""/>
                         </div>
-
+                        <div className={"profileUserAppContent"}>
+                            <table className={"profileTable"}>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        Check-ins
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {checkInHandler.getCheckInsAmount()}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Reviews
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {checkInHandler.getBeerReviewsAmount()}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Begin date
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {dateToString(user.getBeginDate())}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Beerpoints
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {checkInHandler.getBeerPoints()}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div className="card__face card__face--back">
-                        <img src={Logo}/>
+                        <img src={Logo} alt={"Social linked beer stamp"}/>
                         <p>This person is an offical member of the Social linked beer club</p>
                     </div>
                 </div>
@@ -69,10 +107,10 @@ class Profile extends React.Component {
                 <div className="checkedInBeersProfile">
                     <div className="checkinDiv">
                         <Link to="/checkIns">All check ins &rarr;</Link>
+                        <h1>
+                            Recent activities
+                        </h1>
                     </div>
-                    <h1>
-                        Recent activities
-                    </h1>
                     <ul>
                         {userCheckIns}
                     </ul>

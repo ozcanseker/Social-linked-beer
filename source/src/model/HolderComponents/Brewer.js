@@ -5,7 +5,13 @@ class Brewer extends Observable {
         super();
 
         this._ldurl = url;
-        this._name = name;
+
+        if(!name){
+            this._name = this._url.replace(/.*[\\\/#]/, "");
+        }else{
+            this._name = name;
+        }
+
         this._beers = [];
     }
 
@@ -18,7 +24,6 @@ class Brewer extends Observable {
                             jaarproduktie,
                             provincie) {
 
-        this._name = name;
         this._groep = groep;
         this._url = url;
         this._address = address;
@@ -26,6 +31,12 @@ class Brewer extends Observable {
         this._categorie = categorie;
         this._jaarproduktie = jaarproduktie;
         this._provincie = provincie;
+
+        if(!name){
+            this._name = this._ldurl.replace(/.*[\\\/#]/, "");
+        }else{
+            this._name = name;
+        }
 
         this.updateSubscribers();
     }

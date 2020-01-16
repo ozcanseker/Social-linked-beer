@@ -8,13 +8,15 @@
 - [Code examples](#4-code-examples)
 
 ## 1 Introduction
-This is the technical documentation for the Social Linked Beer application. This documentation contains how and what is used to build the application. 
-For the source code and more detailed documentation about the code check the [src](../source/src) folder. It also contains some tips and code examples on how to work with Solid.
+This is the technical documentation for the Social Linked Beer application. This documentation describes how the 
+application is build and what is used to build it. It also contains some tips and code examples on how to work with Solid.
+For the source code and more detailed code documentation check the [src](../source/src) folder. For the funtional design check
+[this file](FSD%20Solid%20Beer%20App%20v0.4.pdf). This file describes the application functionality.
 
 ## 2 High level overview of the code structure
-This application is made according to the Model-View-Control design principles. 
+This application uses the MCV design model to show data. 
 
-- This design principle makes the application stable. 
+- This design model makes the application stable. 
 - It will make the application faster. Instead of loading all the application data at the start you can do async fetch 
 requests.
 - It will update the application when the fetch requests come back.
@@ -45,7 +47,9 @@ the ui and the ui gets updated.
 Image: Sequence diagram request example  
 ![sequence](images/sequence.png)
 
-## 3 Application functionality
+### 2.3 Beer data
+The user can checkin beers. To checkin beers the beerdata needs to be fetched. This fetching is done by querying a 
+sparql endpoint. 
 
 ## 3 Folder structure + ACL
 The folder structure of the application in the solid pod is as follows:
@@ -53,15 +57,40 @@ The folder structure of the application in the solid pod is as follows:
 Image: folder structure application
 ![association example uri](images/folderstructure.png)
 
+The ttl files have different ontologies. Check [the ontologies](#4-ontologies) section for more details on these ontologies.
+
 ### 3.1 Detailed description folder structure
 The next section will describe these folders more in detail.
 
 ### 3.1.1 social linked beer folder
-ACL: Owner can only see the contents of this folder.
+ACL: only Owner can view,write,append the contents
 
 The social linked beer folder is the main folder. This folder can be seen in the public folder of the user's solid pod. 
 This folder has the beerdrinker folder. If the application get expanded to also include the beerbrewer use case than this can
 also be places in the social linked beer folder. 
+
+### 3.1.2 Beerdrinker folder 
+ACL: only Owner can view,write,append the contents  
+  
+This is the folder all the application data for the beerdrinker will be stored. This folder is divided in multiple folders.
+
+### 3.1.3 appdata.ttl
+ACL: only Owner can view,write,append the contents. Friends can also see content.
+
+This folder shows the appllication data like beerpoints and startdate. Friends can see this file. Now friends can see each
+other beerpoints.
+
+### 3.1.4 friends.ttl
+This file holds 
+
+
+### 3.1.5 checkins folder
+
+### 3.1.6 inbox
+
+### 3.1.7 likes
+
+### 3.1.7 Groups
 
 ## 4 Ontologies
 In the next section I will describe the ontologies that I used to make this application. I tried to model it with uml. 
@@ -240,6 +269,9 @@ not model it out here but you should put the original Frienshiprequest there.
 Same as accept friendshiprequest only different rdf:type.
 
 ![friend request ontologie](images/friendshiprequestReject.png)
+
+#### 4.2.7 Other user group ontologie
+This is the a link to the group from an invited member of the group.
 
 ## 5 Quick start guide to making your Solid app  
 This is a quick start guide to make your Solid app. If it is your first time working with Linked data and Solid, you might

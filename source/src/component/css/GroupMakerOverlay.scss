@@ -15,7 +15,7 @@
   background: darkblue;
   color: white;
   border: 5px solid white;
-  padding: 2%;
+  padding: 3%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -23,6 +23,8 @@
   -ms-transform: translate(-50%,-50%);
   cursor: default;
   border-radius: 10px;
+  width: 32rem;
+  min-height: 15rem;
 }
 
 #textGroup h1{

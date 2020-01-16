@@ -21,7 +21,7 @@ class GroupMakerOverlay extends React.Component {
         if(this.props.isNewGroup){
             text = "Make new group";
             text2 = "Make group";
-            nameField = (<div className={"nameFieldGroupMakerOverlay"}><span>group name</span> : <input value={this.props.groupName} onChange={this.props.onChange}/></div>);
+            nameField = (<div className={"nameFieldGroupMakerOverlay"}><span>Group name</span> &nbsp;:&nbsp; <input value={this.props.groupName} onChange={this.props.onChange}/></div>);
         }
 
         let errorB = (this.props.error !== "") ? <p style={{color: "red"}}>{this.props.error}</p> : undefined;

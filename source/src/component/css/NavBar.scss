@@ -14,11 +14,9 @@ nav {
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    border-radius: 0 10px 10px 0;
 }
 
 #navBarUL > li{
-    border-radius: 0;
     text-align: center;
     text-decoration: none;
     display: block;
@@ -48,7 +46,6 @@ nav {
     text-align: center;
     background: #1446A0;
 
-    border-radius: 0 0 10px 0;
 
     &:hover{
         background: #FCC414;

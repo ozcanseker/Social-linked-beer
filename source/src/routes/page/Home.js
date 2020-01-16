@@ -9,7 +9,7 @@ class Home extends React.Component {
         return (
             <section className="home">
                 <div className={"homeSection homesection-right socialLinkedBeerSection"}>
-                    <img src={Logo}/>
+                    <img src={Logo} alt ={""}/>
                     <div className={"text-section"}>
                         <h1>Social Linked Beer</h1>
                         <p>Social Linked Beer is an application to share your beer adventures with your friends. This
@@ -19,19 +19,19 @@ class Home extends React.Component {
                 </div>
                 <div className={"homeSection solidSection"}>
                     <div className={"text-section"}>
-                        <h1>Solid</h1>
+                        <a href={"https://solid.inrupt.com/"}><h1>Solid</h1></a>
                         <p>Solid was created by the inventor of the World Wide Web, Sir Tim Berners-Lee. Its mission is
                             to reshape the web as we know it. Solid will foster a new breed of applications with
                             capabilities above and beyond anything that exists today.</p>
                     </div>
-                    <img src={solidImage}/>
+                    <img src={solidImage} alt ={""}/>
                 </div>
                 <div className={"homeSection homesection-right pldnSection"}>
-                    <img src={PLDNlogo}/>
+                    <img src={PLDNlogo} alt ={""}/>
                     <div className={"text-section"}>
-                        <h1>PLDN</h1>
+                        <a href={"http://www.pilod.nl/wiki/Platform_Linked_Data_Nederland"}><h1>PLDN</h1></a>
                         <p>
-                            Linked Data Netherlands platform is a network where experts and interested parties share
+                            Platform Linked Data Netherlands is a network where experts and interested parties share
                             knowledge about linked data.</p>
                     </div>
                 </div>

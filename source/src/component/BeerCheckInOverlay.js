@@ -57,7 +57,7 @@ class BeerCheckInOverlay extends React.Component {
                     </h1>
                     <button className={"addReviewButton"} onClick = {this.props.onAddReviewClick}>{this.props.addReview ? "dont add review": "Add review"}</button>
                     {rating}
-                    <h5>post location: </h5>
+                    <h5>Post location: </h5>
                     <Select
                         className = {"SelectGroupMakerOverlay"}
                         isMulti = {true}

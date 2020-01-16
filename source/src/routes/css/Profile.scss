@@ -28,9 +28,45 @@
 }
 
 .profileUserAppContent {
-    border-top: 2px #FCC414 solid;
     padding: 2rem 0 0;
+    border-radius: 40px;
+    height: 50%;
+    background: #172A3A;
+}
+
+.upperSectionProfileCard{
+    padding: 1rem;
+    height: 50%;
+    border-bottom: 2px #FCC414 solid;
+    border-radius: 40px;
+    background: #03256C;
+}
+
+.upperSectionProfileCard > h1 {
+    margin-bottom: 5%;
+    font-size: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upperSectionProfileCard  > img{
+    object-fit: cover;
+    height : 8rem;
+    width : 8rem;
+    margin: auto;
     border-radius: 10px;
+    border: 2px #FCC414 solid;
+}
+
+.profileTable {
+    text-align: left;
+    width: auto;
+    margin: auto;
+}
+
+.profileTable > tbody > tr:first-child {
+    width: 30%;
 }
 
 .profileCard {
@@ -50,6 +86,10 @@
     transform-style: preserve-3d;
     box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
     border-radius: 40px;
+
+    &:hover{
+        cursor: pointer;
+    }
 }
 
 .card__face {
@@ -61,7 +101,7 @@
 
 .card__face--back {
     transform: rotateY( 180deg );
-    background-color: #03256C;
+    background-color: #172A3A;
     border-radius: 40px;
     border: #FCC414 5px solid;
     padding: 2rem 0;
@@ -75,23 +115,9 @@
     transform: rotateY(180deg);
 }
 
-.card__face--front > h1 {
-    margin-bottom: 5%;
-    font-size: 1.5em;
-}
-
-.card__face--front  > img{
-    object-fit: cover;
-    height : 8rem;
-    width : 8rem;
-    margin-bottom: 10%;
-    border: 2px #FCC414 solid;
-}
-
 .card__face--front {
-    background-color: #03256C;
+    background-color: #172A3A;
     border-radius: 40px;
-    padding: 2rem 0;
     border: #FCC414 5px solid;
     position: absolute;
     height: 100%;
@@ -104,3 +130,24 @@
     width : 10rem;
     margin-bottom: 2rem;
 }
+
+.checkinDiv{
+    position: relative;
+    margin-bottom: 2%;
+}
+
+.checkinDiv h1{
+    font-size: 2em;
+}
+
+.checkinDiv a {
+    position: absolute;
+    border: black solid 2px;
+    background: white;
+    padding: 0.2rem 0.4rem;
+    right: 0;
+    color: black;
+    text-decoration: none;
+}
+
+

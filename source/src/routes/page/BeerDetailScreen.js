@@ -2,7 +2,6 @@ import React from 'react';
 import '../css/BeerDetailScreen.scss';
 import BeerCheckInOverlay from '../../component/BeerCheckInOverlay';
 import {Link} from "react-router-dom";
-import Brewer from "../../model/HolderComponents/Brewer";
 import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
 class BeerDetailScreen extends React.Component {

@@ -16,7 +16,7 @@ class FriendPage extends React.Component {
     render() {
         let user = this.state.user;
         let imgUrl = user.getImageUrl();
-        let userCheckIns = user.getCheckInHandler().getUserCheckIns()
+        let userCheckIns = user.getCheckInHandler().getUserCheckIns();
         let content;
         let isFlipped = this.state.isFlipped;
 
@@ -33,28 +33,65 @@ class FriendPage extends React.Component {
                          this.setState({isFlipped: !this.state.isFlipped})
                      }}>
                     <div className="card__face card__face--front">
-                        <h1>
-                            {user.getName()}
-                        </h1>
-                        {/*TODO make image load faster*/}
-                        <img src={imgUrl ? imgUrl : profilePic} alt=""/>
+                        <div className={"upperSectionProfileCard"}>
+                            <h1>
+                                {user.getName()}
+                            </h1>
+                            <img src={imgUrl ? imgUrl : profilePic} alt=""/>
+                        </div>
                         <div className={"profileUserAppContent"}>
-                            <p>
-                                check-ins : {user.getCheckInHandler().getCheckInsAmount()}
-                            </p>
-                            <p>
-                                reviews : {user.getCheckInHandler().getBeerReviewsAmount()}
-                            </p>
-                            <p>
-                                Begin date : {dateToString(user.getStartDate())}
-                            </p>
-                            <p>
-                                beerbonus points : {user.getCheckInHandler().getBeerPoints()}
-                            </p>
+                            <table className={"profileTable"}>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        Check-ins
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {user.getCheckInHandler().getCheckInsAmount()}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Reviews
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {user.getCheckInHandler().getBeerReviewsAmount()}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Begin date
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {dateToString(user.getStartDate())}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Beerpoints
+                                    </td>
+                                    <td>
+                                        &nbsp;:&nbsp;
+                                    </td>
+                                    <td>
+                                        {user.getCheckInHandler().getBeerPoints()}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div className="card__face card__face--back">
-                        <img src={Logo}/>
+                        <img src={Logo} alt={""}/>
                         <p>This person is an offical member of the Social linked beer club</p>
                     </div>
                 </div>

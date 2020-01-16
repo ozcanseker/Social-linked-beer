@@ -7,8 +7,15 @@
 }
 
 .searchFriends {
-    border-bottom: 1px solid black;
+    border-bottom: 3px solid black;
     padding: 2%;
+    border-radius: 10px;
+}
+
+.searchFriends  > h3{
+    color : black;
+    font-size: 1.5em;
+    //text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
 .searchFriends > button{
@@ -22,6 +29,7 @@
 
 .friendSection {
     padding : 1%;
+    height: 100%;
     overflow: auto;
     display: flex;
     flex-direction: column;
@@ -29,6 +37,9 @@
 
 .friendSection > h1{
     margin-bottom: 1%;
+    color : black;
+    font-size: 1.5em;
+    //text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
 .friendSection > ul{
@@ -39,18 +50,42 @@
     justify-content: space-evenly;
 }
 
-.friendSection > ul > li {
-    //margin-bottom: 1%;
-
-    border : 1px black solid;
-    margin: 2% 1%;
-    padding : 1% 2%;
-    border-radius: 10px;
-    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
-    background: white;
-}
-
 .friendsError {
     color: red;
     margin-bottom: 1%;
+}
+
+.friendSectionProfileCard {
+    margin: 2% 1%;
+    border-radius: 40px;
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    background: #03256C;
+    height: 10rem;
+    width: 14rem;
+    border: #FCC414 2px solid;
+}
+
+.friendSectionProfileCard img {
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    margin: 0.5rem auto auto auto;
+    border-radius: 10px;
+    border: #FCC414 1px solid;
+}
+
+.friendSectionProfileCard a {
+    height: 100%;
+    width: 100%;
+    display: block;
+    color: white;
+    padding: 0.5rem;
+    text-decoration: none;
+}
+
+.friendSectionProfileCard h3 {
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

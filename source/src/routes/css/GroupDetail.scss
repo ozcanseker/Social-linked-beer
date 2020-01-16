@@ -6,7 +6,12 @@
   flex-direction: column;
 }
 
-.groupDetailSection{
+.groupDetailScreen > h1 {
+  margin: 1%;
+  font-size: 1.5em;
+}
+
+.groupDetailSection {
   display: flex;
   flex: 1;
   overflow: auto;
@@ -20,13 +25,13 @@
   padding: 3%;
 }
 
-.participants li{
+.participants li {
   border: white 1px solid;
   border-radius: 10px;
   list-style: none;
   margin-bottom: 1%;
   background: #03258C;
-  box-shadow: 0px 2px 1px -1px rgba(255,255,255,1), 0px 1px 1px 0px rgba(255,255,255, 1), 0px 1px 3px 0px rgba(255,255,255,1);
+  box-shadow: 0px 2px 1px -1px rgba(255, 255, 255, 1), 0px 1px 1px 0px rgba(255, 255, 255, 1), 0px 1px 3px 0px rgba(255, 255, 255, 1);
   padding: 1%;
 }
 
@@ -35,25 +40,49 @@
   margin-right: 1%;
 }
 
-.checkInsGroup{
+.checkInsGroup {
   background: orange;
   flex: 1;
   overflow: auto;
   padding: 3%;
 }
 
-.addMembersButton{
+.addMembersButton {
   float: left;
   border: white 1px solid;
   border-radius: 10px;
   list-style: none;
   margin-bottom: 1%;
   background: #03258C;
-  box-shadow: 0px 2px 1px -1px rgba(255,255,255,1), 0px 1px 1px 0px rgba(255,255,255, 1), 0px 1px 3px 0px rgba(255,255,255,1);
+  box-shadow: 0px 2px 1px -1px rgba(255, 255, 255, 1), 0px 1px 1px 0px rgba(255, 255, 255, 1), 0px 1px 3px 0px rgba(255, 255, 255, 1);
   padding: 1%;
   color: white;
 }
 
-.addMembersButtonDiv{
+.addMembersButtonDiv {
   overflow: hidden;
+}
+
+.groupDetailUriMember {
+  float: left;
+}
+
+.groupDetailPointsMember {
+  float: right;
+}
+
+.groupDetailMember {
+  overflow: hidden;
+}
+
+.groupDetailMember > img {
+  float: left;
+}
+
+.groupDetailEmptyDivMember {
+  height: 20px;
+  width: 20px;
+  margin-right: 1%;
+  display: inline-block;
+  float: left;
 }

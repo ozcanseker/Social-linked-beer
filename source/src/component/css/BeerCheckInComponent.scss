@@ -7,16 +7,26 @@
   box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
   background: white;
   overflow: hidden;
+  flex-direction: column;
   display: flex;
+}
+
+.BeerCheckInComponentMainSection{
+  display: flex;
+  margin-bottom: 1%;
+}
+
+.beerCheckInComponentTextDiv {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .beerCheckInComponentButtonDiv {
   display: flex;
   align-items: flex-end;
-}
-
-.beerCheckInComponentTextDiv {
-  flex: 1;
+  margin-left: auto;
 }
 
 .beerCheckInComponentButtonDiv > img{
@@ -27,4 +37,15 @@
 .greyScaled {
   -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
   filter: grayscale(100%);
+}
+
+.BeerCheckInComponentLikeReviewSection {
+  display: flex;
+  word-break: break-all;
+  text-align: center;
+}
+
+.BeerCheckInComponentLikeReviewSection > p {
+  width: 100%;
+  text-overflow: ellipsis;
 }

@@ -31,7 +31,6 @@ import StandardContext from "./context/StandardContext";
 import 'react-toastify/dist/ReactToastify.css';
 import {infoToast} from "./component/ToastMethods";
 
-
 class App extends React.Component {
     constructor(props) {
         super(props);
