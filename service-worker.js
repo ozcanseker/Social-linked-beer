@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Social-linked-beer/precache-manifest.5d0253174de8b1973eae921e2e68f01d.js"
+  "/Social-linked-beer/precache-manifest.be4e73faf2a138eac0dafb09100fb4fd.js"
 );
 
 self.addEventListener('message', (event) => {
