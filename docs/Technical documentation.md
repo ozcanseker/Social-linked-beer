@@ -1,11 +1,13 @@
 # Technical documentation
 
-- [Introduction](#1-introduction)
-- [High Level overview](#2-high-level-overview)
-  - [Model](#21-model)
-  - [Solid communicator](#22-solid-communicator)
-- [Ontologies](#3-ontologies)
-- [Code examples](#4-code-examples)
+- [1 Introduction](#1-introduction)
+- [2 High level overview of the code structure](#2-high-level-overview-of-the-code-structure)
+  - [2.1 Model](#21-model)
+  - [2.2 Solid communicator](#22-solid-communicator)
+  - [2.3 Beer data](#23-beer-data)
+- [3 Folder structure + ACL](#3-folder-structure--acl)
+  - [3.1 Detailed description folder structure](#31-detailed-description-folder-structure)
+- [4 Ontologies](#4-ontologies)
 
 ## 1 Introduction
 This is the technical documentation for the Social Linked Beer application. This documentation describes how the 
@@ -14,7 +16,7 @@ For the source code and more detailed code documentation check the [src](../sour
 [this file](FSD%20Solid%20Beer%20App%20v0.4.pdf). This file describes the application functionality.
 
 ## 2 High level overview of the code structure
-This application uses the MCV design model to show data. 
+This application uses the MVC design model to show data. 
 
 - This design model makes the application stable. 
 - It will make the application faster. Instead of loading all the application data at the start you can do async fetch 
@@ -27,7 +29,7 @@ the help of [Solid auth client](https://github.com/solid/solid-auth-client) and 
 ### 2.1 Model
 I use my own observable class.  
 
-image: Observer class diagram  
+Image: Observer class diagram  
 ![class diagram](images/ObservableDiagram.png)
 
 You can subscribe to it and your update function will get called when the model updates.
@@ -47,6 +49,11 @@ the ui and the ui gets updated.
 Image: Sequence diagram request example  
 ![sequence](images/sequence.png)
 
+
+**Building the Solid communicator**
+The Solid communicator gets build by a the Solidcommunicatorbuilder. If this is the first time the user is using the application
+the folder structure in the pod also needs to be build. The Podfolderbuilder is doing that part.  
+
 ### 2.3 Beer data
 The user can checkin beers. To checkin beers the beerdata needs to be fetched. This fetching is done by querying a 
 sparql endpoint. 
@@ -63,34 +70,50 @@ The ttl files have different ontologies. Check [the ontologies](#4-ontologies) s
 The next section will describe these folders more in detail.
 
 ### 3.1.1 social linked beer folder
-ACL: only Owner can view,write,append the contents
+ACL: Only Owner can view,write,append the contents
 
 The social linked beer folder is the main folder. This folder can be seen in the public folder of the user's solid pod. 
 This folder has the beerdrinker folder. If the application get expanded to also include the beerbrewer use case than this can
 also be places in the social linked beer folder. 
 
 ### 3.1.2 Beerdrinker folder 
-ACL: only Owner can view,write,append the contents  
+ACL: Only Owner can view,write,append the contents  
   
 This is the folder all the application data for the beerdrinker will be stored. This folder is divided in multiple folders.
 
 ### 3.1.3 appdata.ttl
-ACL: only Owner can view,write,append the contents. Friends can also see content.
+ACL: Only Owner can view,write,append the contents. Friends can also see content.
 
-This folder shows the appllication data like beerpoints and startdate. Friends can see this file. Now friends can see each
-other beerpoints.
+This file shows the application data like beerpoints and startdate. Friends can see this file. You can see the beerpoints
+of friends, so you can compare it to each other.
 
 ### 3.1.4 friends.ttl
-This file holds 
+ACL: Only Owner can view,write,append the contents.
 
+This file has an VCARD group with friends. The application uses this group to handle access of Friends to different resources.
+This file is only viewable by the Owner because the Friends to other people to show their profile and names.
 
 ### 3.1.5 checkins folder
+ACL: Only Owner can view,write,append the contents. Friends can view it.
+
+The checkins folder is only write and appendable by the the Owner. This folder will hold the checkins for the user. The friends can
+see it so they can view what you have drunk. 
 
 ### 3.1.6 inbox
+ACL: Only Owner can view,write,append the contents. Everyone can append.
+
+It is an inbox so people can put stuff in it but not change it.
 
 ### 3.1.7 likes
+ACL: Only Owner can view,write,append the contents.
+
+The likes folder will be only vieable by the owner. The likes in it however are also viewable by the person who posted the checkin
+that is liked. 
 
 ### 3.1.7 Groups
+ACL: Only Owner can view,write,append the contents. Groupmembers can view.
+
+The Groups are vieable by the group members.
 
 ## 4 Ontologies
 In the next section I will describe the ontologies that I used to make this application. I tried to model it with uml. 
@@ -184,7 +207,7 @@ First we have a the document that describes the Check in. This Document has the 
 different than the Check in itself. The document has the check in as primary topic.
 
 The check in has the type slb:CheckIn. This is a class I made up because the class it inherits from does not 
-describing it completely. It inherints from act:Event. 
+describing it completely. It inherints from act:Event. Also act:Event does not have the attribute checkinOf.
 
 Technically the checkIn is also an event. The event is there to give the check in the published attribute. I could have made
 the Check in inherit from sch:CreativeWork but a Check in does not feel like a creative work. What might have been a Valid
@@ -196,7 +219,7 @@ checked in. The ConsumeAction links the beer and the user that check in the beer
 
 This file also contains the references to the likes given by other people. 
 
-#### 4.2.3 Review ontologie
+#### 4.2.3 Review ontology
 A review is technically also a check in but with a review attached to it. 
 
 I described the Review as follows: 

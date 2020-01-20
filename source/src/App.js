@@ -44,7 +44,7 @@ class App extends React.Component {
 
         this.state.modelHolder.subscribe(this);
 
-        console.log("version 0.6.0");
+        console.log("version 0.6.5");
     }
 
     componentDidMount() {
