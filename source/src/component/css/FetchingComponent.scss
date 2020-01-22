@@ -11,10 +11,9 @@
   margin: 3%;
 }
 
-#fetchinAnimation {
+#fetchingAnimation {
   width: 50px;
   height: 50px;
-  transform: rotate(90deg);
   position: relative;
   -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
   -webkit-animation-duration: 3s; /* Safari 4.0 - 8.0 */
@@ -26,27 +25,27 @@
 
 @-webkit-keyframes example {
   0% {
-    background-color: black;
+    background-color:  #1446A0;
     left: 40%;
     top: 20px;
   }
   25% {
-    background-color: rgb(70, 67, 67);
+    background-color:  #FCC414;
     left: 60%;
     top: 20px;
   }
   50% {
-    background-color: black;
+    background-color:  #1446A0;
     left: 60%;
     top: 120px;
   }
   75% {
-    background-color: rgb(70, 67, 67);
+    background-color: #FCC414;
     left: 40%;
     top: 120px;
   }
   100% {
-    background-color: rgb(70, 67, 67);
+    background-color:  #1446A0;
     left: 40%;
     top: 20px;
   }
@@ -55,27 +54,27 @@
 /* Standard syntax */
 @keyframes example {
   0% {
-    background-color: black;
+    background-color:  #1446A0;
     left: 40%;
     top: 20px;
   }
   25% {
-    background-color: rgb(70, 67, 67);
+    background-color:  #FCC414;
     left: 60%;
     top: 20px;
   }
   50% {
-    background-color: black;
+    background-color:  #1446A0;
     left: 60%;
     top: 120px;
   }
   75% {
-    background-color: rgb(70, 67, 67);
+    background-color: #FCC414;
     left: 40%;
     top: 120px;
   }
   100% {
-    background-color: rgb(70, 67, 67);
+    background-color:  #1446A0;
     left: 40%;
     top: 20px;
   }

@@ -1,12 +1,23 @@
 .beerDetailScreen {
+    text-align: center;
+    background: url("../../assets/clear-drinking-glass-991970 (1).jpg");
+    background-size: cover;
+
     flex: 1;
     display: flex;
-    text-align: center;
-    overflow: auto;
     flex-direction: column;
+    overflow: hidden;
 }
 
-.beerDetailScreen > h1 {
+.beerDetailScreenDiv{
+    background: rgba(255,255,255,0.9);
+    margin: 0 15%;
+    height: 100%;
+    display: block;
+    overflow: auto;
+}
+
+.beerDetailScreen h1 {
     font-size: 1.5em;
     padding: 2%;
 }

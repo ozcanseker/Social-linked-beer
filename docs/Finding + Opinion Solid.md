@@ -125,7 +125,9 @@ Solid works really well for creating hubs. A place where you can collect all you
 With smart tools you could also get additional information from this data. 
 
 Also Solid work well when you want to create a small network of pods that work together. This way the http request stay at a 
-reasonable rate. The sharing of data works good. The only problem is the scalability. 
+reasonable rate. The sharing of data works well. The only problem is the scalability. 
+ 
+ If the scalability problem gets solves there might be whole social networks that will be build on the Solid platform.  
  
 ## Conclusion 
 Solid is still in need of some improvement but I believe that it will succeed. Solid has a good setup and good ideas.

@@ -1,3 +1,7 @@
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {infoToast} from "./component/ToastMethods";
+
 /**
  * Libs
  */
@@ -5,7 +9,6 @@ import React from 'react';
 import solidAuth from 'solid-auth-client';
 import {Link, withRouter} from "react-router-dom";
 import SolidCommunicator from './solid/SolidCommunicator';
-import {ToastContainer} from 'react-toastify';
 
 /**
  * Components
@@ -28,8 +31,7 @@ import Knipsel from './assets/Knipsel.png';
 import ModelHolder from "./model/ModelHolder";
 import Logo from "./assets/logo.png";
 import StandardContext from "./context/StandardContext";
-import 'react-toastify/dist/ReactToastify.css';
-import {infoToast} from "./component/ToastMethods";
+
 
 class App extends React.Component {
     constructor(props) {

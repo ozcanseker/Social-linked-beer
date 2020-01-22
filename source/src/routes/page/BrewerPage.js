@@ -81,6 +81,7 @@ class BrewerPage extends React.Component {
 
         return (
             <section className="brewerPage">
+                <div className={"brewerPageDiv"}>
                 {name}
                 {groep}
                 {url}
@@ -90,6 +91,7 @@ class BrewerPage extends React.Component {
                 <ul>
                     {beers}
                 </ul>
+                </div>
             </section>
         )
     }

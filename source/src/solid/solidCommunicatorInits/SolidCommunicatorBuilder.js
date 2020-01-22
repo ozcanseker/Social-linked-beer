@@ -1,7 +1,7 @@
 import {buildFolders, checkFolderIntegrity} from './PodFolderBuilder';
 import {getTenUserCheckIns, loadFriendData, setUserSolidMethods} from "../SolidMethods";
 import {checkacess} from './AccessChecker';
-import {FOAF, PIM, RDF, SCHEMA, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {FOAF, PIM, RDF, SOLID, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
 
 import * as fileClient from "solid-file-client";
 import * as rdfLib from "rdflib";

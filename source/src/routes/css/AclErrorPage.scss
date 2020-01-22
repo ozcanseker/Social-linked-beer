@@ -1,12 +1,19 @@
 .aclErrorPage {
     flex: auto;
-    display: flex;
     flex-flow: column;
     text-align: center;
+
+    display: flex;
+    overflow: auto;
 }
 
 .aclErrorPage h1{
     color : red;
-    padding: 10% 10%;
+    padding: 5%;
+}
 
+.aclErrorPage img {
+    object-fit: contain;
+    max-width: 50%;
+    margin: 2% auto;
 }

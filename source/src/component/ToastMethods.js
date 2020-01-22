@@ -2,6 +2,7 @@ import {toast} from "react-toastify";
 import React from "react";
 import "./css/Toasts.scss";
 
+
 export function infoToast(string) {
     toast(<p>{string} </p>, {
         position: "bottom-right",
@@ -9,8 +10,12 @@ export function infoToast(string) {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
-        draggable: true
+        draggable: true,
+        className: 'infoToast-background',
+        progressClassName: 'infoToast-progress-bar',
     });
+
+
 }
 
 export function errorToast(string) {
@@ -42,7 +47,8 @@ export function waitToast(string) {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
-        draggable: true
+        draggable: true,
+        className: 'infoToast-background',
     });
 }
 

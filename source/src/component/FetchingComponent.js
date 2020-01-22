@@ -6,7 +6,7 @@ class FetchingComponent extends React.Component {
         return (
             <section className= "rendering">
                 <h1>{this.props.message ? this.props.message : "Fetching data"}</h1>
-                <div id="fetchinAnimation"></div>
+                <div id="fetchingAnimation"/>
             </section>
         )
     }

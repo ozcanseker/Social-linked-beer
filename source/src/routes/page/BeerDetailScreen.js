@@ -166,18 +166,19 @@ class BeerDetailScreen extends React.Component {
 
         return (
             <section className="beerDetailScreen">
-                <h1>
-                    {beer._name}
-                </h1>
-                <p className={"textBeerDetailScreen"}>
-                    <b>Brewers</b>
-                </p>
-                {brewers}
-                <div id="addReviewButtonDiv">
-                    <button onClick={this.onCheckInClick}>Check in beer</button>
+                <div className={"beerDetailScreenDiv"}>
+                    <h1>
+                        {beer._name}
+                    </h1>
+                    <p className={"textBeerDetailScreen"}>
+                        <b>Brewers</b>
+                    </p>
+                    {brewers}
+                    <div id="addReviewButtonDiv">
+                        <button onClick={this.onCheckInClick}>Check in beer</button>
+                    </div>
+                    {beerData}
                 </div>
-                {beerData}
-
                 <BeerCheckInOverlay
                     overlay={this.state.overlay}
                     beerReview={this.state.beerReview}
