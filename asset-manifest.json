@@ -1,33 +1,39 @@
 {
   "files": {
-    "main.css": "/Social-linked-beer/static/css/main.814f1451.chunk.css",
-    "main.js": "/Social-linked-beer/static/js/main.f76cf24a.chunk.js",
-    "main.js.map": "/Social-linked-beer/static/js/main.f76cf24a.chunk.js.map",
+    "main.css": "/Social-linked-beer/static/css/main.2fc40d23.chunk.css",
+    "main.js": "/Social-linked-beer/static/js/main.fa129a69.chunk.js",
+    "main.js.map": "/Social-linked-beer/static/js/main.fa129a69.chunk.js.map",
     "runtime-main.js": "/Social-linked-beer/static/js/runtime-main.88cc7093.js",
     "runtime-main.js.map": "/Social-linked-beer/static/js/runtime-main.88cc7093.js.map",
     "static/css/2.5dbdccff.chunk.css": "/Social-linked-beer/static/css/2.5dbdccff.chunk.css",
-    "static/js/2.a508d77d.chunk.js": "/Social-linked-beer/static/js/2.a508d77d.chunk.js",
-    "static/js/2.a508d77d.chunk.js.map": "/Social-linked-beer/static/js/2.a508d77d.chunk.js.map",
+    "static/js/2.638eec70.chunk.js": "/Social-linked-beer/static/js/2.638eec70.chunk.js",
+    "static/js/2.638eec70.chunk.js.map": "/Social-linked-beer/static/js/2.638eec70.chunk.js.map",
     "index.html": "/Social-linked-beer/index.html",
-    "precache-manifest.be4e73faf2a138eac0dafb09100fb4fd.js": "/Social-linked-beer/precache-manifest.be4e73faf2a138eac0dafb09100fb4fd.js",
+    "precache-manifest.f1df9fd2bb6b3d8654fc8478e9c64be0.js": "/Social-linked-beer/precache-manifest.f1df9fd2bb6b3d8654fc8478e9c64be0.js",
     "service-worker.js": "/Social-linked-beer/service-worker.js",
     "static/css/2.5dbdccff.chunk.css.map": "/Social-linked-beer/static/css/2.5dbdccff.chunk.css.map",
-    "static/css/main.814f1451.chunk.css.map": "/Social-linked-beer/static/css/main.814f1451.chunk.css.map",
-    "static/js/2.a508d77d.chunk.js.LICENSE": "/Social-linked-beer/static/js/2.a508d77d.chunk.js.LICENSE",
+    "static/css/main.2fc40d23.chunk.css.map": "/Social-linked-beer/static/css/main.2fc40d23.chunk.css.map",
+    "static/js/2.638eec70.chunk.js.LICENSE": "/Social-linked-beer/static/js/2.638eec70.chunk.js.LICENSE",
+    "static/media/1.png": "/Social-linked-beer/static/media/1.3e2770f5.png",
+    "static/media/2.png": "/Social-linked-beer/static/media/2.1288be75.png",
+    "static/media/3.png": "/Social-linked-beer/static/media/3.f929d0ef.png",
+    "static/media/4.png": "/Social-linked-beer/static/media/4.e3c62187.png",
     "static/media/Knipsel.png": "/Social-linked-beer/static/media/Knipsel.4dafcfef.png",
     "static/media/User.scss": "/Social-linked-beer/static/media/adult-alcohol-bar-bartender-274192.603d326d.jpg",
     "static/media/App.scss": "/Social-linked-beer/static/media/background-top.3df4027d.png",
     "static/media/LogIn.scss": "/Social-linked-beer/static/media/beerpouring.6dde892b.gif",
+    "static/media/BeerDetailScreen.scss": "/Social-linked-beer/static/media/clear-drinking-glass-991970 (1).c133efb2.jpg",
     "static/media/logo.png": "/Social-linked-beer/static/media/logo.5f8e2e70.png",
     "static/media/logowhite.png": "/Social-linked-beer/static/media/logowhite.06f8b659.png",
     "static/media/pldnlogo.png": "/Social-linked-beer/static/media/pldnlogo.ec6cdff8.png",
-    "static/media/Home.scss": "/Social-linked-beer/static/media/r_1.148e84a9.png"
+    "static/media/Home.scss": "/Social-linked-beer/static/media/r_1.148e84a9.png",
+    "static/media/BrewerPage.scss": "/Social-linked-beer/static/media/stainless-steel-beer-dispenser-159291.b8702b3f.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.88cc7093.js",
     "static/css/2.5dbdccff.chunk.css",
-    "static/js/2.a508d77d.chunk.js",
-    "static/css/main.814f1451.chunk.css",
-    "static/js/main.f76cf24a.chunk.js"
+    "static/js/2.638eec70.chunk.js",
+    "static/css/main.2fc40d23.chunk.css",
+    "static/js/main.fa129a69.chunk.js"
   ]
 }
