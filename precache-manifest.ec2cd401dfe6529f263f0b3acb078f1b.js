@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "546f4e96082434e00b9cad829c6df56d",
+    "revision": "43f084be5f82113094df9f6d096e665f",
     "url": "/Social-linked-beer/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Social-linked-beer/static/css/2.5dbdccff.chunk.css"
   },
   {
-    "revision": "28335661b52896a95a67",
+    "revision": "47112227002b4679c2eb",
     "url": "/Social-linked-beer/static/css/main.2fc40d23.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Social-linked-beer/static/js/2.638eec70.chunk.js.LICENSE"
   },
   {
-    "revision": "28335661b52896a95a67",
-    "url": "/Social-linked-beer/static/js/main.fa129a69.chunk.js"
+    "revision": "47112227002b4679c2eb",
+    "url": "/Social-linked-beer/static/js/main.fb06851e.chunk.js"
   },
   {
     "revision": "7fc245c388d7aad6174b",
