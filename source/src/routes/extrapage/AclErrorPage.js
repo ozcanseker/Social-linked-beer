@@ -18,10 +18,10 @@ class AclErrorPage extends React.Component{
             <h1>
                 Go to your pod and follow the instructions below
             </h1>
-            <img src={IMAGE1}/>
-            <img src={IMAGE2}/>
-            <img src={IMAGE3}/>
-            <img src={IMAGE4}/>
+            <img alt={"Go to your pod."} src={IMAGE1}/>
+            <img alt={"Click on your profile tab and click preferences."} src={IMAGE2}/>
+            <img alt={"On the next page click preferences."} src={IMAGE3}/>
+            <img alt={"Give the application all access modes."} src={IMAGE4}/>
         </section>)
     }
 }

@@ -48,7 +48,7 @@ class BrewerPage extends React.Component {
                     <p><b>
                         Website
                     </b></p>
-                    <a href={brewer._url}>
+                    <a href={brewer._url} target="_blank" rel="noopener noreferrer">
                         {brewer._url}
                     </a>
                 </div>

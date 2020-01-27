@@ -194,7 +194,7 @@ class App extends React.Component {
           <span>
             This application works with
             </span>
-                    <a href="https://solid.inrupt.com">
+                    <a href="https://solid.inrupt.com" target="_blank" rel="noopener noreferrer">
                         <img alt="Solid inrupt" src={Knipsel}/>
                     </a>
                 </footer>

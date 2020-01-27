@@ -1,6 +1,6 @@
 import {putSolidFile, loadFriendData} from "../SolidMethods";
 import {FRIENDS_FILE, FRIENDSHIPREQUEST_ACCEPTED_NAME, INBOX_FOLDER} from "../rdf/Constants";
-import {ACTIVITYSTREAM, FOAF, PURLRELATIONSHIP, RDF, SOLIDLINKEDBEER, VCARD} from "../rdf/Prefixes";
+import {ACTIVITYSTREAM, FOAF, PURLRELATIONSHIP, RDF, VCARD} from "../rdf/Prefixes";
 import Friend from "../../model/HolderComponents/Friend";
 
 const fileClient = require('solid-file-client');

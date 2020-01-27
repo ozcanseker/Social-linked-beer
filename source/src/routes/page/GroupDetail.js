@@ -93,11 +93,11 @@ class GroupDetail extends React.Component {
             let name;
 
             if (this.state.group.getLeader()) {
-                name = (<p className={"groupDetailMember"}>{res === this.state.group.getLeader() ?
+                name = (<div className={"groupDetailMember"}>{res === this.state.group.getLeader() ?
                     <img alt="leader" src={Star} title="leader"/> : <div className={"groupDetailEmptyDivMember"}/>}
                     <span className={"groupDetailUriMember"}>{res.member}</span>
                     <span className={"groupDetailPointsMember"}>{res.points}</span>
-                </p>);
+                </div>);
             }
 
             return (<li key={JSON.stringify(res)}>

@@ -5,14 +5,19 @@
 - [Conceptually](#2-conceptually)  
   
 ## 1 Introduction  
-I did a presentation on Solid. One of the question I was asked, was : "Why is Solid important?".
-Another question that comes my mind along with this question is : "Why do we care about Solid?". 
+I started my internship at the dutch Kadaster. Here I got the assignment: Find out if Solid can mean something for 
+the Kadaster.  Kadaster has sensitive information, therefore it was decided to make an application on a more accessible 
+context. We decided to make a beer application. 
+  
+After a while I had to do a presentation on Solid. One of the question I was asked, was : "Why is Solid important?".
+Another question that comes my mind along with this question is : "Why do we care about Solid?". I think these are 
+question I should answer.  
+  
 I split the text up in three different parts:
-
 - Is Solid conceptually thought out well?  
 - Is Solid lacking on the technical front?
 - Is Solid lacking on the Governance front?
-
+  
 ## 2 Conceptually  
 This section explores if Solid makes sense conceptually. I divided this section is two parts. The problems
 and the benefits of the Solid concepts.
@@ -102,7 +107,7 @@ The library for logging in and logging in in general does not work really well.
 When an application gets access to a pod, the application can get to every folder. This needs to be solved by allowing the 
 application only to use the folder it was given.
 
-## Governance based problems
+## 4 Governance based problems
 There are also some governance based problems. These are more based on bureaucratic and financial work that needs to be done and thought out.
 
 **Inrupt is not GDPR compliant**  
@@ -120,14 +125,37 @@ There is still some thinking that needs to be put in this subject. Will Solid dr
 **Copying Data**  
 If you want to make a search indexes the application has to make copies of data. There also needs to be a way for the user to give this as permission.
 
-## When would I make a Solid application?
+## 5 When would I make a Solid application?
 Solid works really well for creating hubs. A place where you can collect all your data and access this data. 
 With smart tools you could also get additional information from this data. 
 
 Also Solid work well when you want to create a small network of pods that work together. This way the http request stay at a 
 reasonable rate. The sharing of data works well. The only problem is the scalability. 
+
+If the scalability problem gets solved there might be whole social networks that could be build on the Solid platform.  
  
- If the scalability problem gets solves there might be whole social networks that will be build on the Solid platform.  
+## 6 The future of Solid
+I think the future of Solid depends on the community. 
+
+First of all the regular user: This user needs to see the benefits of using Solid. Controlling you own data is important.
+Solid is still complex however and needs a better user experience. The user should be able to control their data in a 
+easy and fast way. More complex options could be given to the user, but these should be hidden away. A computer illiterate person
+will be scared off by these options. 
+
+Second the app developer: You need developers to get an initial network going. These developer need to make the first bunch
+of applications that attract users. Solid could do this by paying developers. Another way to attract developers is if the user
+size if big enough, that the developer can make money from the users.
+
+Third the institutions: The big corporations The facebooks, googles and also government institutions. When these institutions start
+accepting the Solid specs, Solid becomes mainstream. For this to happen the application and user landscape need to be big.
+ 
+## Importance of Solid for Kadaster
+The importance of Solid for Kadaster is not huge in my opinion. Solid is still nog big enough to make a difference. I also
+do not believe that Kadaster will save their parcel information in a decentralized way.
+
+If Solid gets big I think the Kadaster does need to make adjustment however. Personal information does not need to be 
+saved at the Kadaster anymore. The only thing the user has to do is give access to parts of the POD that are relevant to 
+the Kadaster. Kadaster could also make an interface that allows the user to get Kadaster information dropped in their pod.    
  
 ## Conclusion 
 Solid is still in need of some improvement but I believe that it will succeed. Solid has a good setup and good ideas.
@@ -141,3 +169,5 @@ you have put time and energy into it.
 It might still have some limitations and technical flaws but it is going in the right direction.
 
 The only problem to worry about  is the scalability, the many http requests for certain kinds of applications.
+
+For now Solid is not important for the Kadaster. Solid is not used by enough people yet to worry about. 

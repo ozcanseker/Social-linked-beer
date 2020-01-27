@@ -493,7 +493,7 @@ class SolidCommunicator {
 
     async onLikeClick(checkin) {
         if (!checkin.getLiked()) {
-            let encodedUri = checkin._fileLocation.replace(/[\/:|]/gi, "_");
+            let encodedUri = checkin._fileLocation.replace(/[/\\:|]/gi, "_");
             let fileName = encodedUri.replace(".ttl", "") + LIKEFILENAME;
 
             let likeFolderLocation = this._user.getBeerDrinkerFolder() + LIKE_FOLDER;

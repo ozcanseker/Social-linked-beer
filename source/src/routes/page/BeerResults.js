@@ -22,6 +22,9 @@ class BeerResults extends React.Component {
 
     onLinkClick = (e) => {
         this.props.modelHolder.setBeer(e);
+
+        this.setState({searchQuery : ""});
+        this.props.modelHolder.setBeers([]);
     };
 
     onBeerSearch = (text) => {

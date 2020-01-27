@@ -7,7 +7,7 @@ class Brewer extends Observable {
         this._ldurl = url;
 
         if(!name){
-            this._name = this._url.replace(/.*[\\\/#]/, "");
+            this._name = this._url.replace(/.*[\\/#]/, "");
         }else{
             this._name = name;
         }
@@ -33,7 +33,7 @@ class Brewer extends Observable {
         this._provincie = provincie;
 
         if(!name){
-            this._name = this._ldurl.replace(/.*[\\\/#]/, "");
+            this._name = this._ldurl.replace(/.*[\\/#]/, "");
         }else{
             this._name = name;
         }
