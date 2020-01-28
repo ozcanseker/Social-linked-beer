@@ -69,7 +69,7 @@ export async function appendSolidResource(url, body) {
 }
 
 /**
- *
+ * Gets an user file. If the user is part of SOLIB it will have an application otherwise if will have an inbox
  * @param url
  * @returns {Promise<{appLocation: (*), imageUrl: (*), name: (*), inbox: (*), url: *}>}
  */
@@ -145,7 +145,7 @@ export async function getUserFile(url) {
 }
 
 /**
- *
+ * Load data from a friend
  * @param friend
  */
 export async function loadFriendData(friend) {
@@ -174,6 +174,11 @@ export async function loadFriendData(friend) {
     });
 }
 
+/**
+ * Get ten checkins from the given folder.
+ * @param beerDrinkerFolder
+ * @returns {Promise<{userBeerCheckIns: [], reviews: number, checkIns: number}>}
+ */
 export async function getTenUserCheckIns(beerDrinkerFolder) {
     let checkinLocation = beerDrinkerFolder + CHECKIN_FOLDER;
     let fileContents = (await fileClient.readFolder(checkinLocation)).files.reverse();
@@ -199,6 +204,11 @@ export async function getTenUserCheckIns(beerDrinkerFolder) {
     return {userBeerCheckIns: userBeerCheckIns, reviews: reviews, checkIns: checkIns};
 }
 
+/**
+ * Get all the checkin from a folder.
+ * @param beerdrinkerFolder
+ * @returns {Promise<{userBeerCheckIns: [], reviews: number, checkIns: number}>}
+ */
 export async function getAllUserCheckIns(beerdrinkerFolder) {
     let checkinLocation = beerdrinkerFolder + CHECKIN_FOLDER;
     let fileContents = (await fileClient.readFolder(checkinLocation)).files.reverse();
@@ -223,6 +233,11 @@ export async function getAllUserCheckIns(beerdrinkerFolder) {
     return {userBeerCheckIns: userBeerCheckIns, reviews: reviews, checkIns: checkIns};
 }
 
+/**
+ * Load the values of a checkin of the given url.
+ * @param beerCheckIn
+ * @returns {Promise<void>}
+ */
 export async function loadValuesInCheckInFile(beerCheckIn) {
     fileClient.readFile(beerCheckIn.getFileLocation()).then(ttlFile => {
         let graph = rdfLib.graph();

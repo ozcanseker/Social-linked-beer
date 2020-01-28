@@ -16,6 +16,12 @@ import {
 import Friend from "../../model/HolderComponents/Friend";
 import Group from "../../model/HolderComponents/Group";
 
+/**
+ * Build the solid communicator.
+ * @param modelHolder
+ * @param solidCommunicator
+ * @returns {Promise<void>}
+ */
 export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     let returnObject = {};
     let user = modelHolder.getUser();
@@ -29,7 +35,7 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     //store
     let storeProfileCard = await getUserCard(webIdNN.uri);
 
-    //check the acess before trying to make an application
+    //check the access before trying to make an application
     checkacess(storeProfileCard);
 
     //store for the Public Profile Index
@@ -79,6 +85,11 @@ export async function buildSolidCommunicator(modelHolder, solidCommunicator) {
     })
 }
 
+/**
+ * Get all the groups of the user
+ * @param beerDrinkerFolder
+ * @returns {Promise<[]>}
+ */
 async function getGroups(beerDrinkerFolder) {
     let groupsLocation = beerDrinkerFolder + GROUPFOLDER;
     let res = await fileClient.readFolder(groupsLocation);
@@ -104,6 +115,11 @@ async function getGroups(beerDrinkerFolder) {
     return groups;
 }
 
+/**
+ * Load the group data made by another user.
+ * @param group
+ * @returns {Promise<void>}
+ */
 async function loadFriendGroupData(group) {
     let file = await fileClient.fetch(group.getUrl());
 
@@ -116,6 +132,11 @@ async function loadFriendGroupData(group) {
     await loadGroupInformation(group);
 }
 
+/**
+ * Get information of the group
+ * @param group
+ * @returns {Promise<void>}
+ */
 export async function loadGroupInformation(group) {
     let groupCheckInsLocation = group.getUrl() + CHECKIN_FOLDER;
     let groupDataLocation = group.getUrl() + GROUP_DATA_FILE;
@@ -251,4 +272,3 @@ async function getFriends(beerDrinkerFolder) {
 
     return {friends: friends, friendsStore: graph, group: group, sentGroup: sentGroup};
 }
-

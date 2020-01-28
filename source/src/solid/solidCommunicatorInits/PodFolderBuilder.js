@@ -16,26 +16,44 @@ import {
     INBOX_FOLDER, LIKE_FOLDER
 } from "../rdf/Constants";
 
+/**
+ * Build the folder
+ * @param publicProfileIndex
+ * @param storePublicProfileIndex
+ * @param storagePublic
+ * @param app
+ * @param webId
+ * @returns {Promise<string>}
+ */
 export async function buildFolders(publicProfileIndex, storePublicProfileIndex, storagePublic, app, webId) {
     //TODO a whole lot of error checking. Checking for 400 error codes and stuff like that
     let applocation = await createAppNodeForPublicTypeIndex(storePublicProfileIndex, publicProfileIndex, storagePublic, app);
     await makeAppFolderStructure(applocation, webId);
 
-    //sleep zodat de server de requests kan verwerken
+    //sleep so that the server has some time to process the requests.
     await sleep(2000);
 
     return applocation;
 }
 
+/**
+ * Sleep for the given amount of seconds
+ * @param ms
+ * @returns {Promise<unknown>}
+ */
 function sleep(ms) {
     return new Promise(resolve => {
         setTimeout(resolve, ms)
     })
 }
 
+/**
+ * Check whether the folders in the pod are still ok.
+ * @param appfolder
+ * @param webId
+ * @returns {Promise<void>}
+ */
 export async function checkFolderIntegrity(appfolder, webId) {
-    //TODO breidt dit uit
-
     //Group
     let groupFolder = appfolder + BEERDRINKERFOLDER + GROUPFOLDER;
     let groupRes = await authClient.fetch(groupFolder);
@@ -59,7 +77,7 @@ export async function checkFolderIntegrity(appfolder, webId) {
 }
 
 /**
- * Adds the applicatioin to the public type index
+ * Adds the application to the public type index
  * @param {store} store
  * @param {NN} publicTypeIndex
  * @param {string} publicLocation
@@ -118,7 +136,7 @@ function makeRandomString(length) {
 }
 
 /**
- * Makes the folder struckture for the application
+ * Makes the folder structure for the application
  * @param {string} appFolderUrl
  * @param {string} webId
  */
@@ -381,6 +399,13 @@ function getAclAppData(resourceUrl, aclUrl, webIdUserLoggedIn, friendsUrl) {
     return rdflib.serialize(undefined, graph, aclUrl, 'text/turtle');
 }
 
+/**
+ * Acl ttl for group folder
+ * @param appUrl
+ * @param aclUrl
+ * @param webIdUserLoggedIn
+ * @returns {undefined}
+ */
 function getAclGroupFolder(appUrl, aclUrl, webIdUserLoggedIn) {
     let graph = rdflib.graph();
     let owner = rdflib.sym(aclUrl + "#Owner");
@@ -400,6 +425,13 @@ function getAclGroupFolder(appUrl, aclUrl, webIdUserLoggedIn) {
     return rdflib.serialize(undefined, graph, aclUrl, 'text/turtle');
 }
 
+/**
+ * Get acl ttl for like folder
+ * @param appUrl
+ * @param aclUrl
+ * @param webIdUserLoggedIn
+ * @returns {undefined}
+ */
 function getAclLikeFolder(appUrl, aclUrl, webIdUserLoggedIn) {
     let graph = rdflib.graph();
     let owner = rdflib.sym(aclUrl + "#Owner");

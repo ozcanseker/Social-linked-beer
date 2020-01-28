@@ -6,6 +6,15 @@ import Friend from "../../model/HolderComponents/Friend";
 const fileClient = require('solid-file-client');
 const rdfLib = require('rdflib');
 
+/**
+ * Application handelings that you get executed before you log in
+ * @param beerDrinkerFolder
+ * @param friendGroup
+ * @param friendsRequestedGroup
+ * @param FriendsStore
+ * @param modelHolder
+ * @returns {Promise<void>}
+ */
 export async function preApplicationHandelings(beerDrinkerFolder, friendGroup, friendsRequestedGroup, FriendsStore, modelHolder) {
     let inbox = beerDrinkerFolder + INBOX_FOLDER;
     let inboxContent = await fileClient.readFolder(inbox);

@@ -50,6 +50,9 @@ import Friend from "../model/HolderComponents/Friend";
 import Group from "../model/HolderComponents/Group";
 import InboxMessage from "../model/HolderComponents/InboxMessage";
 
+/**
+ * This class communicates with solid server.
+ */
 class SolidCommunicator {
     /**
      * Build the solid communicator
@@ -219,6 +222,11 @@ class SolidCommunicator {
         }
     }
 
+    /**
+     * Decline a friendship request
+     * @param message
+     * @returns {Promise<void>}
+     */
     async declineFriendSchipRequest(message) {
         //send a declined friendship request to other pod
         let result = await this.getUserFile(message.getFrom());
@@ -240,6 +248,11 @@ class SolidCommunicator {
         await fileClient.deleteFile(message.getUri());
     }
 
+    /**
+     * Accept friendship request
+     * @param message
+     * @returns {Promise<void>}
+     */
     async acceptFriendSchipRequest(message) {
         //get user
         let friend = new Friend(message.getFrom());
@@ -402,6 +415,13 @@ class SolidCommunicator {
         }
     }
 
+    /**
+     * Make a new group.
+     * @param beerdrinkerUrl
+     * @param groupName
+     * @param friends
+     * @returns {Promise<void>}
+     */
     async makeNewGroup(beerdrinkerUrl, groupName, friends) {
         let groupUrl = beerdrinkerUrl + GROUPFOLDER + groupName + "/";
         let groupUrlAcl = groupUrl + ".acl";
