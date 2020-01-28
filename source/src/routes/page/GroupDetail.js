@@ -6,6 +6,9 @@ import GroupMakerOverlay from "../../component/GroupMakerOverlay";
 import StandardContext from "../../context/StandardContext";
 import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
+/**
+ * Shows the group detail screen.
+ */
 class GroupDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -16,24 +19,38 @@ class GroupDetail extends React.Component {
         };
     }
 
+    /**
+     * This is the button that opens the overlay where you can add more friends
+     */
     addFriendsClick = () => {
         this.setState({
             overlay: true
         });
     };
 
+    /**
+     * When you click on the black part it closes.
+     */
     onOverLayCancelClick = () => {
         this.setState({
             overlay: false
         });
     };
 
+    /**
+     * This gets called when you select a friend on the add friends to group
+     * @param e
+     */
     onSelectFriend = (e) => {
         this.setState({
             selectedFriends: e
         })
     };
 
+    /**
+     * This will get called when you click on the add friends to group overlay
+     * @param e
+     */
     addFriends = (e) => {
         let toast = waitToast("Adding friends to group");
 

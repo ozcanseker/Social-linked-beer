@@ -4,6 +4,9 @@ import BeerCheckInOverlay from '../../component/BeerCheckInOverlay';
 import {Link} from "react-router-dom";
 import {updateToSuccesToast, waitToast} from "../../component/ToastMethods";
 
+/**
+ * Shows the details of a beer
+ */
 class BeerDetailScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -19,10 +22,15 @@ class BeerDetailScreen extends React.Component {
         });
     }
 
+    /**
+     * When an user wants to post a check in or review this method gets called.
+     * @returns {Promise<void>}
+     */
     onPostBeerReview = async () => {
         let addreview = this.state.addReview;
         let toast = waitToast("Posting beer " + (addreview ? "review" : "check in"));
 
+        //post the beer review
         this.props.solidCommunicator.postBeerReview(this.state.addReview,
             this.props.modelHolder.getBeer(),
             this.state.beerRating,
@@ -34,6 +42,7 @@ class BeerDetailScreen extends React.Component {
             updateToSuccesToast(toast, "Beer " + (addreview ? "review" : "check in") + " posted");
         });
 
+        //change the state back
         this.setState({
             overlay: false,
             beerReview: "",
@@ -43,30 +52,35 @@ class BeerDetailScreen extends React.Component {
         })
     };
 
+    //this happens when you click on checkin, it will open the overlay
     onCheckInClick = () => {
         this.setState({
             overlay: true
         });
     };
 
+    //this happens when you click next to the overlay
     onOverLayCancelClick = () => {
         this.setState({
             overlay: false
         });
     };
 
+    //sets the rating of the beer
     setBeerRating = (rating) => {
         this.setState({
             beerRating: rating
         });
     };
 
+    //keeps track of the review of the beer
     onBeerReviewChange = (text) => {
         this.setState({
             beerReview: text
         });
     };
 
+    //this is the button that opens when you want to add a review instead of a checking
     onAddReviewClick = () => {
         this.setState({
             addReview: !this.state.addReview,
@@ -75,6 +89,7 @@ class BeerDetailScreen extends React.Component {
         })
     };
 
+    //gets called when you select the groups that you want to post the checkin in .
     onSelectGroup = (e) => {
         this.setState({
             selectedOptions: e

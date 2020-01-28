@@ -5,10 +5,12 @@ import IMAGE2 from '../../assets/2.png';
 import IMAGE3 from '../../assets/3.png';
 import IMAGE4 from '../../assets/4.png';
 
-
+/**
+ * This page shows up when the user has not given enough permission to the application.
+ * This application also shows the user how to give extra permission to the user.
+ */
 class AclErrorPage extends React.Component{
     render(){
-        //TODO geef detailed instuctie om het op te lossen.
 
         return (<section className = "aclErrorPage">
             <h1>

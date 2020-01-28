@@ -4,6 +4,9 @@ import profilePic from '../../assets/profilePic.png';
 import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 import Logo from "../../assets/logowhite.png";
 
+/**
+ * Shows the friend page.
+ */
 class FriendPage extends React.Component {
     constructor(props) {
         super(props);

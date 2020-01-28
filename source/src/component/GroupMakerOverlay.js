@@ -7,10 +7,6 @@ import "./css/GroupMakerOverlay.scss"
  * This is also used to add extra members to the group on the group detail screen.
  */
 class GroupMakerOverlay extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     //this is here to stop the div from bubbling.
     onDivClick = (e) => {
         e.stopPropagation();

@@ -5,6 +5,9 @@ import BeerCheckInComponent from "../../component/BeerCheckInComponent";
 import {Link} from "react-router-dom";
 import Logo from '../../assets/logowhite.png'
 
+/**
+ * This is screen that shows the profile screen of the logged in user.
+ */
 class Profile extends React.Component {
     constructor(props) {
         super(props);

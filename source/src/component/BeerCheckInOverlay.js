@@ -8,10 +8,6 @@ import Select from "react-select";
  * This is the overlay that opens when you want to check in a beer.
  */
 class BeerCheckInOverlay extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     onDivClick = (e) => {
         e.stopPropagation();
     };

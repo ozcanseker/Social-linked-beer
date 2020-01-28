@@ -2,6 +2,9 @@ import React from 'react';
 import '../css/BeerResults.scss';
 import {Link} from "react-router-dom";
 
+/**
+ * Shows the results of the search request.
+ */
 class BeerResults extends React.Component {
     constructor(props) {
         super(props);
@@ -11,6 +14,7 @@ class BeerResults extends React.Component {
         }
     }
 
+    // this gets called when you click on the search button
     onButtonClick = () => {
         if (this.props.searchQuery !== "") {
             this.props.solidCommunicator.fetchBeerList(this.state.searchQuery).then(res => {
@@ -20,6 +24,7 @@ class BeerResults extends React.Component {
         }
     };
 
+    //this gets called when you click on a beer link
     onLinkClick = (e) => {
         this.props.modelHolder.setBeer(e);
 
@@ -27,12 +32,14 @@ class BeerResults extends React.Component {
         this.props.modelHolder.setBeers([]);
     };
 
+    //this gets called when you type something in the search bar
     onBeerSearch = (text) => {
         this.setState({
             searchQuery: text
         });
     };
 
+    //this gets called when you press enter in the search field.
     onKeyPress = (e) => {
         if (e.key === "Enter") {
             this.onButtonClick();
@@ -40,6 +47,7 @@ class BeerResults extends React.Component {
     };
 
     render() {
+        //renders all the beers.
         let elements = this.props.modelHolder.getBeers().map((listItem, index) => {
             return (
                 <li key={listItem.getUrl()}>

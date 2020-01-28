@@ -2,12 +2,18 @@ import React from "react";
 import "../css/BrewerPage.scss"
 import {Link} from "react-router-dom";
 
+/**
+ * Shows the page of the brewer.
+ */
 class BrewerPage extends React.Component {
     constructor(props, context) {
         super(props, context);
+
+        //gets the brewer information
         this.props.solidCommunicator.getBrewerInformation(this.props.modelHolder.getBrewer());
     }
 
+    //this gets called when you click on one of the beers in the brewer page.
     onLinkClick = (e) => {
         this.props.modelHolder.setBeer(e);
     };
@@ -77,7 +83,7 @@ class BrewerPage extends React.Component {
                     </Link>
                 </li>
             )
-        })
+        });
 
         return (
             <section className="brewerPage">

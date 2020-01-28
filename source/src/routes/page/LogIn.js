@@ -3,6 +3,9 @@ import '../css/LogIn.scss'
 
 import solidAuth from 'solid-auth-client'
 
+/**
+ * This is the login screen
+ */
 class LogIn extends React.Component {
     constructor(props) {
         super(props);
@@ -11,12 +14,18 @@ class LogIn extends React.Component {
         }
     }
 
+    /**
+     * When the check box gets clicked
+     */
     onChangeCheckBox = () => {
         this.setState({
             loginAsBrewer: !this.state.loginAsBrewer
         })
-    }
+    };
 
+    /**
+     * When the login button gets clicked
+     */
     onButtonClick = () => {
         let popupUri = './popup.html';
         solidAuth.popupLogin({ popupUri }).then(() => {
@@ -25,22 +34,24 @@ class LogIn extends React.Component {
                 this.props.history.push(`/profile`)
             })
         })
-    }
+    };
 
+    /**
+     * When the register button gets clicked.
+     */
     onRegisterClick = () => {
         window.location.assign('https://inrupt.net/');
-    }
+    };
 
     render() {
         let typeLogIn;
         let loginButton;
 
-
         if (this.state.loginAsBrewer) {
-            typeLogIn = <h1>Brewer</h1>
+            typeLogIn = (<h1>Brewer</h1>);
             loginButton = (<button onClick = {this.onButtonClick} disabled={true}>In progress</button>);
         } else {
-            typeLogIn = <h1>Beer Drinker</h1>
+            typeLogIn = (<h1>Beer Drinker</h1>);
             loginButton = (<button onClick = {this.onButtonClick}>Log in</button>);
         }
 
@@ -52,7 +63,7 @@ class LogIn extends React.Component {
                     {typeLogIn}
                     <label className="switch">
                         <input type="checkbox" onChange={this.onChangeCheckBox} />
-                        <span className="slider"></span>
+                        <span className="slider"/>
                     </label>
 
                     <br />

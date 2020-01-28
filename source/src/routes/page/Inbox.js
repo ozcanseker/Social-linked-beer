@@ -3,6 +3,9 @@ import "../css/Inbox.scss";
 import {FRIENDSHIPREQUESTCLASSNAME, GROUPINVITATIONCLASSNAME} from "../../solid/rdf/Constants";
 import FetchingComponent from "../../component/FetchingComponent";
 
+/**
+ * This is the inbox page.
+ */
 class Inbox extends React.Component {
     constructor(props) {
         super(props);
@@ -11,26 +14,31 @@ class Inbox extends React.Component {
         }
     }
 
+    //This is the method that gets called when you decline a frienship request
     declineFriendShipRequest = (index, message) => {
         this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.declineFriendSchipRequest(message);
     };
 
+    //This is the method that gets called when you accept a friendship request
     acceptFriendShipRequest = (index, message) => {
         this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.acceptFriendSchipRequest(message);
     };
 
+    //this is the button that gets called when you decline a group request
     declineGroupRequest = (index, message) => {
         this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.declineGroupRequest(message);
     };
 
+    //this is the button that gets called when you accept a group request
     acceptGroupRequest = (index, message) => {
         this.props.modelHolder.spliceAtIndex(index);
         this.props.solidCommunicator.acceptGroupRequest(message);
     };
 
+    //on mount the application fetches all the inbox messages.
     componentDidMount() {
         this.setState({fetching: true});
 

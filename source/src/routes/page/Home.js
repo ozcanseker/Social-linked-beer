@@ -4,6 +4,9 @@ import solidImage from '../../assets/Knipsel.png';
 import Logo from '../../assets/logowhite.png';
 import PLDNlogo from '../../assets/pldnlogo.png'
 
+/**
+ * This is the homepage. You go to this page when you click on the icon.
+ */
 class Home extends React.Component {
     render() {
         return (

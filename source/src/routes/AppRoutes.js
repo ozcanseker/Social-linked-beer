@@ -1,10 +1,6 @@
 import React from 'react';
 
 import {Switch, Route, withRouter, Redirect} from "react-router-dom";
-
-/**
- * Imported Pages
- */
 import Home from './page/Home'
 import LogIn from './page/LogIn'
 import Groups from './page/Groups';
@@ -19,6 +15,9 @@ import BeerDetailScreen from './page/BeerDetailScreen';
 import BrewerPage from './page/BrewerPage';
 import GroupDetail from "./page/GroupDetail";
 
+/**
+ * This page holds all the routes to different pages.
+ */
 class AppRoutes extends React.Component {
     render() {
         return (
@@ -92,14 +91,31 @@ class AppRoutes extends React.Component {
     }
 }
 
+/**
+ * This is a private route that you can not enter if you are not logged in
+ * @param Component
+ * @param isLoggedIn
+ * @param rest
+ * @returns {*}
+ * @constructor
+ */
 const PrivateRoute = ({component: Component, isLoggedIn, ...rest}) => (
     <Route {...rest} render={(props) => (
         isLoggedIn
             ? <Component {...props} {...rest}/>
             : <Redirect to='/'/>
     )}/>
-)
+);
 
+/**
+ * This is a private route you can not enter if you are logged in.
+ * @param Component
+ * @param isLoggedIn
+ * @param onLoggedIn
+ * @param rest
+ * @returns {*}
+ * @constructor
+ */
 const PrivateRouteLogIn = ({component: Component, isLoggedIn, onLoggedIn, ...rest}) => (
     <Route {...rest} render={(props) => (
         !isLoggedIn

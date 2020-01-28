@@ -3,6 +3,9 @@ import '../css/User.scss'
 import profilePic from '../../assets/profilePic.png';
 import {waitToast, updateToSuccesToast, updateToErrorToast} from "../../component/ToastMethods";
 
+/**
+ * This is the page where you can invite someone of send a frienship request.
+ */
 class User extends React.Component {
     constructor(props) {
         super(props);
@@ -12,6 +15,10 @@ class User extends React.Component {
         }
     }
 
+    /**
+     * This gets called if the searched user has not joined SOLIB yet
+     * @returns {Promise<void>}
+     */
     onNotJoinedButtonClick = async () => {
         let result = this.state.result;
 
@@ -27,6 +34,10 @@ class User extends React.Component {
         updateToSuccesToast(toast, "Invitation sent")
     };
 
+    /**
+     * This gets called when you send a frienship request to someone who already has a SOLIB account.
+     * @returns {Promise<void>}
+     */
     sendFriendShipRequest = async () => {
         //TODO check if friendship request is already set
         let result = this.state.result;

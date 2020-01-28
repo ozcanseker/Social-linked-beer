@@ -8,6 +8,9 @@ import {
 } from "../../component/ToastMethods";
 import profilePic from '../../assets/profilePic.png';
 
+/**
+ * Shows a list of all friends
+ */
 class Friends extends React.Component {
     constructor(props) {
         super(props);
