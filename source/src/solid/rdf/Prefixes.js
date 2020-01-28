@@ -1,3 +1,7 @@
+/**
+ * This file holds all the prefixes.
+ */
+
 const rdfLib = require('rdflib');
 
 export const SOLID = rdfLib.Namespace( "http://www.w3.org/ns/solid/terms#");

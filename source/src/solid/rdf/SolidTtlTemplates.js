@@ -1,7 +1,19 @@
+/**
+ * Holds a bunch of methods that you can give argument and they return a ttl file
+ */
+
 import * as rdfLib from "rdflib";
 import {ACL, ACTIVITYSTREAM, BEER, FOAF, PURLRELATIONSHIP, RDF, SCHEMA, SOLIDLINKEDBEER, VCARD} from "./Prefixes";
 import {APPLICATION_NAME, APPURL, GROUP_MEMBERS} from "./Constants";
 
+/**
+ * Gets an invitation ttl file to the application. This is for users not yet using the application
+ * @param urlInvitee
+ * @param invitation
+ * @param postLocation
+ * @param userWebId
+ * @returns {undefined}
+ */
 export function getInviteToLSBInvitation(urlInvitee, invitation, postLocation, userWebId){
     let graph = rdfLib.graph();
 
@@ -36,6 +48,14 @@ export function getInviteToLSBInvitation(urlInvitee, invitation, postLocation, u
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Gets a friendshiprequest ttl you can send to another user of Solid.
+ * @param urlInvitee
+ * @param invitation
+ * @param postLocation
+ * @param userWebId
+ * @returns {undefined}
+ */
 export function getFriendShipRequest(urlInvitee, invitation, postLocation, userWebId){
     //make friendrequest
     let graph = rdfLib.graph();
@@ -70,6 +90,15 @@ export function getFriendShipRequest(urlInvitee, invitation, postLocation, userW
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Gives back a ttl file of a decline frienship
+ * @param from
+ * @param description
+ * @param postLocation
+ * @param userWebId
+ * @param friendshipRequestUri
+ * @returns {undefined}
+ */
 export function getDeclineFriendshipRequest(from , description, postLocation, userWebId, friendshipRequestUri){
     let graph = rdfLib.graph();
 
@@ -92,6 +121,15 @@ export function getDeclineFriendshipRequest(from , description, postLocation, us
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Gets a ttl file of an accepted frienship request
+ * @param from
+ * @param description
+ * @param postLocation
+ * @param userWebId
+ * @param friendshipRequestUri
+ * @returns {undefined}
+ */
 export function getAcceptFriendshipRequest(from, description , postLocation, userWebId, friendshipRequestUri){
     let graph = rdfLib.graph();
 
@@ -115,6 +153,16 @@ export function getAcceptFriendshipRequest(from, description , postLocation, use
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Get a ttl file of a group invitation
+ * @param urlInvitee
+ * @param invitation
+ * @param postLocation
+ * @param userWebId
+ * @param groupUrl
+ * @param groupName
+ * @returns {undefined}
+ */
 export function getGroupInvitaion(urlInvitee, invitation, postLocation, userWebId, groupUrl, groupName){
     //make friendrequest
     let graph = rdfLib.graph();
@@ -200,6 +248,17 @@ export function beerCheckInTemplate(postLocation, user, beerLocation, beerName, 
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Gets a ttl file for a beer review
+ * @param postLocation
+ * @param user
+ * @param beerLocation
+ * @param beerName
+ * @param time
+ * @param rating
+ * @param review
+ * @returns {undefined}
+ */
 export function beerReviewInTemplate(postLocation, user, beerLocation, beerName, time, rating, review){
     let graph = rdfLib.graph();
 
@@ -259,6 +318,14 @@ export function beerReviewInTemplate(postLocation, user, beerLocation, beerName,
     return rdfLib.serialize(undefined, graph, postLocation, 'text/turtle');
 }
 
+/**
+ * Gets a ttl file for a group app data
+ * @param urlFile
+ * @param friends
+ * @param leader
+ * @param groupName
+ * @returns {undefined}
+ */
 export function getGroupAppDataTTL(urlFile, friends, leader, groupName){
     let graph = rdfLib.graph();
 
@@ -284,6 +351,14 @@ export function getGroupAppDataTTL(urlFile, friends, leader, groupName){
     return rdfLib.serialize(undefined, graph, urlFile, 'text/turtle');
 }
 
+/**
+ * Gets group acl file
+ * @param groupLocation
+ * @param groupAppDataLocation
+ * @param groupAcl
+ * @param webIdOwner
+ * @returns {undefined}
+ */
 export function getGroupAclTTL(groupLocation, groupAppDataLocation, groupAcl, webIdOwner){
     let graph = rdfLib.graph();
     let owner = rdfLib.sym(groupAcl + "#Owner");
@@ -316,6 +391,14 @@ export function getGroupAclTTL(groupLocation, groupAppDataLocation, groupAcl, we
     return rdfLib.serialize(undefined, graph, groupAcl, 'text/turtle');
 }
 
+/**
+ * Gets group check in ttl
+ * @param groupLocation
+ * @param groupAppDataLocation
+ * @param groupAcl
+ * @param webIdOwner
+ * @returns {undefined}
+ */
 export function getGroupCheckInsAclTTL(groupLocation, groupAppDataLocation, groupAcl, webIdOwner){
     let graph = rdfLib.graph();
     let owner = rdfLib.sym(groupAcl + "#Owner");
@@ -348,6 +431,12 @@ export function getGroupCheckInsAclTTL(groupLocation, groupAppDataLocation, grou
     return rdfLib.serialize(undefined, graph, groupAcl, 'text/turtle');
 }
 
+/**
+ * Gets the file that points to a group made by another person
+ * @param groupLocation
+ * @param postlocation
+ * @returns {undefined}
+ */
 export function getGroupOtherPersonTTL(groupLocation, postlocation){
     let graph = rdfLib.graph();
 
@@ -364,6 +453,13 @@ export function getGroupOtherPersonTTL(groupLocation, postlocation){
     return rdfLib.serialize(undefined, graph, postlocation, 'text/turtle');
 }
 
+/**
+ * GEt the check in index ttl of groups
+ * @param postlocation
+ * @param members
+ * @param user
+ * @returns {undefined}
+ */
 export function getCheckInIndexBody(postlocation, members, user){
     let graph = rdfLib.graph();
 
@@ -389,6 +485,14 @@ export function getCheckInIndexBody(postlocation, members, user){
     return rdfLib.serialize(undefined, graph, postlocation, 'text/turtle');
 }
 
+/**
+ * Get the acl of group check
+ * @param groupLocation
+ * @param groupAppDataLocation
+ * @param groupAcl
+ * @param webIdOwner
+ * @returns {undefined}
+ */
 export function groupCheckInIndexAcl(groupLocation, groupAppDataLocation, groupAcl, webIdOwner){
     let graph = rdfLib.graph();
     let owner = rdfLib.sym(groupAcl + "#Owner");
@@ -422,6 +526,13 @@ export function groupCheckInIndexAcl(groupLocation, groupAppDataLocation, groupA
     return rdfLib.serialize(undefined, graph, groupAcl, 'text/turtle');
 }
 
+/**
+ * Get the body of a like
+ * @param checkInLocation
+ * @param likeLocation
+ * @param userWebId
+ * @returns {undefined}
+ */
 export function getLikeBody(checkInLocation, likeLocation, userWebId){
     let graph = rdfLib.graph();
 
@@ -440,6 +551,14 @@ export function getLikeBody(checkInLocation, likeLocation, userWebId){
     return rdfLib.serialize(undefined, graph, likeLocation, 'text/turtle');
 }
 
+/**
+ * Get the acl of a like
+ * @param likerWebid
+ * @param likedUserWebid
+ * @param likeFile
+ * @param likefileAclLocation
+ * @returns {undefined}
+ */
 export function getLikeAcl(likerWebid, likedUserWebid, likeFile, likefileAclLocation){
     let graph = rdfLib.graph();
     let owner = rdfLib.sym(likefileAclLocation + "#Owner");

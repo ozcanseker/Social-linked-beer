@@ -1,3 +1,8 @@
+/**
+ * This file holds constants. This way you do not have a bunch of strings in your code that can me mutateable.
+ * @type {string}
+ */
+
 export const APPURL = "https://ozcanseker.github.io/Social-linked-beer/";
 export const APPLICATION_NAME = "Social Linked Beer";
 

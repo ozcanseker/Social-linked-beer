@@ -320,7 +320,8 @@ Below are a few thing to think about when creating you Solid app.
 1. Think out the file structure of the application folder. what you want to place where and who can access it.
 1. Make the ontologies you want to use. These might be temporary but it is still worth it to think it out before. Changing
 it afterwards might be a lot less work if you put some thought into it before you start programming.
-1. Make sure to separate the Solid communication from your front end. This will create less spaghetti code.
+1. Make sure you have a good seperation of concerns. The application you make will be handling front end code, back end communication and 
+data tranformation. If you do not separate your concerns you will create spaghetti code. 
 1. The rest will just be regular programming. The app logic needs to work.
 
 ## 6 Code examples

@@ -1,6 +1,17 @@
 import Beer from "../../model/HolderComponents/Beer";
 import Brewer from "../../model/HolderComponents/Brewer";
 
+/**
+ * Queries the sparql endpoint for beer information
+ * @param query
+ * @returns {Promise<[]>}
+ */
+
+/**
+ * Gets all beer data from the sparql endpoint
+ * @param query
+ * @returns {Promise<[]>}
+ */
 export async function getBeerData(query) {
     let res = await queryTriply(getBeerQuery(query));
     res = await res.text();
@@ -8,11 +19,21 @@ export async function getBeerData(query) {
     return makeBeerList(res);
 }
 
+/**
+ * Gets the brewer data from the sparql endpoint
+ * @param brewer
+ * @returns {Promise<void>}
+ */
 export async function getBrewerData(brewer) {
     getRegularBrewerData(brewer);
     getBrewerBeers(brewer);
 }
 
+/**
+ * Gets information about the brewer
+ * @param brewer
+ * @returns {Promise<void>}
+ */
 async function getRegularBrewerData(brewer) {
     let res = await queryTriply(getPredicateObject(brewer.getUrl()));
     res = await res.text();
@@ -70,6 +91,11 @@ async function getRegularBrewerData(brewer) {
     console.log(brewer);
 }
 
+/**
+ * Gets the address of the brewer
+ * @param brewer
+ * @returns {Promise<void>}
+ */
 async function getAddress(brewer) {
     let res = await queryTriply(getPredicateObject(brewer.getAddressUrl()));
     res = await res.text();
@@ -100,6 +126,11 @@ async function getAddress(brewer) {
     );
 }
 
+/**
+ * Get all beers of the brewer
+ * @param brewer
+ * @returns {Promise<void>}
+ */
 async function getBrewerBeers(brewer) {
     let res = await queryTriply(getBrewerBeersQuery(brewer.getUrl()));
     res = await res.text();
@@ -109,6 +140,11 @@ async function getBrewerBeers(brewer) {
     brewer.addBeers(beers);
 }
 
+/**
+ * Fetch the details of the beer
+ * @param beer
+ * @returns {Promise<void>}
+ */
 export async function fetchBeerData(beer) {
     let res = await queryTriply(getBeerDataQuery(beer.getUrl()));
     res = await res.text();

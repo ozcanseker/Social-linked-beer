@@ -3,6 +3,10 @@ import * as rdfLib from "rdflib"
 import AccessError from '../../error/AccessError'
 import {ACL} from '../rdf/Prefixes'
 
+/**
+ * Check wheter the user has given the application enough access
+ * @param storeProfileCard
+ */
 export function checkacess(storeProfileCard){
     let blankNode = storeProfileCard.any(undefined, ACL('origin'),rdfLib.sym("https://ozcanseker.github.io"));
     let readAcess = storeProfileCard.match(blankNode, ACL('mode'), ACL('Read'));

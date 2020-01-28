@@ -32,7 +32,6 @@ import ModelHolder from "./model/ModelHolder";
 import Logo from "./assets/logo.png";
 import StandardContext from "./context/StandardContext";
 
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -59,11 +58,16 @@ class App extends React.Component {
         })
     };
 
+    /**
+     * Checks if the user is logged in.
+     * @returns {Promise<void>}
+     */
     checkLoggedIn = async () => {
         let session = await solidAuth.currentSession();
-        //TODO error handling
 
         if (session) {
+            //if logged in
+
             this.setState({
                 fetchingFiles: true
             });
@@ -71,6 +75,7 @@ class App extends React.Component {
             //make new user
             this.state.modelHolder.getUser().setUri(session.webId);
 
+            //make solid communicator
             try {
                 let solidCommunicator = await SolidCommunicator.build(this.state.modelHolder);
 
@@ -96,6 +101,9 @@ class App extends React.Component {
         }
     };
 
+    /**
+     * This gets called when you click on the logout button
+     */
     onClickLogOut = () => {
         solidAuth.logout().then(res => {
             this.state.modelHolder.clearAll();
