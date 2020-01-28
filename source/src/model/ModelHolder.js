@@ -2,6 +2,9 @@ import CheckInHandler from "./HolderComponents/CheckInHandler";
 import User from "./HolderComponents/User";
 import Observable from "./HolderComponents/Observable";
 
+/**
+ * This class holds all the model classes
+ */
 class ModelHolder extends Observable {
     constructor() {
         super();

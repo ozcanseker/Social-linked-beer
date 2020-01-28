@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class represents the user.
+ */
 class User extends Observable{
     constructor(uri){
         super();

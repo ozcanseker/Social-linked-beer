@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class represents a check in or a review.
+ */
 class CheckIn extends Observable{
     constructor(fileLocation){
         super();

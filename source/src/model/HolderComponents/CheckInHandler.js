@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class will hold checkins for different parties
+ */
 class CheckInHandler extends Observable {
     constructor() {
         super();

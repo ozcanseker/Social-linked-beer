@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class represents a brewer
+ */
 class Brewer extends Observable {
     constructor(url, name) {
         super();

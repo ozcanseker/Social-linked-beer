@@ -2,6 +2,10 @@ import {toast} from "react-toastify";
 import React from "react";
 import "./css/Toasts.scss";
 
+/**
+ * File that has some standard toast messesage methods.
+ * @param string
+ */
 
 export function infoToast(string) {
     toast(<p>{string} </p>, {

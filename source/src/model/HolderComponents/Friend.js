@@ -1,6 +1,9 @@
 import Observable from "./Observable";
 import CheckInHandler from "./CheckInHandler";
 
+/**
+ * This class represents a Friend
+ */
 class Friend extends Observable{
     constructor(uri){
         super();

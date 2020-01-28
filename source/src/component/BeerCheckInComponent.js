@@ -3,7 +3,12 @@ import "./css/BeerCheckInComponent.scss"
 import Like from "../assets/Thumb-emoji.png";
 import StandardContext from "../context/StandardContext";
 
+/**
+ * This is the component that show the beer checkin or review. You can see this component on your profile screen under
+ * recent activities.
+ */
 class BeerCheckInComponent extends React.Component {
+    //This is the method that gets called when the check in is liked
     onLikeClick = () => {
         let solidCommunicator = this.context.solidCommunicator;
 

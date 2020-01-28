@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class represent a beer.
+ */
 class Beer extends Observable{
     constructor(ldUrl, name){
         super();

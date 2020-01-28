@@ -1,5 +1,8 @@
 import Observable from "./Observable";
 
+/**
+ * This class represents and inbox class.
+ */
 class InboxMessage extends Observable{
     constructor(uri){
         super();

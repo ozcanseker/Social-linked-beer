@@ -1,6 +1,9 @@
 import CheckInHandler from "./CheckInHandler";
 import Observable from "./Observable";
 
+/**
+ * This class represents a Group
+ */
 class Group extends Observable{
     constructor(url, createdByMe){
         super();

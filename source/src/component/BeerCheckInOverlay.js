@@ -4,11 +4,12 @@ import './css/BeerCheckInScreen.scss';
 import Rating from '@material-ui/lab/Rating';
 import Select from "react-select";
 
+/**
+ * This is the overlay that opens when you want to check in a beer.
+ */
 class BeerCheckInOverlay extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        }
     }
 
     onDivClick = (e) => {
@@ -19,6 +20,7 @@ class BeerCheckInOverlay extends React.Component {
         let rating;
         let text;
 
+        //these are the components that open when you click the add review button
         if (this.props.addReview) {
             rating = (<Rating
                 name="beerRating"
@@ -39,7 +41,7 @@ class BeerCheckInOverlay extends React.Component {
                     }
                     }/>
 
-            )
+            );
 
             rating = (
                 <div className={"reviewSectionBeerCheckIn"}>
